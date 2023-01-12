@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+  pg:
+    image: postgis/postgis:14-3.2-alpine
+    environment:
+      POSTGRES_USER: uploadCMS
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: uploadCMS_DB
+    volumes:
+      - upload_cms_local:/var/lib/postgresql/data
+    ports:
+      - '0.0.0.0:5437:5432'
+volumes: 
+  upload_cms_local:

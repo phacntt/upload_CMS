@@ -4,6 +4,8 @@ import { Request } from 'express';
 
 export interface DataStoredInToken {
   id: number;
+  name: string;
+  role: string
 }
 
 export interface TokenData {
@@ -18,4 +20,8 @@ declare global{
           user: User
       }
   }
+}
+
+export interface RequestWithUser extends Request {
+  user: User;
 }

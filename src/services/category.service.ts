@@ -13,9 +13,14 @@ class CategoryService {
         const categoryById = await this.clients.prisma.category.findFirst({where: {id}})
         return categoryById;
     }
+    
+    public async getCategoryByName(name: string, merchant: string) {
+        const categoryByName = await this.clients.prisma.category.findFirst({where: {name, merchant}})
+        return categoryByName;
+    }
 
     public async createCategory(categoryData: Category[]) {
-        const newCategory = await this.clients.prisma.category.createMany({data: categoryData})
+        const newCategory = await this.clients.prisma.category.createMany({data: categoryData, skipDuplicates: true})
         return newCategory
     }
     

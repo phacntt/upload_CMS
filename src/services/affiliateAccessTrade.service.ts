@@ -1,9 +1,8 @@
-import { Product } from "@prisma/client";
-import fetch from 'node-fetch'
 import { fetchAPI } from "../utils/fetchApi.helper";
 import { HttpException } from "../exception/HttpException";
-import { resolve } from "path";
 import fs from 'fs'
+import { Category, Product } from "@prisma/client";
+import { context } from "../types/context.type";
 
 
 export type ProductType = {
@@ -18,15 +17,15 @@ export type ProductType = {
 
   };
 
-class FeedDataService {
+class AffiliateAccessTradeService {
     //Link AccessTrade
     public linkDataFeed = 'https://api.accesstrade.vn/v1/datafeeds';
-    public linkCampaign = 'https://api.accesstrade.vn/v1/campaigns';
+    public linkCampaign = 'https://api.accesstrade.vn/v1/campaigns?approval=successful';
     public linkProductDetail = 'https://api.accesstrade.vn/v1/product_detail'
-
+    public client = context
 
     // AccessTrade
-    // Get product and save to DB
+    // Get product
     public async getProducts(queryParam: any) {
         try {
             let param = ''
@@ -74,21 +73,23 @@ class FeedDataService {
             throw new HttpException(404, error as any)
         }
     }
-    // Get category and save to DB
-    public async getCategories(merchant: string) {
+
+    // Get category
+    public async getCategories(queryParam: any) {
         try {
             let param = ''
-            if (merchant) {
-                param = `merchant=${merchant}`
+            if (queryParam.merchant) {
+                param = `merchant=${queryParam.merchant}`
             }
             let productCreate: any[] = []
-            const getDataFeed = await fetchAPI(this.linkDataFeed, `merchant=${merchant}&update_from=01-01-2018&update_to=01-01-2023&limit=200`) as any
+            const getDataFeed = await fetchAPI(this.linkDataFeed, `merchant=${queryParam.merchant}&update_from=01-01-2018&update_to=01-01-2023&limit=200`) as any
             getDataFeed.data.map((prod: any) => {
                 let dataObj = {
                     product_id: prod.product_id.substring(prod.product_id.indexOf('_') + 1),
+                    merchant: prod.merchant,
                     category_name: ''
                 }
-                if (merchant === 'lazada' || merchant === 'sendovn') {
+                if (queryParam.merchant === 'lazada' || queryParam.merchant === 'sendovn') {
                     dataObj.category_name = prod.cate
                 }
                 
@@ -96,8 +97,8 @@ class FeedDataService {
                 return productCreate
             })
             const listInfoProduct = Promise.all(productCreate.map(async (data: any) => {
-                const prodDetail = await fetchAPI(this.linkProductDetail, `merchant=${merchant}&product_id=${data.product_id}`)
-                if (merchant === 'shopee' || merchant === 'tikivn' ) {
+                const prodDetail = await fetchAPI(this.linkProductDetail, `merchant=${queryParam.merchant}&product_id=${data.product_id}`)
+                if (queryParam.merchant === 'shopee' || queryParam.merchant === 'tikivn' ) {
                     data.category_name = prodDetail.category_name
                 }
                 delete data.product_id
@@ -116,7 +117,42 @@ class FeedDataService {
         }
 
     }
+
+    // Get category
+    public async getCampaigns() {
+        try {
+            
+            let productCreate: any[] = []
+            const getDataFeed = await fetchAPI(this.linkCampaign)
+            getDataFeed.data.map((prod: any) => {
+                let dataObj = {
+                    idCampaign: prod.id,
+                    merchant: prod.merchant,
+                    name: prod.name,
+                    logo: prod.logo,
+                    link: prod.url,
+                    maxCom: prod.max_com,
+                    introduction: prod.description.introduction,
+                    actionPoint: prod.description.action_point,
+                    commissionPolicy: prod.description.commission_policy,
+                    cookiePolicy: prod.description.cookie_policy,
+                    rejectedReason: prod.description.rejected_reason,
+                    trafficBuildingPolicy: prod.description.traffic_building_policy,
+                    otherNotice: prod.description.other_notice
+                }
+               
+                
+                productCreate.push(dataObj)
+                return productCreate
+            })
+            
+            return productCreate
+        } catch (error) {
+            throw new HttpException(404, error as any)
+        }
+
+    }
     
 }
 
-export default FeedDataService
+export default AffiliateAccessTradeService

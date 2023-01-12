@@ -29,6 +29,7 @@ model User {
 model Category {
   id  Int @id @default(autoincrement())
   name String
+  merchant String
   products Product[]
   createAt DateTime @default(now())
   updateAt  DateTime @updatedAt
@@ -38,7 +39,8 @@ model Product {
   id  Int @id @default(autoincrement())
   image String
   linkAffilitate String
-  linkMerchant String
+  linkProduct String
+  merchant String
   discountRate Int
   name String
   description String
