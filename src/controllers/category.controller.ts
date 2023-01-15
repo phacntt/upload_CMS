@@ -33,7 +33,7 @@ class CategoryController {
             const dataCreateCategories = req.body
 
             const newCategories: Category[] = await Promise.all(dataCreateCategories.map(async (category: Category) => {
-                const existsCategory = await this.categoryService.getCategoryByName(category.name, category.merchant)
+                const existsCategory = await this.categoryService.getCategoryByName(category.name)
                 if (!existsCategory) {
                     return category
                 }

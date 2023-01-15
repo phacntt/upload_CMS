@@ -14,8 +14,8 @@ class CategoryService {
         return categoryById;
     }
     
-    public async getCategoryByName(name: string, merchant: string) {
-        const categoryByName = await this.clients.prisma.category.findFirst({where: {name, merchant}})
+    public async getCategoryByName(name: string) {
+        const categoryByName = await this.clients.prisma.category.findFirst({where: {name}})
         return categoryByName;
     }
 
