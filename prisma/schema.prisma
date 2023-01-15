@@ -15,12 +15,17 @@ enum Role {
   Guest
 }
 
+enum StatusBanner {
+  Active
+  Inactive
+  In_Draft
+}
+
 model User {
   id    Int     @id @default(autoincrement())
   email String  @unique 
   password  String
   name  String?
-  wallet  String?
   role  Role @default(Guest)
   createAt DateTime @default(now())
   updateAt  DateTime @updatedAt
@@ -29,7 +34,7 @@ model User {
 model Category {
   id  Int @id @default(autoincrement())
   name String
-  merchant String
+  type String?
   products Product[]
   createAt DateTime @default(now())
   updateAt  DateTime @updatedAt
@@ -45,9 +50,22 @@ model Product {
   name String
   description String
   price Int
-  commisionPrice Int
+  discountAmount Int
   categoryId Int
   category Category @relation(fields: [categoryId], references: [id])
+  createAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
+}
+
+model Banner {
+  id  Int @id @default(autoincrement())
+  image String
+  landingPageUrl String
+  bannerPosition String
+  bannerPage String
+  airTimeCreate DateTime
+  airTimeEnd DateTime
+  status StatusBanner @default(Inactive)
   createAt DateTime @default(now())
   updateAt  DateTime @updatedAt
 }

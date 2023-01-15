@@ -21,8 +21,10 @@ class AffiliateAccessTradeService {
     //Link AccessTrade
     public linkDataFeed = 'https://api.accesstrade.vn/v1/datafeeds';
     public linkCampaign = 'https://api.accesstrade.vn/v1/campaigns?approval=successful';
-    public linkProductDetail = 'https://api.accesstrade.vn/v1/product_detail'
-    public client = context
+    public linkCommissionCampaign = 'https://api.accesstrade.vn/v1/commission_policies';
+    public linkProductDetail = 'https://api.accesstrade.vn/v1/product_detail';
+    public linkCoupon = 'https://api.accesstrade.vn/v1/offers_informations/coupon?limit=200'
+    public client = context;
 
     // AccessTrade
     // Get product
@@ -81,6 +83,7 @@ class AffiliateAccessTradeService {
             if (queryParam.merchant) {
                 param = `merchant=${queryParam.merchant}`
             }
+            
             let productCreate: any[] = []
             const getDataFeed = await fetchAPI(this.linkDataFeed, `merchant=${queryParam.merchant}&update_from=01-01-2018&update_to=01-01-2023&limit=200`) as any
             getDataFeed.data.map((prod: any) => {
@@ -138,15 +141,17 @@ class AffiliateAccessTradeService {
                     cookiePolicy: prod.description.cookie_policy,
                     rejectedReason: prod.description.rejected_reason,
                     trafficBuildingPolicy: prod.description.traffic_building_policy,
-                    otherNotice: prod.description.other_notice
+                    otherNotice: prod.description.other_notice,
+                    category: prod.category,
+                    subCategory: prod.sub_category
+
                 }
-               
-                
+
                 productCreate.push(dataObj)
-                return productCreate
+
             })
-            
             return productCreate
+
         } catch (error) {
             throw new HttpException(404, error as any)
         }

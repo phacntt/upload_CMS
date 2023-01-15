@@ -3,6 +3,8 @@ import cookieParser from 'cookie-parser'
 import path from 'path';
 import { Routes } from './interfaces/routes.interface';
 import { NODE_ENV, PORT } from './config';
+import fileUpload from 'express-fileupload'
+import bodyParser from 'body-parser';
 
 class App {
   public app: express.Application;
@@ -43,9 +45,15 @@ class App {
   }
 
   private initializeRoutes(routes: Routes[]) {
+    this.app.use(fileUpload())
+
     routes.forEach(route => {
       this.app.use('/api' + route.path, route.router);
     });
+  }
+
+  private initializeCron() {
+    
   }
 
 }

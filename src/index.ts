@@ -5,13 +5,15 @@ import AuthRoute from './routes/auth.route';
 import CategoryRoute from './routes/category.route';
 import ProductRoute from './routes/product.route';
 import AffiliateAccessTradeRoute from './routes/affiliateAccessTrade.route';
+import BannerRoute from './routes/banner.route';
 
 const app = new App([
     new UserRoute(),
     new AuthRoute(),
     new CategoryRoute(),
     new ProductRoute(),
-    new AffiliateAccessTradeRoute()
+    new AffiliateAccessTradeRoute(),
+    new BannerRoute()
 ]);
 
 app.listen();
