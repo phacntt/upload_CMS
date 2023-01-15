@@ -1,8 +1,8 @@
 import {  HOST, NODE_ENV } from "../config";
 import { PrismaClient } from "@prisma/client";
 
-const host = NODE_ENV === 'development' ? 'localhost' : "pg"
-const port = NODE_ENV === 'development' ? '5437' : '5432'
+const host = NODE_ENV === 'development' ? 'localhost' : HOST
+const port = NODE_ENV === 'development' ? '5432' : '5437'
 
 const prisma = new PrismaClient({
   datasources: {
