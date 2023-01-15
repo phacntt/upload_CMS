@@ -1,0 +1,33 @@
+name: deploy upload_cms by ZUNO
+on: push
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: executing remote ssh commands using password
+        uses: supnobita/ssh-action@master
+        with:
+          host: 54.151.218.185
+          username: ubuntu
+          key: ${{ secrets.UPLOAD_CMS_SECRET }}
+          port: 22
+          envs: GITHUB_RUN_NUMBER
+          script: |
+            cd code/
+            rm -rf upload_cms
+            git clone https://${{ secrets.UPLOAD_CMS_TOKEN_SSH }}@github.com/phacntt/upload_cms.git
+            cd upload_cms
+            DOCKER_BUILDKIT=1 docker build -t upload_cms:$GITHUB_RUN_NUMBER .
+            docker stop upload_cms || echo "stop container - OK"
+            docker rm upload_cms || echo "remove container - OK"
+            docker run -d --name upload_cms -p 9000:9000 \
+                -e NODE_ENV=${{ secrets.NODE_ENV }} \
+                -e HOST=172.31.33.255 \
+                -e SECRET_KEY=${{ secrets.SECRET_KEY }} \
+                -e API_KEY_ACCESSTRADE=${{ secrets.API_KEY_ACCESSTRADE }} \
+                -e AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} \
+                -e AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }} \
+                -e AWS_BUCKET_NAME=${{ secrets.AWS_BUCKET_NAME }} \
+                -e UPLOAD_CMS_DATABASE_URL=${{ secrets.UPLOAD_CMS_DATABASE_URL }} \
+                upload_cms:$GITHUB_RUN_NUMBER

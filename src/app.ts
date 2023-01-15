@@ -4,7 +4,7 @@ import path from 'path';
 import { Routes } from './interfaces/routes.interface';
 import { NODE_ENV, PORT } from './config';
 import fileUpload from 'express-fileupload'
-import bodyParser from 'body-parser';
+import { task } from './utils/task-cron';
 
 class App {
   public app: express.Application;
@@ -19,6 +19,7 @@ class App {
     this.initializeMiddlewares();
     this.initializeRoutes(routes);
     // this.initializeStaticFile();
+    this.initializeCron();
   }
 
   public listen() {
@@ -53,7 +54,7 @@ class App {
   }
 
   private initializeCron() {
-    
+    task()
   }
 
 }
