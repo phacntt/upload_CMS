@@ -1,21 +1,7 @@
 import { fetchAPI } from "../utils/fetchApi.helper";
 import { HttpException } from "../exception/HttpException";
-import fs from 'fs'
 import { Category, Product } from "@prisma/client";
 import { context } from "../types/context.type";
-
-
-export type ProductType = {
-    image?: string;
-    linkAffiliate?: string;
-    linkMerchant?: string;
-    discountRate?: number;
-    name?: string;
-    description?: string;
-    price?: number;
-    commisionPrice?: number;
-
-  };
 
 class AffiliateAccessTradeService {
     //Link AccessTrade
@@ -42,15 +28,6 @@ class AffiliateAccessTradeService {
             const getDataFeed = await fetchAPI(this.linkDataFeed, param) as any
             console.log(getDataFeed)
             getDataFeed.data.map((prod: any) => {
-                // image String
-                // linkAffilitate String
-                // linkProduct String
-                // merchant String
-                // discountRate Int
-                // name String
-                // description String
-                // price Int
-                // discountAmount Int
                 let dataObj = {
                     aff_link: prod.aff_link,
                     product_id: prod.product_id.substring(prod.product_id.indexOf('_') + 1),
@@ -82,7 +59,7 @@ class AffiliateAccessTradeService {
         }
     }
 
-    // Get category
+    // Get Shops
     public async getShops(queryParam: any) {
         try {
             let param = ''
@@ -95,7 +72,6 @@ class AffiliateAccessTradeService {
             if (queryParam.page) {
                 param = `page=${queryParam.page}&`
             }
-            
             console.log(queryParam)
 
             let shopCreate: any[] = []
@@ -115,20 +91,20 @@ class AffiliateAccessTradeService {
                     rejected_reason: shop.description.rejected_reason,
                     traffic_building_policy: shop.description.traffic_building_policy,
                     other_notice: shop.description.other_notice,
-                    category: -1
+                    categoryId: -1
                 }
                 listCategory.map((category: Category) => {
                     const listCategoryVN = category.nameVN.split(",")
                     listCategoryVN.find((cate: string) => {
                         if (shop.sub_category === cate.trim()) {
                             console.log(category.id)
-                            dataObj.category = category.id
+                            dataObj.categoryId = category.id
                         }
                     })
                     return dataObj
                 })
 
-                if (dataObj.category != -1) {
+                if (dataObj.categoryId != -1) {
                     shopCreate.push(dataObj)
                 }
                 
@@ -136,43 +112,6 @@ class AffiliateAccessTradeService {
             
             
             return shopCreate
-        } catch (error) {
-            throw new HttpException(404, error as any)
-        }
-
-    }
-
-    // Get category
-    public async getCampaigns() {
-        try {
-            
-            let productCreate: any[] = []
-            const getDataFeed = await fetchAPI(this.linkCampaign)
-            getDataFeed.data.map((prod: any) => {
-                let dataObj = {
-                    idCampaign: prod.id,
-                    merchant: prod.merchant,
-                    name: prod.name,
-                    logo: prod.logo,
-                    link: prod.url,
-                    maxCom: prod.max_com,
-                    introduction: prod.description.introduction,
-                    actionPoint: prod.description.action_point,
-                    commissionPolicy: prod.description.commission_policy,
-                    cookiePolicy: prod.description.cookie_policy,
-                    rejectedReason: prod.description.rejected_reason,
-                    trafficBuildingPolicy: prod.description.traffic_building_policy,
-                    otherNotice: prod.description.other_notice,
-                    category: prod.category,
-                    subCategory: prod.sub_category
-
-                }
-
-                productCreate.push(dataObj)
-
-            })
-            return productCreate
-
         } catch (error) {
             throw new HttpException(404, error as any)
         }

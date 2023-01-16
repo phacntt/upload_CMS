@@ -32,37 +32,8 @@ class ShopController {
     public createShops = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const dataCreateShops = req.body
-            const listCategory = await this.categorySerivce.getCategories()
 
-            const listShopCreate = dataCreateShops.map(async (shop: any) => {
-                let categoryAdd: Category
-
-                const categoryRelation = listCategory.find((category: Category) => {
-                    if (category?.nameVN === shop.sub_category) {
-                        categoryAdd = category
-                    }
-                    return categoryAdd
-                })
-                const dataCreate = {
-                    name: shop.name,
-                    logo: shop.logo,
-                    url: shop.url,
-                    max_com: shop.max_com,
-                    introduction: shop.introduction,
-                    action_point: shop.action_point,
-                    commission_policy: shop.commission_policy,
-                    cookie_policy: shop.cookie_policy,
-                    rejected_reason: shop.rejected_reason,
-                    traffic_building_policy: shop.traffic_building_policy,
-                    other_notice: shop.other_notice,
-                    categoryId: categoryRelation?.id as number,       
-
-                }
-                return dataCreate
-            });
-
-            const result = await Promise.all(listShopCreate).then(resolve => resolve)
-            console.log(result)
+            const result = await Promise.all(dataCreateShops).then(resolve => resolve)
             const newProduct = await this.shopService.createShops(result);
 
             res.status(200).json({ data: newProduct, message: 'Create shops successfully' });

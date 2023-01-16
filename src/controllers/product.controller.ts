@@ -34,33 +34,7 @@ class ProductController {
         try {
             const dataCreateProducts = req.body
 
-            const listCategory = await this.categorySerivce.getCategories()
-
-            const listProductCreate = dataCreateProducts.map(async (prod: any) => {
-                // let categoryAdd: Category
-
-                // const dataCreated = listCategory.find((category: Category) => {
-                //     if (category?.name === prod.category_name) {
-                //         categoryAdd = category
-                //     }
-                //     return categoryAdd
-                // })
-                const dataCreate = {
-                    description: prod.desc,
-                    image: prod.image,
-                    linkAffilitate: prod.aff_link,
-                    merchant: prod.merchant,
-                    price: prod.price,
-                    discountRate: prod.discount_rate,
-                    linkProduct: prod.link,
-                    name: prod.name,
-                    discountAmount: prod.discount_amount,
-                    discount: prod.discount
-                }
-                return dataCreate
-            });
-
-            const result = await Promise.all(listProductCreate).then(resolve => resolve)
+            const result = await Promise.all(dataCreateProducts).then(resolve => resolve)
             // console.log(result)
             // result.map( async(ele: any) => {
             //     const existsName = await this.productService.getProductByName(ele.name)

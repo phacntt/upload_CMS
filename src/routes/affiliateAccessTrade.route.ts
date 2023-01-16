@@ -17,8 +17,6 @@ class AffiliateAccessTradeRoute implements Routes {
     private initializeRoutes() {
         this.router.get(`/products`, this.affiliateAccessTradeController.getProducts);
         this.router.get(`/shops`, this.affiliateAccessTradeController.getShops);
-        this.router.get(`/campaigns`, this.affiliateAccessTradeController.getCampaigns);
-        // this.router.post(`/`, this.feedDataController.createCategory);
 
     }
 }

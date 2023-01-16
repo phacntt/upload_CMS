@@ -16,14 +16,8 @@ class ShopService {
     }
 
     public async createShops(shopData: Shop[]) {
-        const newShops = await Promise.all(
-            shopData.map(async (shop) => {
-                await this.clients.prisma.shop.create({
-                    data: shop,
-                })
-            })
-        )
-            
+        const newShops = await this.clients.prisma.shop.createMany({data: shopData})
+
         console.log(newShops)
 
         return newShops

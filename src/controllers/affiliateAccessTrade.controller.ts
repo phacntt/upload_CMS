@@ -32,15 +32,6 @@ class AffiliateAccessTradeController {
         }
     };
 
-    public getCampaigns = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-        try {
-            const productsData = await this.affiliateAccessTradeService.getCampaigns();
-
-            res.status(200).json({ data: productsData, message: 'Get all campaigns' });
-        } catch (error) {
-        next(error);
-        }
-    };
 
 }
 
