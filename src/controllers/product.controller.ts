@@ -3,6 +3,7 @@ import AuthService from "../services/auth.service";
 import { Request, Response, NextFunction } from "express";
 import CategoryService from "../services/category.service";
 import ProductService from "../services/product.service";
+import { HttpException } from "../exception/HttpException";
 
 class ProductController {
     public productService = new ProductService();
@@ -36,14 +37,14 @@ class ProductController {
             const listCategory = await this.categorySerivce.getCategories()
 
             const listProductCreate = dataCreateProducts.map(async (prod: any) => {
-                let categoryAdd: Category
+                // let categoryAdd: Category
 
-                const dataCreated = listCategory.find((category: Category) => {
-                    if (category?.name === prod.category_name) {
-                        categoryAdd = category
-                    }
-                    return categoryAdd
-                })
+                // const dataCreated = listCategory.find((category: Category) => {
+                //     if (category?.name === prod.category_name) {
+                //         categoryAdd = category
+                //     }
+                //     return categoryAdd
+                // })
                 const dataCreate = {
                     description: prod.desc,
                     image: prod.image,
@@ -53,14 +54,19 @@ class ProductController {
                     discountRate: prod.discount_rate,
                     linkProduct: prod.link,
                     name: prod.name,
-                    commisionPrice: 10000,
-                    categoryId: dataCreated?.id as number,                    
+                    discountAmount: prod.discount_amount,
+                    discount: prod.discount
                 }
                 return dataCreate
             });
 
             const result = await Promise.all(listProductCreate).then(resolve => resolve)
-            console.log(result)
+            // console.log(result)
+            // result.map( async(ele: any) => {
+            //     const existsName = await this.productService.getProductByName(ele.name)
+            //     if (existsName) throw new HttpException(400, `Product ${existsName.name} has already exists please check again`)
+            //     return;
+            // })
             const newProduct = await this.productService.createProducts(result);
 
             res.status(200).json({ data: newProduct, message: 'Create products successfully' });

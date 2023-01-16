@@ -23,7 +23,7 @@ class AffiliateAccessTradeService {
     public linkCampaign = 'https://api.accesstrade.vn/v1/campaigns?approval=successful';
     public linkCommissionCampaign = 'https://api.accesstrade.vn/v1/commission_policies';
     public linkProductDetail = 'https://api.accesstrade.vn/v1/product_detail';
-    public linkCoupon = 'https://api.accesstrade.vn/v1/offers_informations/coupon?limit=200'
+    public linkCoupon = 'https://api.accesstrade.vn/v1/offers_informations/coupon?limit=100'
     public client = context;
 
     // AccessTrade
@@ -34,24 +34,31 @@ class AffiliateAccessTradeService {
             if (queryParam.merchant) {
                 param = `merchant=${queryParam.merchant}&`
             }
-            if (queryParam.limit) {
-                param = param + `limit=${queryParam.limit}&`
+            if (queryParam.page) {
+                param = param + `page=${queryParam.page}&`
             }
             console.log(param)
             let productCreate: any[] = []
             const getDataFeed = await fetchAPI(this.linkDataFeed, param) as any
             console.log(getDataFeed)
             getDataFeed.data.map((prod: any) => {
+                // image String
+                // linkAffilitate String
+                // linkProduct String
+                // merchant String
+                // discountRate Int
+                // name String
+                // description String
+                // price Int
+                // discountAmount Int
                 let dataObj = {
                     aff_link: prod.aff_link,
                     product_id: prod.product_id.substring(prod.product_id.indexOf('_') + 1),
                     discount_rate: prod.discount_rate,
                     merchant: prod.merchant,
-                    category_name: ''
+                    discount_amount: prod.discount_amount,
                 }
-                if (queryParam.merchant === 'lazada' || queryParam.merchant === 'sendovn') {
-                    dataObj.category_name = prod.cate
-                }
+                
                 
                 productCreate.push(dataObj)
                 return productCreate
@@ -63,11 +70,10 @@ class AffiliateAccessTradeService {
                 data.desc = prodDetail.desc
                 data.link = prodDetail.link
                 data.discount = prodDetail.discount
-                if (queryParam.merchant === 'shopee' || queryParam.merchant === 'tikivn' ) {
-                    data.category_name = prodDetail.category_name
-                }
+                
                 data.name = prodDetail.name
                 data.price = prodDetail.price
+                delete data.product_id
                 return data
             })).then(resolve => resolve) ;
             return listInfoProduct
@@ -77,44 +83,59 @@ class AffiliateAccessTradeService {
     }
 
     // Get category
-    public async getCategories(queryParam: any) {
+    public async getShops(queryParam: any) {
         try {
             let param = ''
             if (queryParam.merchant) {
-                param = `merchant=${queryParam.merchant}`
+                param = `merchant=${queryParam.merchant}&`
+            }
+            if (queryParam.approval) {
+                param = `approval=${queryParam.approval}&`
+            }
+            if (queryParam.page) {
+                param = `page=${queryParam.page}&`
             }
             
-            let productCreate: any[] = []
-            const getDataFeed = await fetchAPI(this.linkDataFeed, `merchant=${queryParam.merchant}&update_from=01-01-2018&update_to=01-01-2023&limit=200`) as any
-            getDataFeed.data.map((prod: any) => {
+            console.log(queryParam)
+
+            let shopCreate: any[] = []
+            const listShops = await fetchAPI(this.linkCampaign, param)
+            console.log(listShops)
+            const listCategory = await this.client.prisma.category.findMany()
+            listShops.data.map((shop: any) => {
                 let dataObj = {
-                    product_id: prod.product_id.substring(prod.product_id.indexOf('_') + 1),
-                    merchant: prod.merchant,
-                    category_name: ''
+                    name: shop.name,
+                    logo: shop.logo,
+                    url: shop.url,
+                    max_com: shop.max_com,
+                    introduction: shop.description.introduction,
+                    action_point: shop.description.action_point,
+                    commission_policy: shop.description.commission_policy,
+                    cookie_policy: shop.description.cookie_policy,
+                    rejected_reason: shop.description.rejected_reason,
+                    traffic_building_policy: shop.description.traffic_building_policy,
+                    other_notice: shop.description.other_notice,
+                    category: -1
                 }
-                if (queryParam.merchant === 'lazada' || queryParam.merchant === 'sendovn') {
-                    dataObj.category_name = prod.cate
+                listCategory.map((category: Category) => {
+                    const listCategoryVN = category.nameVN.split(",")
+                    listCategoryVN.find((cate: string) => {
+                        if (shop.sub_category === cate.trim()) {
+                            console.log(category.id)
+                            dataObj.category = category.id
+                        }
+                    })
+                    return dataObj
+                })
+
+                if (dataObj.category != -1) {
+                    shopCreate.push(dataObj)
                 }
                 
-                productCreate.push(dataObj)
-                return productCreate
             })
-            const listInfoProduct = Promise.all(productCreate.map(async (data: any) => {
-                const prodDetail = await fetchAPI(this.linkProductDetail, `merchant=${queryParam.merchant}&product_id=${data.product_id}`)
-                if (queryParam.merchant === 'shopee' || queryParam.merchant === 'tikivn' ) {
-                    data.category_name = prodDetail.category_name
-                }
-                delete data.product_id
-                return data
-            })).then(resolve => resolve)
-            const seen = new Set()
-            const filterArray = (await listInfoProduct).filter((el: any) => {
-                const duplicate = seen.has(el.category_name);
-                seen.add(el.category_name)
-                return !duplicate
-            })
-            console.log(filterArray.length)
-            return filterArray
+            
+            
+            return shopCreate
         } catch (error) {
             throw new HttpException(404, error as any)
         }

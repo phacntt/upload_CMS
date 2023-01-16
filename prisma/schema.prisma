@@ -34,8 +34,8 @@ model User {
 model Category {
   id  Int @id @default(autoincrement())
   name String
-  type String?
-  products Product[]
+  nameVN String
+  shops Shop[]
   createAt DateTime @default(now())
   updateAt  DateTime @updatedAt
 }
@@ -51,6 +51,24 @@ model Product {
   description String
   price Int
   discountAmount Int
+  discount Int
+  createAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
+}
+
+model Shop {
+  id  Int @id @default(autoincrement())
+  logo String
+  name String
+  max_com String
+  url String
+  action_point String
+  commission_policy String
+  cookie_policy String
+  introduction String
+  other_notice String
+  rejected_reason String
+  traffic_building_policy String
   categoryId Int
   category Category @relation(fields: [categoryId], references: [id])
   createAt DateTime @default(now())

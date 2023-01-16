@@ -21,10 +21,10 @@ class AffiliateAccessTradeController {
         }
     };
 
-    public getCategory = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    public getShops = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const param = req.query
-            const productsData = await this.affiliateAccessTradeService.getCategories(param);
+            const productsData = await this.affiliateAccessTradeService.getShops(param);
 
             res.status(200).json({ data: productsData, message: 'Get all category' });
         } catch (error) {

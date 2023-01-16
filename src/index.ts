@@ -6,6 +6,7 @@ import CategoryRoute from './routes/category.route';
 import ProductRoute from './routes/product.route';
 import AffiliateAccessTradeRoute from './routes/affiliateAccessTrade.route';
 import BannerRoute from './routes/banner.route';
+import ShopRoute from './routes/shop.route';
 
 const app = new App([
     new UserRoute(),
@@ -13,7 +14,8 @@ const app = new App([
     new CategoryRoute(),
     new ProductRoute(),
     new AffiliateAccessTradeRoute(),
-    new BannerRoute()
+    new BannerRoute(),
+    new ShopRoute()
 ]);
 
 app.listen();

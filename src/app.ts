@@ -5,6 +5,9 @@ import { Routes } from './interfaces/routes.interface';
 import { NODE_ENV, PORT } from './config';
 import fileUpload from 'express-fileupload'
 import { task } from './utils/task-cron';
+import { Banner } from '@prisma/client';
+import { context } from './types/context.type';
+import cron from 'node-cron'
 
 class App {
   public app: express.Application;
@@ -18,8 +21,8 @@ class App {
 
     this.initializeMiddlewares();
     this.initializeRoutes(routes);
-    // this.initializeStaticFile();
     this.initializeCron();
+    // this.initializeStaticFile();
   }
 
   public listen() {
@@ -29,14 +32,6 @@ class App {
       console.info(`🚀 App listening on the port ${this.port}`);
       console.info(`=================================`);
     });
-  }
-
-  private initializeStaticFile() {
-    this.app.use(express.static(path.resolve(__dirname, '../dist/build'))); // khi có request static file *.js, *.css, *.font, *.jpg....
-    this.app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
-    this.app.get('*', (req, res) => {
-      res.sendFile(path.resolve(__dirname, '../dist/build', 'index.html'));
-    }); // khi có request tới một page của react app
   }
 
   private initializeMiddlewares() {
