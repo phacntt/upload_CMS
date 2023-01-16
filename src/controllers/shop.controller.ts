@@ -32,7 +32,6 @@ class ShopController {
     public createShops = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const dataCreateShops = req.body
-
             const listCategory = await this.categorySerivce.getCategories()
 
             const listShopCreate = dataCreateShops.map(async (shop: any) => {
@@ -49,13 +48,13 @@ class ShopController {
                     logo: shop.logo,
                     url: shop.url,
                     max_com: shop.max_com,
-                    introduction: shop.description.introduction,
-                    action_point: shop.description.action_point,
-                    commission_policy: shop.description.commission_policy,
-                    cookie_policy: shop.description.cookie_policy,
-                    rejected_reason: shop.description.rejected_reason,
-                    traffic_building_policy: shop.description.traffic_building_policy,
-                    other_notice: shop.description.other_notice,
+                    introduction: shop.introduction,
+                    action_point: shop.action_point,
+                    commission_policy: shop.commission_policy,
+                    cookie_policy: shop.cookie_policy,
+                    rejected_reason: shop.rejected_reason,
+                    traffic_building_policy: shop.traffic_building_policy,
+                    other_notice: shop.other_notice,
                     categoryId: categoryRelation?.id as number,       
 
                 }
