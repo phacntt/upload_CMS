@@ -2,12 +2,13 @@ import express from 'express';
 import cookieParser from 'cookie-parser'
 import path from 'path';
 import { Routes } from './interfaces/routes.interface';
-import { NODE_ENV, PORT } from './config';
+import { CREDENTIALS, NODE_ENV, ORIGIN, PORT } from './config';
 import fileUpload from 'express-fileupload'
 import { task } from './utils/task-cron';
 import { Banner } from '@prisma/client';
 import { context } from './types/context.type';
 import cron from 'node-cron'
+import cors from 'cors'
 
 class App {
   public app: express.Application;
@@ -35,6 +36,7 @@ class App {
   }
 
   private initializeMiddlewares() {
+    this.app.use(cors({ origin: ORIGIN, credentials: CREDENTIALS }));
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }))
     this.app.use(cookieParser());
