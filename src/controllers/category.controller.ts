@@ -19,7 +19,8 @@ class CategoryController {
 
     public getCategoryById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const { id } = req.query
+            const { id } = req.params
+            console.log(id)
             const categoryById: Category = await this.categoryService.getCategoryById(Number(id)) as Category;
 
             res.status(200).json({ data: categoryById, message: `Get category ${categoryById.name} successfully` });

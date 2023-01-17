@@ -15,7 +15,7 @@ class CategoryRoute implements Routes {
     
     private initializeRoutes() {
         this.router.get(`/`, this.categoryController.getCategories);
-        this.router.get(`/:id`, authMiddleware, this.categoryController.getCategoryById);
+        this.router.get(`/:id`, this.categoryController.getCategoryById);
         this.router.post(`/`, authMiddleware, this.categoryController.createCategory);
 
     }

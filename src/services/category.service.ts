@@ -10,7 +10,7 @@ class CategoryService {
     }
 
     public async getCategoryById(id: number) {
-        const categoryById = await this.clients.prisma.category.findFirst({where: {id}})
+        const categoryById = await this.clients.prisma.category.findFirst({where: {id}, include: {shops: true}})
         return categoryById;
     }
     
