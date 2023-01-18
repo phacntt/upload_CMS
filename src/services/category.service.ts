@@ -5,7 +5,7 @@ class CategoryService {
     public clients = context
     
     public async getCategories() {
-        const categories = await this.clients.prisma.category.findMany()
+        const categories = await this.clients.prisma.category.findMany({include: {shops: true}})
         return categories;
     }
 
