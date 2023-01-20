@@ -23,37 +23,9 @@ class AffiliateAccessTradeService {
             if (queryParam.page) {
                 param = param + `page=${queryParam.page}&`
             }
-            console.log(param)
-            let productCreate: any[] = []
-            const getDataFeed = await fetchAPI(this.linkDataFeed, param) as any
-            console.log(getDataFeed)
-            getDataFeed.data.map((prod: any) => {
-                let dataObj = {
-                    aff_link: prod.aff_link,
-                    product_id: prod.product_id.substring(prod.product_id.indexOf('_') + 1),
-                    discount_rate: prod.discount_rate,
-                    merchant: prod.merchant,
-                    discount_amount: prod.discount_amount,
-                }
-                
-                
-                productCreate.push(dataObj)
-                return productCreate
-            })
-            // console.log(productCreate)
-            const listInfoProduct = Promise.all(productCreate.map(async (data: any) => {
-                const prodDetail = await fetchAPI(this.linkProductDetail, `merchant=${queryParam.merchant}&product_id=${data.product_id}`)
-                data.image = prodDetail.image
-                data.desc = prodDetail.desc
-                data.link = prodDetail.link
-                data.discount = prodDetail.discount
-                
-                data.name = prodDetail.name
-                data.price = prodDetail.price
-                delete data.product_id
-                return data
-            })).then(resolve => resolve) ;
-            return listInfoProduct
+            let productCreate: any[] = await this.getProductFromDataFeed(param)
+            
+            return productCreate
         } catch (error) {
             throw new HttpException(404, error as any)
         }
@@ -118,6 +90,27 @@ class AffiliateAccessTradeService {
 
     }
     
+    public async getProductFromDataFeed(param: string) {
+        const getDataFeed = await fetchAPI(this.linkDataFeed, param) as any
+        console.log(getDataFeed)
+        return getDataFeed.data.map((prod: any) => {
+            let dataObj = {
+                aff_link: prod.aff_link,
+                product_id: prod.product_id.substring(prod.product_id.indexOf('_') + 1),
+                discount_rate: prod.discount_rate,
+                merchant: prod.merchant,
+                discount_amount: prod.discount_amount,
+                image: prod.image,
+                desc: prod.desc,
+                link: prod.link,
+                discount: prod.discount,
+                name: prod.name,
+                price: prod.price,
+            }
+                            
+            return dataObj
+        })
+    }
 }
 
 export default AffiliateAccessTradeService

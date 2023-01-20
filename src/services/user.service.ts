@@ -36,16 +36,7 @@ class UserService {
 
   public async createUser(userData: Prisma.UserCreateInput) {
     if (isEmpty(userData)) throw new HttpException(400, "You're not userData");
-
-    const findUser = await this.clients.prisma.user.findUnique({
-      where: { email: userData.email },
-    });
-    if (findUser)
-      throw new HttpException(
-        400,
-        `You're email ${userData.email} already exists`
-      );
-
+    
     const createUserData = await this.clients.prisma.user.create({ data: userData });
 
     return createUserData;

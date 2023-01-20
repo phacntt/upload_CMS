@@ -1,13 +1,16 @@
 import { User } from "@prisma/client";
 import AuthService from "../services/auth.service";
 import { Request, Response, NextFunction } from "express";
+import { validate } from "class-validator";
+import { HttpException } from "../exception/HttpException";
+import { CreateUserDto } from "../dto/user.dto";
 
 class AuthController {
     public authService = new AuthService();
 
   public signUp = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const userData: User = req.body;
+      const userData: CreateUserDto = req.body;
       const signUpUserData: User = await this.authService.signUp(userData);
 
       res.status(201).json({ data: signUpUserData, message: 'signup' });

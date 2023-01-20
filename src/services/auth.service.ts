@@ -9,7 +9,8 @@ import { SECRET_KEY } from "../config";
 
 export type SignUpData = {
     email: string,
-    password: string
+    password: string,
+    name: string
 };
 
 type LoginData = SignUpData
@@ -26,6 +27,7 @@ class AuthService {
         const users = await this.clients.prisma.user.create({data: {
             email: signUpData.email,
             password: hashPassword,
+            name: signUpData.name
         }});
         return users;
     }

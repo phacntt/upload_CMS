@@ -9,8 +9,9 @@ export const fetchAPI = async(linkAPI: string, param?: string) => {
                 'Authorization': `Token ${API_KEY_ACCESSTRADE}`,
                 'Content-Type': 'application/json'
             }
-        }).then((response) => response.json())
-        return fetchData
+        })
+        const data = await fetchData.json()
+        return data
     } catch (error) {
         console.log(error)
     }

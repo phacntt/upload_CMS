@@ -22,6 +22,8 @@ class ProductController {
     public getProductById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const { id } = req.query
+            if (!id) throw new HttpException(400, "Not found product!! Please check again....")
+
             const ProductById: Product = await this.productService.getProductById(Number(id)) as Product;
 
             res.status(200).json({ data: ProductById, message: `Get product have id = ${ProductById.name} successfully` });

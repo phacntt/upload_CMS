@@ -15,8 +15,8 @@ class BannerRoute implements Routes {
     
     private initializeRoutes() {
         this.router.get(`/`, this.bannerController.getAllBanners);
-        this.router.get(`/:id`, authMiddleware, this.bannerController.getBannerById);
-        this.router.post(`/s3`, this.bannerController.createFileInS3)
+        this.router.get(`/:id`, this.bannerController.getBannerById);
+        this.router.post(`/s3`, authMiddleware, this.bannerController.createFileInS3)
         this.router.post(`/`, authMiddleware, this.bannerController.createBanner);
         this.router.put(`/`, authMiddleware, this.bannerController.updateBanner);
         this.router.delete(`/`, authMiddleware, this.bannerController.deleteBanner);
