@@ -3,7 +3,7 @@ import { IsString, IsNotEmpty, MinLength, MaxLength } from "class-validator";
 export class BasicCredentialDto {
     @IsString()
     @IsNotEmpty()
-    public username: string;
+    public email: string;
   
     @IsString()
     @IsNotEmpty()

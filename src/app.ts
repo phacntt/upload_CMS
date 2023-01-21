@@ -9,6 +9,7 @@ import { Banner } from '@prisma/client';
 import { context } from './types/context.type';
 import cron from 'node-cron'
 import cors from 'cors'
+import errorMiddleware from './middlewares/error.middleware';
 
 class App {
   public app: express.Application;
@@ -23,6 +24,7 @@ class App {
     this.initializeMiddlewares();
     this.initializeRoutes(routes);
     this.initializeCron();
+    this.initializeErrorHandling()
     // this.initializeStaticFile();
   }
 
@@ -48,6 +50,10 @@ class App {
     routes.forEach(route => {
       this.app.use('/api' + route.path, route.router);
     });
+  }
+
+  private initializeErrorHandling() {
+    this.app.use(errorMiddleware);
   }
 
   private initializeCron() {

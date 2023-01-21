@@ -31,7 +31,6 @@ class UserController {
     public createUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const data: Prisma.UserCreateInput = req.body
-            console.log(data)
             if (isEmpty(data)) throw new HttpException(409, "Not found")
             const existsUser = await this.userService.findUserByEmail(data.email)
             if (existsUser) throw new HttpException(401, "You're email not found!! Please check again")
