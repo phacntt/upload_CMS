@@ -19,7 +19,7 @@ class CategoryController {
 
     public getCategoryById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const { id } = req.query
+            const { id } = req.params
             if (!id) throw new HttpException(400, "Not found category!! Please check again....")
 
             const categoryById: Category = await this.categoryService.getCategoryById(Number(id)) as Category;

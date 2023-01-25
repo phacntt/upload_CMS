@@ -18,7 +18,6 @@ class ShopService {
     public async createShops(shopData: Shop[]) {
         const newShops = await this.clients.prisma.shop.createMany({data: shopData})
 
-        console.log(newShops)
 
         return newShops
     }

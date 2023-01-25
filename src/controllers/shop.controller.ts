@@ -20,7 +20,7 @@ class ShopController {
 
     public getShopById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const { id } = req.query
+            const { id } = req.params
             if (!id) throw new HttpException(400, "Not found shop!! Please check again....")
 
             const shopById: Shop = await this.shopService.getShopById(Number(id)) as Shop;

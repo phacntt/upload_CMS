@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import BannerService from "../services/banner.service";
 import { HttpException } from "../exception/HttpException";
 import { uploadFile } from "../utils/uploadS3";
+import { CreateBannerDto } from "../dto/banner.dto";
 
 class BannerController {
     public bannerService = new BannerService();
@@ -21,7 +22,7 @@ class BannerController {
     public getBannerById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             // Get id banner to show
-            const { id } = req.query;
+            const { id } = req.params;
             if (!id) throw new HttpException(400, "Not found banner!! Please check again....")
 
             // Check role
@@ -40,7 +41,7 @@ class BannerController {
     public createBanner = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {            
             // Get data from client
-            const bannerData: Banner = req.body;
+            const bannerData: CreateBannerDto = req.body;
             if (!bannerData) throw new HttpException(400, "You must fill data create banner before send to server")
 
             // Check role
@@ -83,7 +84,7 @@ class BannerController {
             const bannerData: Banner = req.body;
             if (!bannerData) throw new HttpException(400, "You must fill data create banner before send to server")  
 
-            const { id } = req.query
+            const { id } = req.params
             if (!id) throw new HttpException(400, "Not found banner!! Please check again....")
 
             // Check role
@@ -102,7 +103,7 @@ class BannerController {
     public deleteBanner = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             // Get id need delete banner from client
-            const { id } = req.query;
+            const { id } = req.params;
             if (!id) throw new HttpException(400, "Not found banner!! Please check again....")
 
             // Check role

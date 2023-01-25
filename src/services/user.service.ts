@@ -1,7 +1,8 @@
 import { HttpException } from "../exception/HttpException";
 import { isEmpty } from "../utils/isEmpty";
 import { context } from "../types/context.type";
-import { Prisma } from "@prisma/client";
+import { Prisma, User } from "@prisma/client";
+import { CreateUserDto } from "../dto/user.dto";
 
 class UserService {
   public clients = context
@@ -40,6 +41,20 @@ class UserService {
     const createUserData = await this.clients.prisma.user.create({ data: userData });
 
     return createUserData;
+  }
+
+  public async updateUser(id: number, userData: CreateUserDto) {
+    
+    const createUserData = await this.clients.prisma.user.update({ where: {id}, data: userData });
+
+    return createUserData;
+  }
+
+  public async updateUserRole(id: number) {
+    
+    const updateUserRole = await this.clients.prisma.user.update({ where: {id}, data: {role: 'Admin'} });
+
+    return updateUserRole;
   }
 }
 

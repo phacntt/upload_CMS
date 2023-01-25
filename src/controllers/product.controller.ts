@@ -11,7 +11,8 @@ class ProductController {
 
     public getProducts = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const productsData: Product[] = await this.productService.getProducts();
+            const queryParam = req.query
+            const productsData: Product[] = await this.productService.getProducts(queryParam);
 
             res.status(200).json({ data: productsData, message: 'Get all products' });
         } catch (error) {
@@ -21,7 +22,7 @@ class ProductController {
 
     public getProductById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const { id } = req.query
+            const { id } = req.params
             if (!id) throw new HttpException(400, "Not found product!! Please check again....")
 
             const ProductById: Product = await this.productService.getProductById(Number(id)) as Product;
@@ -50,6 +51,18 @@ class ProductController {
             next(error);
         }
     };
+
+    public deleteProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const { id } = req.params;
+            const existsProduct = this.productService.getProductById(Number(id))
+            if (!existsProduct) throw new HttpException(400, "Not found product!!!!!")
+            await this.productService.deleteProduct(Number(id));
+            res.status(200).json({message: "Delete product successfull"})
+        } catch (error) {
+            next(error)
+        }
+    }
 
 }
 

@@ -1,5 +1,6 @@
 import { Banner, Category } from "@prisma/client";
 import { context } from "../types/context.type";
+import { CreateBannerDto } from "../dto/banner.dto";
 
 class BannerService {
     public clients = context
@@ -14,7 +15,7 @@ class BannerService {
         return bannerById;
     }
 
-    public async createBanner(bannerData: Banner) {
+    public async createBanner(bannerData: CreateBannerDto) {
         const newBanner = await this.clients.prisma.banner.create({data: bannerData})
         return newBanner
     }

@@ -44,11 +44,9 @@ class AffiliateAccessTradeService {
             if (queryParam.page) {
                 param = `page=${queryParam.page}&`
             }
-            console.log(queryParam)
 
             let shopCreate: any[] = []
             const listShops = await fetchAPI(this.linkCampaign, param)
-            console.log(listShops)
             const listCategory = await this.client.prisma.category.findMany()
             listShops.data.map((shop: any) => {
                 let dataObj = {
@@ -69,7 +67,6 @@ class AffiliateAccessTradeService {
                     const listCategoryVN = category.nameVN.split(",")
                     listCategoryVN.find((cate: string) => {
                         if (shop.sub_category === cate.trim()) {
-                            console.log(category.id)
                             dataObj.categoryId = category.id
                         }
                     })
@@ -92,7 +89,6 @@ class AffiliateAccessTradeService {
     
     public async getProductFromDataFeed(param: string) {
         const getDataFeed = await fetchAPI(this.linkDataFeed, param) as any
-        console.log(getDataFeed)
         return getDataFeed.data.map((prod: any) => {
             let dataObj = {
                 aff_link: prod.aff_link,
