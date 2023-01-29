@@ -91,14 +91,14 @@ class AffiliateAccessTradeService {
         const getDataFeed = await fetchAPI(this.linkDataFeed, param) as any
         return getDataFeed.data.map((prod: any) => {
             let dataObj = {
-                aff_link: prod.aff_link,
-                product_id: prod.product_id.substring(prod.product_id.indexOf('_') + 1),
-                discount_rate: prod.discount_rate,
+                linkAffilitate: prod.aff_link,
+                // product_id: prod.product_id.substring(prod.product_id.indexOf('_') + 1),
+                discountRate: prod.discount_rate,
                 merchant: prod.merchant,
-                discount_amount: prod.discount_amount,
+                discountAmount: prod.discount_amount,
                 image: prod.image,
-                desc: prod.desc,
-                link: prod.link,
+                description: prod.desc,
+                linkProduct: prod.link,
                 discount: prod.discount,
                 name: prod.name,
                 price: prod.price,
