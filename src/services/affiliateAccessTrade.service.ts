@@ -98,7 +98,7 @@ class AffiliateAccessTradeService {
                 discountAmount: prod.discount_amount,
                 image: prod.image,
                 description: prod.desc,
-                linkProduct: prod.link,
+                linkProduct: prod.url,
                 discount: prod.discount,
                 name: prod.name,
                 price: prod.price,
