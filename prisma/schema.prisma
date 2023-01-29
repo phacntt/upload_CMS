@@ -18,7 +18,24 @@ enum Role {
 enum StatusBanner {
   Active
   Inactive
-  In_Draft
+  InDraft @map("In draft")
+}
+
+enum BannerPage {
+  Home @map("Home")
+  Popup @map("Pop up")
+  Learn @map("Learn to earn")
+  Shop @map("Shop to earn")
+  Play @map("Play to earn")
+  Mission @map("Mission to earn")
+  Read @map("Read to earn")
+  Install @map("Install to earn")
+}
+
+enum BannerType {
+  HomeBanner @map("Home banner")
+  TopPick @map("Top pick banner")
+  MiddleBanner @map("Middle banner")
 }
 
 model User {
@@ -79,8 +96,9 @@ model Banner {
   id  Int @id @default(autoincrement())
   image String
   landingPageUrl String
-  bannerPosition String
-  bannerPage String
+  bannerPosition Int
+  bannerPage BannerPage
+  bannerType BannerType
   airTimeCreate DateTime
   airTimeEnd DateTime
   status StatusBanner @default(Inactive)

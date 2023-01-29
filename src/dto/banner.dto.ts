@@ -1,3 +1,4 @@
+import { BannerPage, BannerType } from "@prisma/client";
 import { IsDate, IsEmail, IsString } from "class-validator";
 
 export class CreateBannerDto {
@@ -8,15 +9,18 @@ export class CreateBannerDto {
     landingPageUrl: string
     
     @IsString()
-    bannerPosition: string
+    bannerPosition: number
 
     @IsString()
-    bannerPage: string
+    bannerPage: BannerPage
 
-    @IsDate()
+    @IsString()
+    bannerType: BannerType
+
+    @IsString()
     airTimeCreate: Date
  
-    @IsDate()
+    @IsString()
     airTimeEnd: Date
 
 }

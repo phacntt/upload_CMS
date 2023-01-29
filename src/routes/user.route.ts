@@ -13,10 +13,10 @@ class UserRoute {
     }
     
     private initializeRoutes() {
-        this.router.get(`/`, this.userController.getUsers);
-        this.router.get(`/:id(\\d+)`, this.userController.getUsersById);
+        this.router.get(`/`, authMiddleware, this.userController.getUsers);
+        this.router.get(`/:id(\\d+)`,authMiddleware, this.userController.getUsersById);
         this.router.put(`/:id`, authMiddleware, this.userController.updateUser)
-        this.router.put(`/role/:id`, authMiddleware, this.userController.updateUserRole)
+        this.router.put(`/role/:id`, this.userController.updateUserRole)
         // this.router.post(``, this.userController.createUser);
     }
 }

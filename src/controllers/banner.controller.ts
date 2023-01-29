@@ -1,17 +1,20 @@
-import { Banner } from "@prisma/client";
+import { Banner, BannerType } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
-import BannerService from "../services/banner.service";
+import BannerService, { BannerDataCreate } from "../services/banner.service";
 import { HttpException } from "../exception/HttpException";
 import { uploadFile } from "../utils/uploadS3";
 import { CreateBannerDto } from "../dto/banner.dto";
+import moment from "moment";
 
 class BannerController {
     public bannerService = new BannerService();
-
+    public GMT_VN = 7;
     // GET
     public getAllBanners = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const banners = await this.bannerService.getAllBanners();
+            const queryParams = req.query;
+            if (!queryParams.bannerPage || !queryParams.bannerType) throw new HttpException(404, "Must have banner page and banner type")
+            const banners = await this.bannerService.getAllBanners(queryParams);
 
             res.status(201).json({ data: banners, message: 'Get all banners successfully' });
         } catch (error) {
@@ -44,12 +47,40 @@ class BannerController {
             const bannerData: CreateBannerDto = req.body;
             if (!bannerData) throw new HttpException(400, "You must fill data create banner before send to server")
 
+            // Check position
+            if (bannerData.bannerType === "HomeBanner" && (Number(bannerData.bannerPosition) < 1 || Number(bannerData.bannerPosition) > 12)) 
+                throw new HttpException(400, "Invalid position at type Home")
+            if (bannerData.bannerType == "MiddleBanner" && (Number(bannerData.bannerPosition) < 1 || Number(bannerData.bannerPosition) > 2))
+                throw new HttpException(400, "Invalid position at type Middle")
+            if (bannerData.bannerType == "TopPick" && (Number(bannerData.bannerPosition) < 1 || Number(bannerData.bannerPosition) > 9))
+                throw new HttpException(400, "Invalid position at type Top pick")
+
+            const currentTime = moment().add(this.GMT_VN, "hours").toDate()
+            const airCreate = new Date(moment(bannerData.airTimeCreate).format("YYYY-MM-DD"));
+            const airEnd = new Date(moment(bannerData.airTimeEnd).format("YYYY-MM-DD"));
+            console.log(airCreate)
+
+            if (currentTime > airCreate || currentTime > airEnd)
+                throw new HttpException(400, "You can't set the display time before the current time or the end time before the current time")
+
             // Check role
             const auth = req.user
             if (auth.role !== 'Admin') throw new HttpException(400, "You're not permission to do it!!!")
+            const checkPositionExistsWithAirCreate = await this.bannerService.checkBannerCamping(bannerData.bannerPage, bannerData.bannerType, bannerData.bannerPosition, airCreate)
+            if (checkPositionExistsWithAirCreate) throw new HttpException(400, "Banner at this location and the display time already exists, please change the position or change the display timeframe!!");
+
+            const dataCreate: BannerDataCreate = {
+                image: bannerData.image,
+                landingPageUrl: bannerData.landingPageUrl,
+                airTimeCreate: airCreate,
+                airTimeEnd: airEnd,
+                bannerPage: bannerData.bannerPage,
+                bannerPosition: bannerData.bannerPosition,
+                bannerType: bannerData.bannerType,
+            }
 
             // Create banner
-            const newBanner = await this.bannerService.createBanner(bannerData);
+            const newBanner = await this.bannerService.createBanner(dataCreate);
 
             res.status(200).json({ data: newBanner, message: 'Create banner was successfully' });
         } catch (error) {
