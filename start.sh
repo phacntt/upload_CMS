@@ -4,7 +4,7 @@
 echo "synchronizing db..."
 npx prisma migrate reset
 # yarn prisma:migrate
-npx prisma migrate dev
+npx prisma migrate deploy
 # start server
 echo "initialize server..."
 node dist/index.js
