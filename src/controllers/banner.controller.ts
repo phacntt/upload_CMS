@@ -96,6 +96,7 @@ class BannerController {
 
             // Get file image
             const fileData = req.files
+            console.log(fileData)
             if (!fileData) throw new HttpException(400, "You must add at least one image!!!")
 
             // Upload to S3 aws
