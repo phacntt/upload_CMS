@@ -1,10 +1,7 @@
 import { User } from "@prisma/client";
 import AuthService from "../services/auth.service";
 import { Request, Response, NextFunction } from "express";
-import { validate } from "class-validator";
-import { HttpException } from "../exception/HttpException";
 import { CreateUserDto } from "../dto/user.dto";
-import UserSerializer from "../serializers/user.seroalizers";
 
 class AuthController {
     public authService = new AuthService();
