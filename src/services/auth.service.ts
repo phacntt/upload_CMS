@@ -40,23 +40,22 @@ class AuthService {
 
         const isPasswordMatching: boolean = await compare(loginData.password, findUser.password);
         if (!isPasswordMatching) throw new HttpException(409, "You're password not matching");
-
         const tokenData = this.createToken(findUser);
         const cookie = this.createCookie(tokenData);
 
-        return { cookie, findUser };
+        return { cookie, tokenData };
     }
 
     public logoutUser(userData: User) {
         if (isEmpty(userData)) throw new HttpException(400, "You're not userData");
     }
 
-    public createToken(user: User): TokenData {
+    public createToken(user: any): TokenData {
         const dataStoredInToken: DataStoredInToken = { id: user.id, name: user.name as string, role: user.role };
         const secretKey: string = SECRET_KEY!;
         const expiresIn: number = 60 * 60;
     
-        return { expiresIn, token: sign(dataStoredInToken, secretKey, { expiresIn }) };
+        return { expiresIn, token: 'Bearer ' + sign(dataStoredInToken, secretKey, { expiresIn }), user: dataStoredInToken };
     }
     
     public createCookie(tokenData: TokenData): string {

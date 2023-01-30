@@ -10,8 +10,8 @@ import { Role } from "@prisma/client"
 const authMiddleware = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
         const client = context
-        // getting a token from authorization header
-        const { id, name, role } = verify(req.headers.cookie)
+        
+        const { id, name, role } = verify(req.headers.authorization)
         // check user exist in DB
         const user = await client.prisma.user.findFirst({where: {id, name, role}})
         if (!user) throw new HttpException(401, "You have not permission...")

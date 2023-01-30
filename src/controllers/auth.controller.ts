@@ -4,6 +4,7 @@ import { Request, Response, NextFunction } from "express";
 import { validate } from "class-validator";
 import { HttpException } from "../exception/HttpException";
 import { CreateUserDto } from "../dto/user.dto";
+import UserSerializer from "../serializers/user.seroalizers";
 
 class AuthController {
     public authService = new AuthService();
@@ -22,10 +23,10 @@ class AuthController {
   public logIn = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const userData = req.body;
-      const { cookie, findUser } = await this.authService.loginUser(userData);
+      const { cookie, tokenData } = await this.authService.loginUser(userData);
 
       res.setHeader('Set-Cookie', [cookie]);
-      res.status(200).json({ data: findUser, message: 'login' });
+      res.status(200).json({ data: tokenData, message: 'login' });
     } catch (error) {
       next(error);
     }
