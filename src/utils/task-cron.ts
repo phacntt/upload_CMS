@@ -12,12 +12,12 @@ export const task = () => {
             banners.map(async(banner: Banner) => {
 
                 if (banner.status === 'Inactive' && dateNow >= banner.airTimeCreate && dateNow < banner.airTimeEnd) {
-                    console.log("update inactive")
+                    // console.log("update inactive")
                     await client.prisma.banner.updateMany({where: {id: banner.id}, data: {status: "Active"}})
                 }
 
                 if (banner.status === 'Active' && (dateNow < banner.airTimeCreate || dateNow > banner.airTimeEnd)) {
-                    console.log("update Active")
+                    // console.log("update Active")
                     await client.prisma.banner.updateMany({where: {id: banner.id}, data: {status: "Inactive"}})
                 }
 

@@ -58,7 +58,6 @@ class BannerController {
             const currentTime = moment().add(this.GMT_VN, "hours").toDate()
             const airCreate = new Date(moment(bannerData.airTimeCreate).format("YYYY-MM-DD"));
             const airEnd = new Date(moment(bannerData.airTimeEnd).format("YYYY-MM-DD"));
-            console.log(airCreate)
 
             if (currentTime > airCreate || currentTime > airEnd)
                 throw new HttpException(400, "You can't set the display time before the current time or the end time before the current time")
@@ -96,7 +95,6 @@ class BannerController {
 
             // Get file image
             const fileData = req.files
-            console.log(fileData)
             if (!fileData) throw new HttpException(400, "You must add at least one image!!!")
 
             // Upload to S3 aws

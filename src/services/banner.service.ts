@@ -1,6 +1,5 @@
-import { Banner, BannerPage, BannerType, Category, Prisma, StatusBanner } from "@prisma/client";
+import { Banner, BannerPage, BannerType, StatusBanner } from "@prisma/client";
 import { context } from "../types/context.type";
-import { CreateBannerDto } from "../dto/banner.dto";
 
 export type FilterBanner = {
     page?: number;

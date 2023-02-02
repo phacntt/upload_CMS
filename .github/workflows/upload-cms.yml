@@ -32,4 +32,5 @@ jobs:
                 -e DATABASE_URL=${{ secrets.DATABASE_URL }} \
                 -e ORIGIN=${{ secrets.ORIGIN }} \
                 -e CREDENTIALS=${{ secrets.CREDENTIALS }} \
+                -e REFRESHTOKENSIZE=${{ secrets.REFRESHTOKENSIZE }}
                 upload_cms:$GITHUB_RUN_NUMBER

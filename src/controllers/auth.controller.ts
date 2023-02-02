@@ -2,6 +2,7 @@ import { User } from "@prisma/client";
 import AuthService from "../services/auth.service";
 import { Request, Response, NextFunction } from "express";
 import { CreateUserDto } from "../dto/user.dto";
+import { HttpException } from "../exception/HttpException";
 
 class AuthController {
     public authService = new AuthService();
@@ -24,6 +25,22 @@ class AuthController {
 
       res.setHeader('Set-Cookie', [cookie]);
       res.status(200).json({ data: tokenData, message: 'login' });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public refreshToken = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const accessToken = req.headers.authorization;
+      if (!accessToken) throw new HttpException(400, "Not found access token!!!!");
+
+      const refreshToken = req.body.refreshToken;
+      if (!refreshToken) throw new HttpException(400, "Not found refresh token!!!");
+
+      const _accessToken = await this.authService.refreshToken(accessToken, refreshToken);
+
+      res.status(200).json({ _accessToken, message: 'create new access token successfull' });
     } catch (error) {
       next(error);
     }

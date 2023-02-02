@@ -5,7 +5,9 @@ import { compare, hash } from 'bcrypt';
 import { isEmpty } from "../utils/isEmpty";
 import { DataStoredInToken, TokenData } from "../interfaces/auth.interface";
 import { sign } from "jsonwebtoken";
-import { SECRET_KEY } from "../config";
+import { REFRESHTOKENSIZE, SECRET_KEY } from "../config";
+import RandToken from 'rand-token'
+import verify from "../utils/jwt";
 
 export type SignUpData = {
     email: string,
@@ -40,26 +42,53 @@ class AuthService {
 
         const isPasswordMatching: boolean = await compare(loginData.password, findUser.password);
         if (!isPasswordMatching) throw new HttpException(409, "You're password not matching");
-        const tokenData = this.createToken(findUser);
+        const tokenData = await this.createToken(findUser);
         const cookie = this.createCookie(tokenData);
 
         return { cookie, tokenData };
+    }
+
+    public async refreshToken(accessToken: string, refreshToken: string) {
+        const decodeToken = verify(accessToken);
+        if (!decodeToken) throw new HttpException(400, "Access token invalid!!!");
+
+        const user = await this.clients.prisma.user.findUnique({where: {id: decodeToken.id}});
+
+        if (!user) throw new HttpException(400, "Not found user");
+
+        if (user.refreshToken != refreshToken) throw new HttpException(400, "Refresh token invalid!!");
+        
+        const dataStoredInToken: DataStoredInToken = decodeToken
+        const secretKey: string = SECRET_KEY!;
+        const expiresIn: number = 60 * 60;
+        
+        const _accessToken = "Bearer " + sign(dataStoredInToken, secretKey);
+
+        if (!_accessToken) throw new HttpException(400, "Create access token failed, please do it again!!");
+
+        return _accessToken;
     }
 
     public logoutUser(userData: User) {
         if (isEmpty(userData)) throw new HttpException(400, "You're not userData");
     }
 
-    public createToken(user: any): TokenData {
+    public async createToken(user: any): Promise<TokenData> {
         const dataStoredInToken: DataStoredInToken = { id: user.id, name: user.name as string, role: user.role };
         const secretKey: string = SECRET_KEY!;
         const expiresIn: number = 60 * 60;
-    
-        return { expiresIn, token: 'Bearer ' + sign(dataStoredInToken, secretKey, { expiresIn }), user: dataStoredInToken };
+        let _refreshToken = RandToken.generate(Number(REFRESHTOKENSIZE))
+        if (!user.refreshToken) {
+            await this.clients.prisma.user.update({where: {id: dataStoredInToken.id}, data: {refreshToken: _refreshToken}})
+        } else {
+            _refreshToken = user.refreshToken
+        }
+
+        return { expiresIn, accessToken: 'Bearer ' + sign(dataStoredInToken, secretKey, { expiresIn }), refreshToken: _refreshToken, user: dataStoredInToken };
     }
     
     public createCookie(tokenData: TokenData): string {
-        return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn};`;
+        return `Authorization=${tokenData.accessToken}; HttpOnly; Max-Age=${tokenData.expiresIn};`;
     }
 }
 

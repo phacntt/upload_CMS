@@ -17,7 +17,6 @@ class UserRoute {
         this.router.get(`/:id(\\d+)`,authMiddleware, this.userController.getUsersById);
         this.router.put(`/:id`, authMiddleware, this.userController.updateUser)
         this.router.put(`/role/:id`, this.userController.updateUserRole)
-        // this.router.post(``, this.userController.createUser);
     }
 }
 
