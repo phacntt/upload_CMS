@@ -60,13 +60,20 @@ class AuthService {
         
         const dataStoredInToken: DataStoredInToken = decodeToken
         const secretKey: string = SECRET_KEY!;
-        const expiresIn: number = 60 * 60;
+        const expiresRefreshIn: string = "30d";
+
+        const _refreshToken = "Bearer " + sign({ hash: RandToken.generate(Number(REFRESHTOKENSIZE)) }, secretKey, {expiresIn: expiresRefreshIn})
+        if (!_refreshToken) throw new HttpException(400, "Create access token failed, please do it again!!");
         
         const _accessToken = "Bearer " + sign(dataStoredInToken, secretKey);
+        const updateRefreshToken = await this.clients.prisma.user.update({where: {id: decodeToken.id}, data: {refreshToken: _refreshToken}});
+
+        if (!updateRefreshToken) throw new HttpException(400, "Create refresh token failed, please do it again!!");
 
         if (!_accessToken) throw new HttpException(400, "Create access token failed, please do it again!!");
 
-        return _accessToken;
+        return {_accessToken, _refreshToken};
+        
     }
 
     public logoutUser(userData: User) {
@@ -74,10 +81,11 @@ class AuthService {
     }
 
     public async createToken(user: any): Promise<TokenData> {
-        const dataStoredInToken: DataStoredInToken = { id: user.id, name: user.name as string, role: user.role };
+        const dataStoredInToken: DataStoredInToken = { id: user.id, name: user.name, role: user.role };
         const secretKey: string = SECRET_KEY!;
         const expiresIn: number = 60 * 60;
-        let _refreshToken = RandToken.generate(Number(REFRESHTOKENSIZE))
+        const expiresRefreshIn: string = '30d';
+        let _refreshToken = sign({hash: RandToken.generate(Number(REFRESHTOKENSIZE))}, secretKey, {expiresIn: expiresRefreshIn})
         if (!user.refreshToken) {
             await this.clients.prisma.user.update({where: {id: dataStoredInToken.id}, data: {refreshToken: _refreshToken}})
         } else {

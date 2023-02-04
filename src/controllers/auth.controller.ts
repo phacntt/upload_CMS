@@ -22,7 +22,7 @@ class AuthController {
     try {
       const userData = req.body;
       const { cookie, tokenData } = await this.authService.loginUser(userData);
-
+      console.log(tokenData)
       res.setHeader('Set-Cookie', [cookie]);
       res.status(200).json({ data: tokenData, message: 'login' });
     } catch (error) {
@@ -38,9 +38,9 @@ class AuthController {
       const refreshToken = req.body.refreshToken;
       if (!refreshToken) throw new HttpException(400, "Not found refresh token!!!");
 
-      const _accessToken = await this.authService.refreshToken(accessToken, refreshToken);
+      const { _accessToken, _refreshToken } = await this.authService.refreshToken(accessToken, refreshToken);
 
-      res.status(200).json({ _accessToken, message: 'create new access token successfull' });
+      res.status(200).json({ data: { _accessToken, _refreshToken }, message: 'create new access token successfull' });
     } catch (error) {
       next(error);
     }

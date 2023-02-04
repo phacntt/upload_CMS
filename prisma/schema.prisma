@@ -10,11 +10,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// User
 enum Role {
   Admin
   Guest
 }
 
+// Banner
 enum StatusBanner {
   Active
   Inactive
@@ -38,6 +40,270 @@ enum BannerType {
   MiddleBanner @map("Middle banner")
 }
 
+// Content
+enum CommissionModelType {
+  CPS
+  CPL
+  CPI
+}
+
+enum CommissionType {
+  Cash
+  Percent
+}
+
+enum Location {
+  af
+  ax
+  al
+  dz
+  as
+  ad
+  ao
+  ai
+  aq
+  ag
+  ar
+  am
+  aw
+  au
+  at
+  az
+  bs
+  bh
+  bd
+  bb
+  by
+  be
+  bq
+  bz
+  bj
+  bm
+  bt
+  bo
+  ba
+  bw
+  bv
+  br
+  io
+  bn
+  bg
+  bf
+  bi
+  kh
+  cm
+  ca
+  cv
+  ky
+  cf
+  td
+  cl
+  cn
+  cx
+  cc
+  co
+  km
+  cg
+  cd
+  ck
+  cr
+  ci
+  hr
+  cu
+  cw
+  cy
+  cz
+  dk
+  dj
+  dm
+  do
+  ec
+  eg
+  sv
+  gq
+  er
+  ee
+  et
+  fk
+  fo
+  fj
+  fi
+  fr
+  gf
+  pf
+  tf
+  ga
+  gm
+  ge
+  de
+  gh
+  gi
+  gr
+  gl
+  gd
+  gp
+  gu
+  gt
+  gg
+  gn
+  gw
+  gy
+  ht
+  hm
+  va
+  hn
+  hk
+  hu
+  is
+  in
+  id
+  ir
+  iq
+  ie
+  im
+  il
+  it
+  jm
+  jp
+  je
+  jo
+  kz
+  ke
+  ki
+  kp
+  kr
+  kw
+  kg
+  la
+  lv
+  lb
+  ls
+  lr
+  ly
+  li
+  lt
+  lu
+  mo
+  mk
+  mg
+  mw
+  my
+  mv
+  ml
+  mt
+  mh
+  mq
+  mr
+  mu
+  yt
+  mx
+  fm
+  md
+  mc
+  mn
+  ms
+  ma
+  mz
+  mm
+  na
+  nr
+  np
+  nl
+  nc
+  nz
+  ni
+  ne
+  ng
+  nu
+  nf
+  mp
+  no
+  om
+  pk
+  pw
+  ps
+  pa
+  pg
+  py
+  pe
+  ph
+  pn
+  pl
+  pt
+  pr
+  qa
+  re
+  ro
+  ru
+  rw
+  sh
+  kn
+  lc
+  pm
+  vc
+  ws
+  sm
+  st
+  sa
+  sn
+  sc
+  sl
+  sg
+  sk
+  si
+  sb
+  so
+  ss
+  sx
+  za
+  gs
+  es
+  lk
+  sd
+  sr
+  sj
+  sz
+  se
+  ch
+  sy
+  tw
+  tj
+  tz
+  th
+  tl
+  tg
+  tk
+  to
+  tt
+  tn
+  tr
+  tm
+  tc
+  tv
+  ug
+  ua
+  ae
+  gb
+  us
+  um
+  uy
+  uz
+  vu
+  ve
+  vn
+  vg
+  vi
+  wf
+  eh
+  ye
+  zm
+  zw
+  rs
+  me
+  xk
+}
+
+// Model
 model User {
   id    Int     @id @default(autoincrement())
   email String  @unique 
@@ -109,15 +375,15 @@ model Banner {
 
 model Content {
   id Int @id @default(autoincrement())
-  categorylv1 String
+  categorylv1 BannerPage
   categorylv2 String
-  commissionModel String
-  commissionType String
+  commissionModel CommissionModelType
+  commissionType CommissionType
   commissionValue String
   image String
   title String
   description String
-  location String
+  location Location
   url String
   createAt DateTime @default(now())
   updateAt  DateTime @updatedAt

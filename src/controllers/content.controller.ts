@@ -9,7 +9,8 @@ class ContentController {
 
     public getContents = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const contentsData: Content[] = await this.contentService.getContents();
+            const queryParams = req.query; 
+            const contentsData: Content[] = await this.contentService.getContents(queryParams);
 
             res.status(200).json({ data: contentsData, message: 'Get all contents' });
         } catch (error) {

@@ -5,7 +5,7 @@ import { CreateContentDto } from "../dto/content.dto";
 export type FilterContent = {
     page?: number;
     limit?: number;
-    categorylv1?: string
+    pageContent?: string
 }
 
 class ContentService {
@@ -14,7 +14,7 @@ class ContentService {
     public DEFAULT_LIMIT = 10;
 
     public async getContents(filter?: FilterContent) {
-        const condition: FilterContent = {};
+        const condition: any = {};
         let page = this.DEFAULT_PAGE;
         let limit = this.DEFAULT_LIMIT;
 
@@ -26,11 +26,12 @@ class ContentService {
             condition.limit = filter.limit
         }
         
-        if (filter?.categorylv1) {
-            condition.categorylv1 = filter.categorylv1
+        if (filter?.pageContent) {
+            condition.categorylv1 = filter.pageContent
         }
+        console.log(condition)
 
-        const contents = await this.clients.prisma.content.findMany({take: limit, skip: page, where: condition})
+        const contents = await this.clients.prisma.content.findMany({take: limit, skip: page, where: condition as any})
         return contents;
     }
 
