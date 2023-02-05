@@ -49,31 +49,38 @@ class AuthService {
     }
 
     public async refreshToken(accessToken: string, refreshToken: string) {
-        const decodeToken = <TToken>verify(accessToken, `${process.env.SECRET_KEY}`, {ignoreExpiration: true});
-        console.log(decodeToken)
-        if (!decodeToken) throw new HttpException(400, "Access token invalid!!!");
+        const verifyRefreshToken = verify(refreshToken, SECRET_KEY!, function(err) {
+            if (err) {}
+        })
+        const decodeToken = verify(accessToken, `${process.env.SECRET_KEY}`, {ignoreExpiration: true}) as any;
+        delete decodeToken.exp
+        delete decodeToken.iat
 
+        if (!decodeToken) throw new HttpException(400, "Access token invalid!!!");
         const user = await this.clients.prisma.user.findUnique({where: {id: decodeToken.id}});
 
         if (!user) throw new HttpException(400, "Not found user");
 
-        if (user.refreshToken != refreshToken) throw new HttpException(400, "Refresh token invalid!!");
+        if (user.refreshToken?.split("Bearer ")[1] != refreshToken) throw new HttpException(400, "Refresh token invalid!!");
         
+
         const dataStoredInToken: DataStoredInToken = decodeToken
         const secretKey: string = SECRET_KEY!;
-        const expiresRefreshIn: string = "30d";
+        const expiresIn: number = 60 * 60;
+        // const expiresRefreshIn: string = "30d";
 
-        const _refreshToken = "Bearer " + sign({ hash: RandToken.generate(Number(REFRESHTOKENSIZE)) }, secretKey, {expiresIn: expiresRefreshIn})
-        if (!_refreshToken) throw new HttpException(400, "Create access token failed, please do it again!!");
+        // const _refreshToken = "Bearer " + sign({ hash: RandToken.generate(Number(REFRESHTOKENSIZE)) }, secretKey, {expiresIn: expiresRefreshIn})
+        // if (!_refreshToken) throw new HttpException(400, "Create access token failed, please do it again!!");
         
-        const _accessToken = "Bearer " + sign(dataStoredInToken, secretKey);
-        const updateRefreshToken = await this.clients.prisma.user.update({where: {id: decodeToken.id}, data: {refreshToken: _refreshToken}});
+        const _accessToken = "Bearer " + sign(dataStoredInToken, secretKey, { expiresIn });
+        // const updateRefreshToken = await this.clients.prisma.user.update({where: {id: decodeToken.id}, data: {refreshToken: _refreshToken}});
 
-        if (!updateRefreshToken) throw new HttpException(400, "Create refresh token failed, please do it again!!");
+        // if (!updateRefreshToken) throw new HttpException(400, "Create refresh token failed, please do it again!!");
 
         if (!_accessToken) throw new HttpException(400, "Create access token failed, please do it again!!");
 
-        return {_accessToken, _refreshToken};
+        // return {_accessToken, _refreshToken};
+        return _accessToken;
         
     }
 
@@ -85,19 +92,19 @@ class AuthService {
         const dataStoredInToken: DataStoredInToken = { id: user.id, name: user.name, role: user.role };
         const secretKey: string = SECRET_KEY!;
         const expiresIn: number = 60 * 60;
-        const expiresRefreshIn: string = '30d';
-        let _refreshToken = sign({hash: RandToken.generate(Number(REFRESHTOKENSIZE))}, secretKey, {expiresIn: expiresRefreshIn})
+        const expiresRefreshIn: number = 60 * 60 * 24 * 30;
+        let _refreshToken = 'Bearer ' + sign({hash: RandToken.generate(Number(REFRESHTOKENSIZE))}, secretKey, {expiresIn: expiresRefreshIn})
         if (!user.refreshToken) {
             await this.clients.prisma.user.update({where: {id: dataStoredInToken.id}, data: {refreshToken: _refreshToken}})
         } else {
             _refreshToken = user.refreshToken
         }
 
-        return { expiresIn, accessToken: 'Bearer ' + sign(dataStoredInToken, secretKey, { expiresIn }), refreshToken: _refreshToken, user: dataStoredInToken };
+        return {expiresIn, accessToken: 'Bearer ' + sign(dataStoredInToken, secretKey, { expiresIn }), refreshToken: _refreshToken, user: dataStoredInToken };
     }
     
     public createCookie(tokenData: TokenData): string {
-        return `Authorization=${tokenData.accessToken}; HttpOnly; Max-Age=${tokenData.expiresIn};`;
+        return `Authorization=${tokenData.accessToken}; HttpOnly};`;
     }
 }
 

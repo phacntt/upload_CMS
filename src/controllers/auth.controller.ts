@@ -3,9 +3,13 @@ import AuthService from "../services/auth.service";
 import { Request, Response, NextFunction } from "express";
 import { CreateUserDto } from "../dto/user.dto";
 import { HttpException } from "../exception/HttpException";
+import UserService from "../services/user.service";
+import { context } from "../types/context.type";
+import { verify } from "jsonwebtoken";
 
 class AuthController {
     public authService = new AuthService();
+    public clients = context;
 
   public signUp = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
@@ -22,7 +26,6 @@ class AuthController {
     try {
       const userData = req.body;
       const { cookie, tokenData } = await this.authService.loginUser(userData);
-      console.log(tokenData)
       res.setHeader('Set-Cookie', [cookie]);
       res.status(200).json({ data: tokenData, message: 'login' });
     } catch (error) {
@@ -38,11 +41,17 @@ class AuthController {
       const refreshToken = req.body.refreshToken;
       if (!refreshToken) throw new HttpException(400, "Not found refresh token!!!");
 
-      const { _accessToken, _refreshToken } = await this.authService.refreshToken(accessToken.split("Bearer ")[1], refreshToken);
+      // const { _accessToken, _refreshToken } = await this.authService.refreshToken(accessToken.split("Bearer ")[1], refreshToken);
+      const _accessToken = await this.authService.refreshToken(accessToken.split("Bearer ")[1], refreshToken.split("Bearer ")[1]);
 
-      res.status(200).json({ data: { _accessToken, _refreshToken }, message: 'create new access token successfull' });
-    } catch (error) {
-      next(error);
+
+      res.status(200).json({ data: _accessToken , message: 'create new access token successfull' });
+    } catch (error: any) {
+      error.detail = "Refresh Token Expried"
+      const accessToken = req.headers.authorization;
+      const decodeToken = verify(accessToken!.split("Bearer ")[1], `${process.env.SECRET_KEY}`, {ignoreExpiration: true}) as any;
+      await this.clients.prisma.user.update({where: {id: decodeToken.id}, data: {refreshToken: ""}})
+      next(new HttpException(401, error));
     }
   };
 
