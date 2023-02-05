@@ -4,10 +4,10 @@ import { context } from "../types/context.type";
 import { compare, hash } from 'bcrypt';
 import { isEmpty } from "../utils/isEmpty";
 import { DataStoredInToken, TokenData } from "../interfaces/auth.interface";
-import { sign } from "jsonwebtoken";
+import { sign, verify } from "jsonwebtoken";
 import { REFRESHTOKENSIZE, SECRET_KEY } from "../config";
 import RandToken from 'rand-token'
-import verify from "../utils/jwt";
+import { TToken } from "../utils/jwt";
 
 export type SignUpData = {
     email: string,
@@ -49,7 +49,8 @@ class AuthService {
     }
 
     public async refreshToken(accessToken: string, refreshToken: string) {
-        const decodeToken = verify(accessToken);
+        const decodeToken = <TToken>verify(accessToken, `${process.env.SECRET_KEY}`, {ignoreExpiration: true});
+        console.log(decodeToken)
         if (!decodeToken) throw new HttpException(400, "Access token invalid!!!");
 
         const user = await this.clients.prisma.user.findUnique({where: {id: decodeToken.id}});

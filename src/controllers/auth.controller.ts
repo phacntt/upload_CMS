@@ -38,7 +38,7 @@ class AuthController {
       const refreshToken = req.body.refreshToken;
       if (!refreshToken) throw new HttpException(400, "Not found refresh token!!!");
 
-      const { _accessToken, _refreshToken } = await this.authService.refreshToken(accessToken, refreshToken);
+      const { _accessToken, _refreshToken } = await this.authService.refreshToken(accessToken.split("Bearer ")[1], refreshToken);
 
       res.status(200).json({ data: { _accessToken, _refreshToken }, message: 'create new access token successfull' });
     } catch (error) {

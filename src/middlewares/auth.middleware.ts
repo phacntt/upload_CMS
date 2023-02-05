@@ -17,7 +17,7 @@ const authMiddleware = async (req: RequestWithUser, res: Response, next: NextFun
         req.user = user
         next()
     } catch (error: any) {
-       next(new HttpException(401, 'Something went wrong!: ' + error  ))
+       next(new HttpException(401, error))
     }
 }
 

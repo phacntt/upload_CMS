@@ -2,7 +2,7 @@ import { Role } from "@prisma/client"
 import { HttpException } from "../exception/HttpException"
 import jwt from 'jsonwebtoken'
 
-type TToken = {
+export type TToken = {
     id: number
     name: string
     role: Role
@@ -15,10 +15,13 @@ const verify = (jwtToken: string | undefined) => {
     let accessToken = jwtToken.split("Bearer ")[1] || jwtToken.split("=")[1]
     if (!accessToken) accessToken = jwtToken
     if (!accessToken) new HttpException(401,"You need to perform Token!...")
-
-    const decoded = <TToken>jwt.verify(accessToken, `${process.env.SECRET_KEY}`, {ignoreExpiration: true})
+    
+    const decoded = <TToken>jwt.verify(accessToken, `${process.env.SECRET_KEY}`)
+    console.log(decoded)
     if (!decoded) new HttpException(401,"JWT is invalid!...")
+
     return decoded
+
     
 }
 
