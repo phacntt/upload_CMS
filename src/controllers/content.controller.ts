@@ -49,16 +49,17 @@ class ContentController {
     // PUT
     public updateContent = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
+            // Check role
+            const auth = req.user
+            if (auth.role !== 'Admin') throw new HttpException(400, "You're not permission to do it!!!")
+
             // Get data from client
             const contentData: Content = req.body;
             if (!contentData) throw new HttpException(400, "You must fill data create content before send to server")  
 
             const { id } = req.params
-            if (!id) throw new HttpException(400, "Not found content!! Please check again....")
-
-            // Check role
-            const auth = req.user
-            if (auth.role !== 'Admin') throw new HttpException(400, "You're not permission to do it!!!")
+            const existsContent = await this.contentService.getContentById(Number(id))
+            if (!existsContent) throw new HttpException(400, "Not found content!! Please check again....")
 
             const contentUpdate = await this.contentService.updateContent(contentData, Number(id));
 
@@ -71,15 +72,16 @@ class ContentController {
     // DELETE
     public deleteContent = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            // Get id need delete content from client
-            const { id } = req.params;
-            if (!id) throw new HttpException(400, "Not found content!! Please check again....")
-
             // Check role
             const auth = req.user
             if (auth.role !== 'Admin') throw new HttpException(400, "You're not permission to do it!!!")
             
-            await this.contentService.deleteContent(Number(id));
+            // Get id need delete content from client
+            const { id } = req.params;
+            const existsContent = await this.contentService.getContentById(Number(id))
+            if (!existsContent) throw new HttpException(400, "Not found content!! Please check again....")
+
+            await this.contentService.deleteContent(Number(id), existsContent.image);
 
             res.status(200).json({ message: 'Delete content was successfully' });
         } catch (error) {

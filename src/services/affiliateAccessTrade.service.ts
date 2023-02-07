@@ -9,7 +9,8 @@ class AffiliateAccessTradeService {
     public linkCampaign = 'https://api.accesstrade.vn/v1/campaigns?approval=successful';
     public linkCommissionCampaign = 'https://api.accesstrade.vn/v1/commission_policies';
     public linkProductDetail = 'https://api.accesstrade.vn/v1/product_detail';
-    public linkCoupon = 'https://api.accesstrade.vn/v1/offers_informations/coupon?limit=100'
+    public linkTransaction = 'https://api.accesstrade.vn/v1/transactions';
+    public linkCoupon = 'https://api.accesstrade.vn/v1/offers_informations/coupon?limit=100';
     public client = context;
 
     // AccessTrade
@@ -87,6 +88,26 @@ class AffiliateAccessTradeService {
 
     }
     
+    public async listTransaction(queryParam: any) {
+        try {
+            const listTransactionData = await fetchAPI(this.linkTransaction, queryParam)
+            
+            const dataSave = {
+                transactionId: listTransactionData.transaction_id,
+                orderStatus: listTransactionData.status,
+                earningStatus: listTransactionData.is_confirmed,
+                cancelReason: listTransactionData.reason_rejected,
+                productName: listTransactionData.product_name,
+                price: listTransactionData.product_price,
+                orderValue: listTransactionData.transaction_value,
+                commission: listTransactionData.commission
+            }
+
+        } catch (error) {
+            
+        }
+    }
+
     public async getProductFromDataFeed(param: string) {
         const getDataFeed = await fetchAPI(this.linkDataFeed, param) as any
         return getDataFeed.data.map((prod: any) => {
@@ -107,6 +128,8 @@ class AffiliateAccessTradeService {
             return dataObj
         })
     }
+
+
 }
 
 export default AffiliateAccessTradeService

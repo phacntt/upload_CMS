@@ -2,10 +2,12 @@ import cron from 'node-cron'
 import { context } from '../types/context.type'
 import { Banner } from '@prisma/client'
 import moment from 'moment'
+import { deleteArrObjects, listObjects } from './S3'
+import { getDifference } from './helper'
 
 export const task = () => {
     const client = context
-    const taskUpdate = cron.schedule('0 0 * * *', async() => {
+    const taskUpdateStatusBanner = cron.schedule('0 0 * * *', async() => {
         const dateNow = moment().add(7, "hours").toDate()
         const banners = await client.prisma.banner.findMany()
         if (banners.length) {
@@ -26,5 +28,32 @@ export const task = () => {
         }
 
     })
-    return taskUpdate.start();
+
+    const clearImageTrashS3 = cron.schedule('0 0 * * *', async() => {
+        // Get all object need delete
+        const listObjectsS3 = await listObjects()
+
+        // Get keyObject ~ image in table Banner and Content
+        const listImageBanner = await client.prisma.banner.findMany({select: {image: true}})
+        const listImageContent = await client.prisma.banner.findMany({select: {image: true}})
+
+        // Get array Key to compare
+        const listObjectsKey = listObjectsS3.Contents?.map((content: any) => content.Key)
+        const listkeyCompare = Object.values([...listImageBanner, ...listImageContent].map(value => value.image))
+
+        // Compare 2 array key to get key need delete in S3
+        const difference = [
+            ...getDifference(listObjectsKey!, listkeyCompare),
+            ...getDifference(listkeyCompare, listObjectsKey!)
+        ].map(key => {
+            return {Key: key}
+        })
+
+        // Remove key in Object
+        await deleteArrObjects(difference)
+
+    })
+    // clearImageTrashS3.start();
+
+    taskUpdateStatusBanner.start();
 }

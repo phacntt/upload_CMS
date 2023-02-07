@@ -2,7 +2,7 @@ import { Banner, BannerType } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import BannerService, { BannerDataCreate } from "../services/banner.service";
 import { HttpException } from "../exception/HttpException";
-import { uploadFile } from "../utils/uploadS3";
+import { uploadFile } from "../utils/S3";
 import { CreateBannerDto } from "../dto/banner.dto";
 import moment from "moment";
 
@@ -132,15 +132,19 @@ class BannerController {
     // DELETE
     public deleteBanner = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            // Get id need delete banner from client
-            const { id } = req.params;
-            if (!id) throw new HttpException(400, "Not found banner!! Please check again....")
-
             // Check role
             const auth = req.user
             if (auth.role !== 'Admin') throw new HttpException(400, "You're not permission to do it!!!")
-            
-            await this.bannerService.deleteBanner(Number(id));
+
+            // Get id need delete banner from client
+            const { id } = req.params;
+            const existsBanner = await this.bannerService.getBannerById(Number(id))
+            if (!existsBanner) throw new HttpException(400, "Not found banner!! Please check again....")
+
+            // Get key image
+            const keyImage = existsBanner.image?.substring(existsBanner.image.lastIndexOf('/') + 1)
+
+            await this.bannerService.deleteBanner(Number(id), keyImage);
 
             res.status(200).json({ message: 'Delete banner was successfully' });
         } catch (error) {

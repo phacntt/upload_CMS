@@ -1,5 +1,6 @@
 import { Banner, BannerPage, BannerType, StatusBanner } from "@prisma/client";
 import { context } from "../types/context.type";
+import { deleteObject } from "../utils/S3";
 
 export type FilterBanner = {
     page?: number;
@@ -73,8 +74,11 @@ class BannerService {
         return newBanner
     }
 
-    public async deleteBanner(id: number) {
-        const bannerDelete = await this.clients.prisma.banner.delete({ where: { id }})
+    public async deleteBanner(id: number, keyImage: string) {
+        const bannerDelete = await this.clients.prisma.$transaction(async(tx) => {
+            await deleteObject(keyImage!)
+            await this.clients.prisma.banner.delete({where: {id}})
+        })
         return bannerDelete
     }
     

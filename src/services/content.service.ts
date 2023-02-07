@@ -1,6 +1,7 @@
 import { Content } from "@prisma/client";
 import { context } from "../types/context.type";
 import { CreateContentDto } from "../dto/content.dto";
+import { deleteObject } from "../utils/S3";
 
 export type FilterContent = {
     page?: number;
@@ -29,9 +30,9 @@ class ContentService {
         if (filter?.pageContent) {
             condition.categorylv1 = filter.pageContent
         }
-        console.log(condition)
 
         const contents = await this.clients.prisma.content.findMany({take: limit, skip: page, where: condition as any})
+
         return contents;
     }
 
@@ -55,8 +56,11 @@ class ContentService {
         return newContent
     }
 
-    public async deleteContent(id: number) {
-        const ContentDelete = await this.clients.prisma.content.delete({ where: { id }})
+    public async deleteContent(id: number, keyImage: string) {
+        const ContentDelete = await this.clients.prisma.$transaction(async() => {
+            await deleteObject(keyImage!)
+            await this.clients.prisma.content.delete({where: {id}})
+        })
         return ContentDelete
     }
     

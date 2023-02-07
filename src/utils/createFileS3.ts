@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { HttpException } from "../exception/HttpException";
-import { uploadFile } from "./uploadS3";
+import { uploadFile } from "./S3";
 
 export const createFileInS3 = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {            

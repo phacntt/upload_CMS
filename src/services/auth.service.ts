@@ -1,4 +1,4 @@
-import { Prisma, User } from "@prisma/client";
+import { User } from "@prisma/client";
 import { HttpException } from "../exception/HttpException";
 import { context } from "../types/context.type";
 import { compare, hash } from 'bcrypt';
@@ -7,7 +7,6 @@ import { DataStoredInToken, TokenData } from "../interfaces/auth.interface";
 import { sign, verify } from "jsonwebtoken";
 import { REFRESHTOKENSIZE, SECRET_KEY } from "../config";
 import RandToken from 'rand-token'
-import { TToken } from "../utils/jwt";
 
 export type SignUpData = {
     email: string,
@@ -49,9 +48,7 @@ class AuthService {
     }
 
     public async refreshToken(accessToken: string, refreshToken: string) {
-        const verifyRefreshToken = verify(refreshToken, SECRET_KEY!, function(err) {
-            if (err) {}
-        })
+        verify(refreshToken, SECRET_KEY!)
         const decodeToken = verify(accessToken, `${process.env.SECRET_KEY}`, {ignoreExpiration: true}) as any;
         delete decodeToken.exp
         delete decodeToken.iat

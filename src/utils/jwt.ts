@@ -17,7 +17,6 @@ const verify = (jwtToken: string | undefined) => {
     if (!accessToken) new HttpException(401,"You need to perform Token!...")
     
     const decoded = <TToken>jwt.verify(accessToken, `${process.env.SECRET_KEY}`)
-    console.log(decoded)
     if (!decoded) new HttpException(401,"JWT is invalid!...")
 
     return decoded

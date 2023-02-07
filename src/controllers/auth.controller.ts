@@ -47,11 +47,10 @@ class AuthController {
 
       res.status(200).json({ data: _accessToken , message: 'create new access token successfull' });
     } catch (error: any) {
-      error.detail = "Refresh Token Expried"
       const accessToken = req.headers.authorization;
       const decodeToken = verify(accessToken!.split("Bearer ")[1], `${process.env.SECRET_KEY}`, {ignoreExpiration: true}) as any;
       await this.clients.prisma.user.update({where: {id: decodeToken.id}, data: {refreshToken: ""}})
-      next(new HttpException(401, error));
+      next(error);
     }
   };
 
