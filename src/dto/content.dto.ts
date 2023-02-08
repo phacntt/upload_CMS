@@ -1,12 +1,12 @@
-import { BannerPage, BannerType, CommissionModelType, CommissionType, Location } from "@prisma/client";
-import { IsDate, IsEmail, IsString } from "class-validator";
+import { Category, CommissionModelType, CommissionType, Location, Page } from "@prisma/client";
+import { IsNumber, IsString } from "class-validator";
 
 export class CreateContentDto {
-    @IsString()
-    categorylv1: BannerPage
+    @IsNumber()
+    pageId: number
 
-    @IsString()
-    categorylv2: string
+    @IsNumber()
+    categoryId: number
 
     @IsString()
     commissionModel: CommissionModelType

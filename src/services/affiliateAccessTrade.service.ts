@@ -3,6 +3,21 @@ import { HttpException } from "../exception/HttpException";
 import { Category, Product } from "@prisma/client";
 import { context } from "../types/context.type";
 
+type DataCreateShop = {
+    name: string,
+    logo: string,
+    url: string,
+    max_com: string,
+    introduction: string,
+    action_point: string,
+    commission_policy: string,
+    cookie_policy: string,
+    rejected_reason: string,
+    traffic_building_policy: string, 
+    other_notice: string,
+    categoryId: number
+}
+
 class AffiliateAccessTradeService {
     //Link AccessTrade
     public linkDataFeed = 'https://api.accesstrade.vn/v1/datafeeds';
@@ -39,48 +54,40 @@ class AffiliateAccessTradeService {
             if (queryParam.merchant) {
                 param = `merchant=${queryParam.merchant}&`
             }
-            if (queryParam.approval) {
-                param = `approval=${queryParam.approval}&`
-            }
+
             if (queryParam.page) {
                 param = `page=${queryParam.page}&`
             }
-
             let shopCreate: any[] = []
             const listShops = await fetchAPI(this.linkCampaign, param)
-            const listCategory = await this.client.prisma.category.findMany()
-            listShops.data.map((shop: any) => {
-                let dataObj = {
-                    name: shop.name,
-                    logo: shop.logo,
-                    url: shop.url,
-                    max_com: shop.max_com,
-                    introduction: shop.description.introduction,
-                    action_point: shop.description.action_point,
-                    commission_policy: shop.description.commission_policy,
-                    cookie_policy: shop.description.cookie_policy,
-                    rejected_reason: shop.description.rejected_reason,
-                    traffic_building_policy: shop.description.traffic_building_policy,
-                    other_notice: shop.description.other_notice,
-                    categoryId: -1
-                }
-                listCategory.map((category: Category) => {
-                    const listCategoryVN = category.nameVN.split(",")
-                    listCategoryVN.find((cate: string) => {
-                        if (shop.sub_category === cate.trim()) {
-                            dataObj.categoryId = category.id
-                        }
-                    })
-                    return dataObj
-                })
+            const shops = listShops.data
+            const listCategory = await this.client.prisma.category.findMany({where: {pageId: 3}})
+            for (let i = 0; i < listCategory.length; i++) {
+                for (let j = 0; j < shops.length; j++) {
+                    let dataObj = {
+                        name: shops[j].name,
+                        logo: shops[j].logo,
+                        url: shops[j].url,
+                        max_com: shops[j].max_com,
+                        introduction: shops[j].description.introduction,
+                        action_point: shops[j].description.action_point,
+                        commission_policy: shops[j].description.commission_policy,
+                        cookie_policy: shops[j].description.cookie_policy,
+                        rejected_reason: shops[j].description.rejected_reason,
+                        traffic_building_policy: shops[j].description.traffic_building_policy,
+                        other_notice: shops[j].description.other_notice,
+                        categoryId: -1
+                    }
+                    if (shops[j].sub_category.indexOf(listCategory[i].nameVN) != -1 || listCategory[i].nameVN.indexOf(shops[j].sub_category) != -1) {
+                        dataObj.categoryId = listCategory[i].id
+                    }
 
-                if (dataObj.categoryId != -1) {
-                    shopCreate.push(dataObj)
+                    if (dataObj.categoryId != -1) {
+                        shopCreate.push(dataObj)
+                    }
+
                 }
-                
-            })
-            
-            
+            }
             return shopCreate
         } catch (error) {
             throw new HttpException(404, error as any)

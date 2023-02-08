@@ -42,7 +42,7 @@ class AuthService {
         const isPasswordMatching: boolean = await compare(loginData.password, findUser.password);
         if (!isPasswordMatching) throw new HttpException(409, "You're password not matching");
         const tokenData = await this.createToken(findUser);
-        const cookie = this.createCookie(tokenData);
+        const cookie = this.createCookie();
 
         return { cookie, tokenData };
     }
@@ -56,27 +56,16 @@ class AuthService {
         if (!decodeToken) throw new HttpException(400, "Access token invalid!!!");
         const user = await this.clients.prisma.user.findUnique({where: {id: decodeToken.id}});
 
-        if (!user) throw new HttpException(400, "Not found user");
-
-        if (user.refreshToken?.split("Bearer ")[1] != refreshToken) throw new HttpException(400, "Refresh token invalid!!");
-        
+        if (!user) throw new HttpException(400, "Not found user");        
 
         const dataStoredInToken: DataStoredInToken = decodeToken
         const secretKey: string = SECRET_KEY!;
-        const expiresIn: number = 60 * 60;
-        // const expiresRefreshIn: string = "30d";
+        const expiresIn: number = 30;
 
-        // const _refreshToken = "Bearer " + sign({ hash: RandToken.generate(Number(REFRESHTOKENSIZE)) }, secretKey, {expiresIn: expiresRefreshIn})
-        // if (!_refreshToken) throw new HttpException(400, "Create access token failed, please do it again!!");
-        
         const _accessToken = "Bearer " + sign(dataStoredInToken, secretKey, { expiresIn });
-        // const updateRefreshToken = await this.clients.prisma.user.update({where: {id: decodeToken.id}, data: {refreshToken: _refreshToken}});
-
-        // if (!updateRefreshToken) throw new HttpException(400, "Create refresh token failed, please do it again!!");
 
         if (!_accessToken) throw new HttpException(400, "Create access token failed, please do it again!!");
 
-        // return {_accessToken, _refreshToken};
         return _accessToken;
         
     }
@@ -89,19 +78,14 @@ class AuthService {
         const dataStoredInToken: DataStoredInToken = { id: user.id, name: user.name, role: user.role };
         const secretKey: string = SECRET_KEY!;
         const expiresIn: number = 60 * 60;
-        const expiresRefreshIn: number = 60 * 60 * 24 * 30;
-        let _refreshToken = 'Bearer ' + sign({hash: RandToken.generate(Number(REFRESHTOKENSIZE))}, secretKey, {expiresIn: expiresRefreshIn})
-        if (!user.refreshToken) {
-            await this.clients.prisma.user.update({where: {id: dataStoredInToken.id}, data: {refreshToken: _refreshToken}})
-        } else {
-            _refreshToken = user.refreshToken
-        }
-
-        return {expiresIn, accessToken: 'Bearer ' + sign(dataStoredInToken, secretKey, { expiresIn }), refreshToken: _refreshToken, user: dataStoredInToken };
+        return {expiresIn, accessToken: 'Bearer ' + sign(dataStoredInToken, secretKey, { expiresIn }), user: dataStoredInToken };
     }
     
-    public createCookie(tokenData: TokenData): string {
-        return `Authorization=${tokenData.accessToken}; HttpOnly};`;
+    public createCookie(): string {
+        const secretKey: string = SECRET_KEY!;
+        const expiresRefreshIn: number = 60 * 60 * 24 * 30;
+        const _refreshToken = 'Bearer ' + sign({hash: RandToken.generate(Number(REFRESHTOKENSIZE))}, secretKey, {expiresIn: expiresRefreshIn})
+        return `Authorization=${_refreshToken}; HttpOnly; Max-Age=${expiresRefreshIn}};`;
     }
 }
 

@@ -8,6 +8,7 @@ import AffiliateAccessTradeRoute from './routes/affiliateAccessTrade.route';
 import BannerRoute from './routes/banner.route';
 import ShopRoute from './routes/shop.route';
 import ContentRoute from './routes/content.route';
+import PageRoute from './routes/page.route';
 
 const app = new App([
     new UserRoute(),
@@ -17,7 +18,8 @@ const app = new App([
     new AffiliateAccessTradeRoute(),
     new BannerRoute(),
     new ShopRoute(),
-    new ContentRoute()
+    new ContentRoute(),
+    new PageRoute,
 ]);
 
 app.listen();

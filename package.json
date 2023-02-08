@@ -4,8 +4,8 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "dev": "nodemon -r dotenv/config dist/index.js dotenv_config_path=.env.development",
-        "start": "node dist/index.js",
+        "dev": "nodemon -r dotenv/config dist/src/index.js dotenv_config_path=.env.development",
+        "start": "node dist/src/index.js",
         "build": "tsc -p .",
         "watch": "tsc -w",
         "prisma:addMigration": "prisma migrate dev --create-only --name",
@@ -61,5 +61,8 @@
         "@types/express-fileupload": "^1.4.1",
         "@types/node-cron": "^3.0.7",
         "@types/node-fetch": "^2.6.2"
+    },
+    "prisma": {
+        "seed": "ts-node prisma/seed.ts"
     }
 }

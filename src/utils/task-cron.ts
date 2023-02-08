@@ -53,6 +53,11 @@ export const task = () => {
         await deleteArrObjects(difference)
 
     })
+
+    const createProduct = cron.schedule('0 0 * * *', async() => {
+        
+    })
+
     // clearImageTrashS3.start();
 
     taskUpdateStatusBanner.start();

@@ -1,29 +1,67 @@
 import { Category } from "@prisma/client";
 import { context } from "../types/context.type";
 
+export type FilterCategory = {
+    shops?: boolean,
+    banners?: boolean,
+    contents?: boolean
+}
+
 class CategoryService {
     public clients = context
-    
-    public async getCategories() {
-        const categories = await this.clients.prisma.category.findMany({include: {shops: true}})
-        return categories;
+    public getCondition(params?: FilterCategory) {
+        const condition: FilterCategory = {};
+
+        if (params?.banners) {
+            condition.banners = params.banners;
+        }
+
+        if (params?.shops) {
+            condition.shops = params.shops;
+        }
+
+        if (params?.contents) {
+            condition.contents = params.contents;
+        }
+        console.log(condition)
+
+        if (Object.keys(condition).length != 0) {
+            return condition;
+        }
+        return undefined;
+
     }
 
-    public async getCategoryById(id: number) {
-        const categoryById = await this.clients.prisma.category.findFirst({where: {id}, include: {shops: true}})
-        return categoryById;
-    }
-    
-    public async getCategoryByName(name: string) {
-        const categoryByName = await this.clients.prisma.category.findFirst({where: {name}})
-        return categoryByName;
+    public getCategories(params?: FilterCategory) {
+        const condition = this.getCondition(params);
+        return this.clients.prisma.category.findMany({include: condition});
     }
 
-    public async createCategory(categoryData: Category[]) {
-        const newCategory = await this.clients.prisma.category.createMany({data: categoryData, skipDuplicates: true})
-        return newCategory
+    public getCategoryById(id: number, params?: FilterCategory) {
+        const condition = this.getCondition(params)
+        return this.clients.prisma.category.findFirst({where: {id}, include: condition});
     }
     
+    public getCategoryByName(name: string, params?: FilterCategory) {
+        const condition = this.getCondition(params)
+        return this.clients.prisma.category.findFirst({where: {name}, include: condition});
+    }
+
+    public async createCategory(categoryData: Category) {
+        return this.clients.prisma.category.create({data: categoryData})
+    }
+    
+    public updateCategory(id: number, categoryData: Category) {
+        return this.clients.prisma.category.update({where: {id}, data: categoryData})
+    }
+
+    public deleteAllCategory() {
+        return this.clients.prisma.category.deleteMany({})
+    }
+
+    public deleteCategoryById(id: number) {
+        return this.clients.prisma.category.delete({where: {id}})
+    }
 }
 
 export default CategoryService

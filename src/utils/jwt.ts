@@ -21,7 +21,6 @@ const verify = (jwtToken: string | undefined) => {
 
     return decoded
 
-    
 }
 
 export default verify

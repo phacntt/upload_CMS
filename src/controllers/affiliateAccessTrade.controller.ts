@@ -26,7 +26,7 @@ class AffiliateAccessTradeController {
             const param = req.query
             const productsData = await this.affiliateAccessTradeService.getShops(param);
 
-            res.status(200).json({ data: productsData, message: 'Get all category' });
+            res.status(200).json({ data: productsData, message: 'Get all shops' });
         } catch (error) {
         next(error);
         }

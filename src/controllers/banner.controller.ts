@@ -13,7 +13,7 @@ class BannerController {
     public getAllBanners = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const queryParams = req.query;
-            if (!queryParams.bannerPage || !queryParams.bannerType) throw new HttpException(404, "Must have banner page and banner type")
+            if (!queryParams.pageId || !queryParams.bannerType) throw new HttpException(404, "Must have banner page and banner type")
             const banners = await this.bannerService.getAllBanners(queryParams);
 
             res.status(201).json({ data: banners, message: 'Get all banners successfully' });
@@ -65,7 +65,7 @@ class BannerController {
             // Check role
             const auth = req.user
             if (auth.role !== 'Admin') throw new HttpException(400, "You're not permission to do it!!!")
-            const checkPositionExistsWithAirCreate = await this.bannerService.checkBannerCamping(bannerData.bannerPage, bannerData.bannerType, bannerData.bannerPosition, airCreate)
+            const checkPositionExistsWithAirCreate = await this.bannerService.checkBannerCamping(bannerData.pageId, bannerData.bannerType, bannerData.bannerPosition, airCreate)
             if (checkPositionExistsWithAirCreate) throw new HttpException(400, "Banner at this location and the display time already exists, please change the position or change the display timeframe!!");
 
             const dataCreate: BannerDataCreate = {
@@ -73,7 +73,7 @@ class BannerController {
                 landingPageUrl: bannerData.landingPageUrl,
                 airTimeCreate: airCreate,
                 airTimeEnd: airEnd,
-                bannerPage: bannerData.bannerPage,
+                pageId: bannerData.pageId,
                 bannerPosition: bannerData.bannerPosition,
                 bannerType: bannerData.bannerType,
             }

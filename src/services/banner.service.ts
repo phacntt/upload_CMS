@@ -1,11 +1,11 @@
-import { Banner, BannerPage, BannerType, StatusBanner } from "@prisma/client";
+import { Banner, BannerType, Page, StatusBanner } from "@prisma/client";
 import { context } from "../types/context.type";
 import { deleteObject } from "../utils/S3";
 
 export type FilterBanner = {
     page?: number;
     limit?: number;
-    bannerPage?: BannerPage;
+    pageId?: number;
     bannerType?:BannerType;
     status?: StatusBanner;
 }
@@ -15,7 +15,7 @@ export type BannerDataCreate = {
     landingPageUrl: string;
     airTimeCreate: Date;
     airTimeEnd: Date;
-    bannerPage: BannerPage
+    pageId: number;
     bannerPosition: number,
     bannerType: BannerType,
 }
@@ -38,8 +38,8 @@ class BannerService {
             limit = filter.limit;
         }
 
-        if (filter?.bannerPage) {
-            condition.bannerPage = filter.bannerPage;
+        if (filter?.pageId) {
+            condition.pageId = filter.pageId;
         }
 
         if (filter?.bannerType) {
@@ -55,8 +55,8 @@ class BannerService {
         return banners;
     }
 
-    public async checkBannerCamping(page: BannerPage, type: BannerType, position: number, airTimeCreate: Date) {
-        return await this.clients.prisma.banner.findFirst({where: {bannerPage: page, AND: {bannerPosition: position, bannerType: type}, OR: {airTimeCreate: airTimeCreate}}})
+    public async checkBannerCamping(page: number, type: BannerType, position: number, airTimeCreate: Date) {
+        return await this.clients.prisma.banner.findFirst({where: {pageId: page, AND: {bannerPosition: position, bannerType: type}, OR: {airTimeCreate: airTimeCreate}}})
     }
 
     public async getBannerById(id: number) {

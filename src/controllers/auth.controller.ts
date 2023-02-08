@@ -38,18 +38,14 @@ class AuthController {
       const accessToken = req.headers.authorization;
       if (!accessToken) throw new HttpException(400, "Not found access token!!!!");
 
-      const refreshToken = req.body.refreshToken;
+      const refreshToken = req.cookies.Authorization;
       if (!refreshToken) throw new HttpException(400, "Not found refresh token!!!");
 
-      // const { _accessToken, _refreshToken } = await this.authService.refreshToken(accessToken.split("Bearer ")[1], refreshToken);
       const _accessToken = await this.authService.refreshToken(accessToken.split("Bearer ")[1], refreshToken.split("Bearer ")[1]);
 
 
-      res.status(200).json({ data: _accessToken , message: 'create new access token successfull' });
+      res.status(200).json({ accessToken: _accessToken , message: 'create new access token successfull' });
     } catch (error: any) {
-      const accessToken = req.headers.authorization;
-      const decodeToken = verify(accessToken!.split("Bearer ")[1], `${process.env.SECRET_KEY}`, {ignoreExpiration: true}) as any;
-      await this.clients.prisma.user.update({where: {id: decodeToken.id}, data: {refreshToken: ""}})
       next(error);
     }
   };

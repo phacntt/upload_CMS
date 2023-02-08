@@ -14,24 +14,13 @@ datasource db {
 enum Role {
   Admin
   Guest
+  Dev
 }
 
 // Banner
 enum StatusBanner {
   Active
   Inactive
-  InDraft @map("In draft")
-}
-
-enum BannerPage {
-  Home @map("Home")
-  Popup @map("Pop up")
-  Learn @map("Learn to earn")
-  Shop @map("Shop to earn")
-  Play @map("Play to earn")
-  Mission @map("Mission to earn")
-  Read @map("Read to earn")
-  Install @map("Install to earn")
 }
 
 enum BannerType {
@@ -310,16 +299,28 @@ model User {
   password  String
   name  String
   role  Role @default(Guest)
-  refreshToken String?
+  createAt DateTime @default(now())
+  updateAt  DateTime @updatedAt
+}
+
+model Page {
+  id Int @id @default(autoincrement())
+  name String
+  pages Category[]
+  banners Banner[]
+  contents Content[]
   createAt DateTime @default(now())
   updateAt  DateTime @updatedAt
 }
 
 model Category {
-  id  Int @id @default(autoincrement())
+  id Int @id @default(autoincrement())
   name String
   nameVN String
   shops Shop[]
+  contents Content[]
+  page Page @relation(fields: [pageId], references: [id])
+  pageId Int
   createAt DateTime @default(now())
   updateAt  DateTime @updatedAt
 }
@@ -364,10 +365,11 @@ model Banner {
   image String
   landingPageUrl String
   bannerPosition Int
-  bannerPage BannerPage
+  pageId Int
   bannerType BannerType
   airTimeCreate DateTime
   airTimeEnd DateTime
+  page Page @relation(fields: [pageId], references: [id])
   status StatusBanner @default(Inactive)
   createAt DateTime @default(now())
   updateAt  DateTime @updatedAt
@@ -375,8 +377,8 @@ model Banner {
 
 model Content {
   id Int @id @default(autoincrement())
-  categorylv1 BannerPage
-  categorylv2 String
+  pageId Int
+  categoryId Int
   commissionModel CommissionModelType
   commissionType CommissionType
   commissionValue String
@@ -385,6 +387,8 @@ model Content {
   description String
   location Location
   url String
+  page Page @relation(fields: [pageId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
   createAt DateTime @default(now())
   updateAt  DateTime @updatedAt
 }
