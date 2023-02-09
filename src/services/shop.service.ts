@@ -1,12 +1,21 @@
 import { Prisma, Product, Shop } from "@prisma/client";
 import { context } from "../types/context.type";
 
+type FilterShops = {
+    categoryId?: number,
+}
 
 class ShopService {
     public clients = context
     
-    public async getShops() {
-        const shops = await this.clients.prisma.shop.findMany()
+    public async getShops(filter?: FilterShops) {
+        const condition: FilterShops = {}
+
+        if (filter?.categoryId) {
+            condition.categoryId = Number(filter.categoryId)
+        }
+
+        const shops = await this.clients.prisma.shop.findMany({where: condition})
         return shops;
     }
 

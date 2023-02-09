@@ -5,6 +5,14 @@ import { HttpException } from "../exception/HttpException";
 type ListProductsFilter = {
     page?: number;
     limit?: number;
+    sortBy?: SortBy;
+}
+
+type SortBy = {
+    discount?: 'desc' | 'asc',
+    discountRate?: 'desc' | 'asc',
+    price?: 'desc' | 'asc',
+    discountAmount?: 'desc' | 'asc'
 }
 
 class ProductService {
@@ -14,12 +22,36 @@ class ProductService {
 
     public async getProducts(filter?: ListProductsFilter) {
         const condition: ListProductsFilter = {};
+        const sortBy: SortBy = {}
 
-        condition.limit = filter?.limit ? filter.limit : this.DEFAULT_LIMIT
-        condition.page = filter?.page ? filter.page : this.DEFAULT_PAGE
+        let page = this.DEFAULT_PAGE;
+        let limit = this.DEFAULT_LIMIT;
 
+        if (filter?.page) {
+            page = filter.page;
+        }
 
-        const products = await this.clients.prisma.product.findMany({skip: condition.page, take: condition.limit})
+        if (filter?.limit) {
+            limit = filter.limit;
+        }
+
+        if (filter?.sortBy?.discount) {
+            sortBy.discount = filter.sortBy?.discount
+        }
+
+        if (filter?.sortBy?.discountAmount) {
+            sortBy.discountAmount = filter.sortBy?.discountAmount
+        }
+
+        if (filter?.sortBy?.discountRate) {
+            sortBy.discountRate = filter.sortBy?.discountRate
+        }
+
+        if (filter?.sortBy?.price) {
+            sortBy.price = filter.sortBy?.price
+        }
+
+        const products = await this.clients.prisma.product.findMany({skip: condition.page, take: condition.limit, orderBy: sortBy})
         return products;
     }
 
