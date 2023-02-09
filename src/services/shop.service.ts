@@ -15,11 +15,14 @@ class ShopService {
         return shopById;
     }
 
-    public async createShops(shopData: Shop[]) {
-        const newShops = await this.clients.prisma.shop.createMany({data: shopData})
-
-
-        return newShops
+    public async createShops(shopData: Shop) {
+        const newShop = await this.clients.prisma.shop.upsert({
+            where: {campaignId: shopData.campaignId},
+            create: shopData,
+            update: shopData
+        })
+        
+        return newShop
     }
     
 }

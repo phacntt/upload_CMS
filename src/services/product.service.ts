@@ -33,14 +33,12 @@ class ProductService {
         return productByName;
     }
 
-    public async createProducts(productData: Product[]) {
-        const newProducts = await Promise.all(
-            productData.map(async (prod) => {
-                await this.clients.prisma.product.create({
-                    data: prod,
-                })
-            })
-        )
+    public async createProducts(productData: Product) {
+        const newProducts = await this.clients.prisma.product.upsert({
+            where: {productId: productData.productId},
+            create: productData,
+            update: productData
+        })
 
         return newProducts
     }

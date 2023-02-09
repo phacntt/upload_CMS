@@ -31,19 +31,6 @@ class ShopController {
         }
     };
 
-    public createShops = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-        try {
-            const dataCreateShops = req.body
-
-            const result = await Promise.all(dataCreateShops).then(resolve => resolve)
-            const newProduct = await this.shopService.createShops(result);
-
-            res.status(200).json({ data: newProduct, message: 'Create shops successfully' });
-        } catch (error) {
-            next(error);
-        }
-    };
-
 }
 
 export default ShopController

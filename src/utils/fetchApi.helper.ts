@@ -10,6 +10,7 @@ export const fetchAPI = async(linkAPI: string, param?: string) => {
                 'Content-Type': 'application/json'
             }
         })
+        console.log(linkAPI+'?'+param)
         const data = await fetchData.json()
         return data
     } catch (error) {

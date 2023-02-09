@@ -19,8 +19,6 @@ class ShopRoute implements Routes {
     private initializeRoutes() {
         this.router.get(`/`, this.shopController.getShops);
         this.router.get(`/:id`, this.shopController.getShopById);
-        this.router.post(`/`, authMiddleware, this.shopController.createShops);
-
     }
 }
 

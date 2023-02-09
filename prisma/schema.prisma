@@ -331,12 +331,13 @@ model Product {
   linkAffilitate String
   linkProduct String
   merchant String
-  discountRate Int
+  discountRate Float
   name String
   description String
-  price Int
-  discountAmount Int
-  discount Int
+  price Float
+  discountAmount Float
+  discount Float
+  productId String @unique
   createAt DateTime @default(now())
   updateAt  DateTime @updatedAt
 }
@@ -355,6 +356,7 @@ model Shop {
   rejected_reason String
   traffic_building_policy String
   categoryId Int
+  campaignId String @unique
   category Category @relation(fields: [categoryId], references: [id])
   createAt DateTime @default(now())
   updateAt  DateTime @updatedAt

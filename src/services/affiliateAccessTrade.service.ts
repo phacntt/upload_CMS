@@ -15,6 +15,7 @@ type DataCreateShop = {
     rejected_reason: string,
     traffic_building_policy: string, 
     other_notice: string,
+    campaignId: number,
     categoryId: number
 }
 
@@ -48,23 +49,23 @@ class AffiliateAccessTradeService {
     }
 
     // Get Shops
-    public async getShops(queryParam: any) {
+    public async getShops(queryParam?: any) {
         try {
-            let param = ''
             if (queryParam.merchant) {
-                param = `merchant=${queryParam.merchant}&`
+                queryParam = `merchant=${queryParam.merchant}&`
             }
 
             if (queryParam.page) {
-                param = `page=${queryParam.page}&`
+                queryParam = `page=${queryParam.page}&`
             }
             let shopCreate: any[] = []
-            const listShops = await fetchAPI(this.linkCampaign, param)
+            const listShops = await fetchAPI(this.linkCampaign, queryParam)
             const shops = listShops.data
-            const listCategory = await this.client.prisma.category.findMany({where: {pageId: 3}})
+            const listCategory = await this.client.prisma.category.findMany({where: {page: {id: 3}}})
+            console.log("category: ", listCategory)
             for (let i = 0; i < listCategory.length; i++) {
                 for (let j = 0; j < shops.length; j++) {
-                    let dataObj = {
+                    let dataObj: DataCreateShop = {
                         name: shops[j].name,
                         logo: shops[j].logo,
                         url: shops[j].url,
@@ -76,16 +77,13 @@ class AffiliateAccessTradeService {
                         rejected_reason: shops[j].description.rejected_reason,
                         traffic_building_policy: shops[j].description.traffic_building_policy,
                         other_notice: shops[j].description.other_notice,
+                        campaignId: shops[j].id,
                         categoryId: -1
                     }
                     if (shops[j].sub_category.indexOf(listCategory[i].nameVN) != -1 || listCategory[i].nameVN.indexOf(shops[j].sub_category) != -1) {
                         dataObj.categoryId = listCategory[i].id
-                    }
-
-                    if (dataObj.categoryId != -1) {
                         shopCreate.push(dataObj)
                     }
-
                 }
             }
             return shopCreate
@@ -129,6 +127,7 @@ class AffiliateAccessTradeService {
                 linkProduct: prod.url,
                 discount: prod.discount,
                 name: prod.name,
+                productId: prod.product_id,
                 price: prod.price,
             }
                             
