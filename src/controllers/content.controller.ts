@@ -54,7 +54,7 @@ class ContentController {
             if (auth.role !== 'Admin') throw new HttpException(400, "You're not permission to do it!!!")
 
             // Get data from client
-            const contentData: Content = req.body;
+            const contentData: CreateContentDto = req.body;
             if (!contentData) throw new HttpException(400, "You must fill data create content before send to server")  
 
             const { id } = req.params

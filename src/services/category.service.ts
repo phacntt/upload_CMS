@@ -1,5 +1,5 @@
-import { Category } from "@prisma/client";
 import { context } from "../types/context.type";
+import { CreateCategoryDto } from "../dto/category.dto";
 
 export type FilterCategory = {
     shops?: boolean,
@@ -47,11 +47,11 @@ class CategoryService {
         return this.clients.prisma.category.findFirst({where: {name}, include: condition});
     }
 
-    public async createCategory(categoryData: Category) {
+    public async createCategory(categoryData: CreateCategoryDto) {
         return this.clients.prisma.category.create({data: categoryData})
     }
     
-    public updateCategory(id: number, categoryData: Category) {
+    public updateCategory(id: number, categoryData: CreateCategoryDto) {
         return this.clients.prisma.category.update({where: {id}, data: categoryData})
     }
 

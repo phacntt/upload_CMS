@@ -1,8 +1,8 @@
-import { Category, Prisma, User } from "@prisma/client";
-import AuthService from "../services/auth.service";
+import { Category, Prisma } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import CategoryService from "../services/category.service";
 import { HttpException } from "../exception/HttpException";
+import { CreateCategoryDto } from "../dto/category.dto";
 
 class CategoryController {
     public categoryService = new CategoryService();
@@ -34,14 +34,11 @@ class CategoryController {
 
     public createCategory = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const dataCreateCategories = req.body
+            const dataCreateCategories: CreateCategoryDto = req.body
+            
+            const existsCategory = await this.categoryService.getCategoryByName(dataCreateCategories.name)
+            if (existsCategory) throw new HttpException(400, "Category already exists!!! Please change name again")
 
-            // const newCategories: Category[] = await Promise.all(dataCreateCategories.map(async (category: Category) => {
-            //     const existsCategory = await this.categoryService.getCategoryByName(category.name)
-            //     if (!existsCategory) {
-            //         return category
-            //     }
-            // })).then(resolve => resolve);
             const createNewCategories = await this.categoryService.createCategory(dataCreateCategories)
             
             res.status(200).json({ data: createNewCategories, message: 'Create categories successfully' });

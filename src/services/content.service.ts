@@ -1,4 +1,3 @@
-import { Content } from "@prisma/client";
 import { context } from "../types/context.type";
 import { CreateContentDto } from "../dto/content.dto";
 import { deleteObject } from "../utils/S3";
@@ -51,7 +50,7 @@ class ContentService {
         return newContent
     }
 
-    public async updateContent(contentData: Content, id: number) {
+    public async updateContent(contentData: CreateContentDto, id: number) {
         const newContent = await this.clients.prisma.content.update({where: { id }, data: contentData})
         return newContent
     }
