@@ -40,6 +40,9 @@ class AffiliateAccessTradeService {
             if (queryParam.page) {
                 param = param + `page=${queryParam.page}&`
             }
+            if (queryParam.status_discount) {
+                param = param + `status_discount=${queryParam.status_discount}&`
+            }
             let productCreate: any[] = await this.getProductFromDataFeed(param)
             
             return productCreate
