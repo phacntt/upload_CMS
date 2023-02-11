@@ -39,7 +39,7 @@ class BannerService {
         }
 
         if (filter?.pageId) {
-            condition.pageId = filter.pageId;
+            condition.pageId = Number(filter.pageId);
         }
 
         if (filter?.bannerType) {

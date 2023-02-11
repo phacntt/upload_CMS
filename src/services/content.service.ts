@@ -5,7 +5,7 @@ import { deleteObject } from "../utils/S3";
 export type FilterContent = {
     page?: number;
     limit?: number;
-    pageContent?: string
+    pageId?: string
 }
 
 class ContentService {
@@ -26,8 +26,8 @@ class ContentService {
             condition.limit = filter.limit
         }
         
-        if (filter?.pageContent) {
-            condition.categorylv1 = filter.pageContent
+        if (filter?.pageId) {
+            condition.pageId = Number(filter.pageId)
         }
 
         const contents = await this.clients.prisma.content.findMany({take: limit, skip: page, where: condition as any})
