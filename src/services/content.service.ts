@@ -1,11 +1,13 @@
 import { context } from "../types/context.type";
 import { CreateContentDto } from "../dto/content.dto";
 import { deleteObject } from "../utils/S3";
+import { String40 } from "aws-sdk/clients/sagemaker";
 
 export type FilterContent = {
     page?: number;
     limit?: number;
-    pageId?: string
+    pageId?: string;
+    categoryId?: string;
 }
 
 class ContentService {
@@ -30,7 +32,11 @@ class ContentService {
             condition.pageId = Number(filter.pageId)
         }
 
-        const contents = await this.clients.prisma.content.findMany({take: limit, skip: page, where: condition as any})
+        if (filter?.categoryId) {
+            condition.categoryId = Number(filter.categoryId)
+        }
+
+        const contents = await this.clients.prisma.content.findMany({take: limit, skip: page, where: condition as any, include: {category: true, page: true} })
 
         return contents;
     }
