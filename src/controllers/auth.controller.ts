@@ -32,7 +32,7 @@ class AuthController {
         sameSite: "strict",
         domain: "cms-earning.vercel.app"
       })
-      res.status(200).json({ data: tokenData, message: 'login' });
+      res.status(200).json({ data: {cookie, tokenData}, message: 'login' });
     } catch (error) {
       next(error);
     }
@@ -43,8 +43,8 @@ class AuthController {
       const accessToken = req.headers.authorization;
       if (!accessToken) throw new HttpException(400, "Not found access token!!!!");
 
-      const refreshToken = req.headers.cookie?.substring(req.headers.cookie.indexOf("Bearer")) || req.cookies.Authorization;
-      console.log(req.cookies['Authorization'])
+      const refreshToken = req.headers.cookie?.substring(req.headers.cookie.indexOf("Bearer")) || req.cookies.Authorization || req.body.refreshToken;
+
       if (!refreshToken) throw new HttpException(400, "Not found refresh token!!!");
 
       const _accessToken = await this.authService.refreshToken(accessToken.split("Bearer ")[1], refreshToken.split("Bearer ")[1]);
@@ -61,7 +61,7 @@ class AuthController {
       const userData: User = req.user;
       this.authService.logoutUser(userData);
 
-      res.setHeader('Set-Cookie', ['Authorization=; Max-age=0']);
+      res.clearCookie('Authorization');
       res.status(200).json({ message: 'logout' });
     } catch (error) {
       next(error);
