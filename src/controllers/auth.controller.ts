@@ -39,7 +39,7 @@ class AuthController {
       if (!accessToken) throw new HttpException(400, "Not found access token!!!!");
 
       const refreshToken = req.headers.cookie?.substring(req.headers.cookie.indexOf("Bearer")) || req.cookies.Authorization;
-
+      console.log("RefreshToken: ", refreshToken)
       if (!refreshToken) throw new HttpException(400, "Not found refresh token!!!");
 
       const _accessToken = await this.authService.refreshToken(accessToken.split("Bearer ")[1], refreshToken.split("Bearer ")[1]);
