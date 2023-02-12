@@ -3,8 +3,13 @@ import { CreateCategoryDto } from "../dto/category.dto";
 
 export type FilterCategory = {
     shops?: boolean,
-    banners?: boolean,
-    contents?: boolean
+    pages?: boolean,
+    contents?: boolean,
+}
+
+type QueryParam = {
+    page?: number
+    includes?: FilterCategory
 }
 
 class CategoryService {
@@ -12,8 +17,8 @@ class CategoryService {
     public getCondition(params?: FilterCategory) {
         const condition: FilterCategory = {};
 
-        if (params?.banners) {
-            condition.banners = params.banners;
+        if (params?.pages) {
+            condition.pages = params.pages;
         }
 
         if (params?.shops) {
@@ -32,17 +37,17 @@ class CategoryService {
 
     }
 
-    public getCategories(params?: FilterCategory) {
+    public getCategories(params?: any) {
         const condition = this.getCondition(params);
-        return this.clients.prisma.category.findMany({include: condition});
+        return this.clients.prisma.category.findMany({where: {pageId: params.pageId ? params.pageId : undefined}, include: condition});
     }
 
-    public getCategoryById(id: number, params?: FilterCategory) {
+    public getCategoryById(id: number, params?: any) {
         const condition = this.getCondition(params)
         return this.clients.prisma.category.findFirst({where: {id}, include: condition});
     }
     
-    public getCategoryByName(name: string, params?: FilterCategory) {
+    public getCategoryByName(name: string, params?: any) {
         const condition = this.getCondition(params)
         return this.clients.prisma.category.findFirst({where: {name}, include: condition});
     }
