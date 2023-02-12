@@ -1,9 +1,30 @@
+import { BannerType, CommissionModelType, CommissionType, Location, Role } from "@prisma/client";
 import { context } from "../src/types/context.type";
 
 const clients = context
 
 async function main() {
-    const createUsers = await clients.prisma.user.createMany({data: [
+    const findUser = async (email: string) => {
+        return await clients.prisma.user.findFirst({ where: { email } })
+    }
+
+    const findPage = async (name: string) => {
+        return await clients.prisma.page.findFirst({ where: { name } })
+    }
+
+    const findCategory = async (name: string) => {
+        return await clients.prisma.category.findFirst({ where: { name } })
+    }
+
+    const findBanner = async (bannerPosition: number) => {
+        return await clients.prisma.banner.findFirst({ where: { bannerPosition } })
+    }
+
+    const findContent = async (name: string) => {
+        return await clients.prisma.content.findFirst({ where: { title: name } })
+    }
+
+    const arrayUser = [
         {
             email: "Admin@gmail.com",
             password: "$2b$10$ejVnZ125sBbtJhvXSKMgKuZdkGP10f1RQGR6EYtAWXyDUKJSehA3C",
@@ -22,9 +43,9 @@ async function main() {
             role: "Dev",
             name: "Pha"
         },
-    ], skipDuplicates: true})
+    ]
 
-    const createPages = await clients.prisma.page.createMany({data: [
+    const arrayPage = [
         {
             name: 'Home'
         },
@@ -49,9 +70,9 @@ async function main() {
         {
             name: 'Install to earn'
         },
-    ], skipDuplicates: true})
-    
-    const createCategories = await clients.prisma.category.createMany({data: [
+    ]
+
+    const arrayCategory = [
         // Shop to earn
         {
             name: 'Fashion',
@@ -140,9 +161,9 @@ async function main() {
             nameVN: '',
             pageId: 7
         },
-    ], skipDuplicates: true})
+    ]
 
-    const createBanners = await clients.prisma.banner.createMany({ data: [
+    const arrayBanner = [
         {
             airTimeCreate: "2023-02-09T00:00:00Z",
             airTimeEnd: "2023-03-10T00:00:00Z",
@@ -155,7 +176,7 @@ async function main() {
         {
             airTimeCreate: "2023-02-09T00:00:00Z",
             airTimeEnd: "2023-03-10T00:00:00Z",
-            bannerPosition: 1,
+            bannerPosition: 2,
             bannerType: "MiddleBanner",
             landingPageUrl: "https://google.com/",
             image: "https://dads-cms.s3.ap-southeast-1.amazonaws.com/1675588227923-FeedVideoDesktop.png",
@@ -164,15 +185,15 @@ async function main() {
         {
             airTimeCreate: "2023-02-09T00:00:00Z",
             airTimeEnd: "2023-03-10T00:00:00Z",
-            bannerPosition: 1,
+            bannerPosition: 3,
             bannerType: "TopPick",
             landingPageUrl: "https://google.com/",
             image: "https://dads-cms.s3.ap-southeast-1.amazonaws.com/1675588227923-FeedVideoDesktop.png",
             pageId: 1
         },
-    ], skipDuplicates: true})
+    ]
 
-    const createContents = await clients.prisma.content.createMany({data: [
+    const arrayContent = [
         {
             pageId: 1,
             categoryId: 1,
@@ -218,19 +239,82 @@ async function main() {
             description: "Description content 3",
             image: "https://dads-cms.s3.ap-southeast-1.amazonaws.com/1675588227923-FeedVideoDesktop.png",
             location: 'vn',
-            title: "Content 3",
+            title: "Content 4",
             url: "https://google.com/"
         },
-    ], skipDuplicates: true})
+    ]
 
-    
-  }
-  main()
+    for (let user of arrayUser) {
+        const findUserByEmail = await findUser(user.email);
+        if (!findUserByEmail) {
+            await clients.prisma.user.create({
+                data: {
+                    email: user.email,
+                    name: user.name,
+                    password: user.password,
+                    role: user.role as Role
+                }
+            })
+        }
+    }
+
+    for (let page of arrayPage) {
+        const findPageByName = await findPage(page.name);
+        if (!findPageByName) {
+            await clients.prisma.page.create({ data: page })
+        }
+    }
+
+    for (let category of arrayCategory) {
+        const findCategoryByName = await findCategory(category.name);
+        if (!findCategoryByName) {
+            await clients.prisma.category.create({ data: category })
+        }
+    }
+
+    for (let banner of arrayBanner) {
+        const findBannerByPosition = await findBanner(banner.bannerPosition);
+        if (findBannerByPosition) {
+            await clients.prisma.banner.create({
+                data: {
+                    airTimeCreate: banner.airTimeCreate,
+                    airTimeEnd: banner.airTimeEnd,
+                    bannerPosition: banner.bannerPosition,
+                    bannerType: banner.bannerType as BannerType,
+                    image: banner.image,
+                    landingPageUrl: banner.landingPageUrl,
+                    pageId: banner.pageId
+                }
+            })
+        }
+    }
+
+    for (let content of arrayContent) {
+        const findContentByTitle = await findContent(content.title);
+        if (!findContentByTitle) {
+            await clients.prisma.content.create({data: {
+                commissionModel: content.commissionModel as CommissionModelType,
+                commissionType: content.commissionType as CommissionType,
+                commissionValue: content.commissionValue,
+                description: content.description,
+                image: content.description,
+                location: content.location as Location,
+                title: content.title,
+                url: content.url,
+                categoryId: content.categoryId,
+                pageId: content.pageId
+            }})
+        }
+    }
+
+
+}
+main()
     .then(async () => {
-      await clients.prisma.$disconnect()
+        await clients.prisma.$disconnect()
     })
     .catch(async (e) => {
-      console.error(e)
-      await clients.prisma.$disconnect()
-      process.exit(1)
+        console.error(e)
+        await clients.prisma.$disconnect()
+        process.exit(1)
     })

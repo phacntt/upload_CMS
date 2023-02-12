@@ -36,6 +36,8 @@ class ContentService {
             condition.categoryId = Number(filter.categoryId)
         }
 
+        console.log(condition)
+
         const contents = await this.clients.prisma.content.findMany({take: limit, skip: page, where: condition as any, include: {category: true, page: true} })
 
         return contents;
