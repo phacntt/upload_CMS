@@ -39,7 +39,7 @@ class CategoryService {
 
     public getCategories(params?: any) {
         const condition = this.getCondition(params);
-        return this.clients.prisma.category.findMany({where: {pageId: params.pageId ? params.pageId : undefined}, include: condition});
+        return this.clients.prisma.category.findMany({where: {pageId: params.pageId ? Number(params.pageId) : undefined}, include: condition});
     }
 
     public getCategoryById(id: number, params?: any) {
