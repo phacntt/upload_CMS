@@ -29,7 +29,8 @@ class AuthController {
       res.cookie('Authorization', cookie.refreshToken, {
         httpOnly: true,
         maxAge: cookie.expiredIn,
-        sameSite: "strict"
+        sameSite: "strict",
+        domain: "cms-earning.vercel.app"
       })
       res.status(200).json({ data: tokenData, message: 'login' });
     } catch (error) {
