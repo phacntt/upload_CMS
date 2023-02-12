@@ -81,11 +81,11 @@ class AuthService {
         return {expiresIn, accessToken: 'Bearer ' + sign(dataStoredInToken, secretKey, { expiresIn }), user: dataStoredInToken };
     }
     
-    public createCookie(): string {
+    public createCookie() {
         const secretKey: string = SECRET_KEY!;
         const expiresRefreshIn: number = 60 * 60 * 24 * 30;
         const _refreshToken = 'Bearer ' + sign({hash: RandToken.generate(Number(REFRESHTOKENSIZE))}, secretKey, {expiresIn: expiresRefreshIn})
-        return `Authorization=${_refreshToken}; HttpOnly; Max-Age=${expiresRefreshIn}};`;
+        return { refreshToken: _refreshToken, expiredIn: expiresRefreshIn};
     }
 }
 
