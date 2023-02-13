@@ -21,11 +21,11 @@ class ContentService {
         let limit = this.DEFAULT_LIMIT;
 
         if (filter?.page) {
-            condition.page = filter.page
+            page = Number(filter.page)
         }
 
         if (filter?.limit) {
-            condition.limit = filter.limit
+            limit = Number(filter.limit)
         }
         
         if (filter?.pageId) {
@@ -38,7 +38,7 @@ class ContentService {
 
         console.log(condition)
 
-        const contents = await this.clients.prisma.content.findMany({take: limit, skip: page, where: condition as any, include: {category: true, page: true} })
+        const contents = await this.clients.prisma.content.findMany({take: Number(limit), skip: Number(page), where: condition as any, include: {category: true, page: true} })
 
         return contents;
     }
