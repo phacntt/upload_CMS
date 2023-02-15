@@ -165,7 +165,7 @@ async function main() {
 
     const arrayBanner = [
         {
-            airTimeCreate: "2023-02-09T00:00:00Z",
+            airTimeCreate: "2023-03-09T00:00:00Z",
             airTimeEnd: "2023-03-10T00:00:00Z",
             bannerPosition: 1,
             bannerType: "HomeBanner",
@@ -174,7 +174,7 @@ async function main() {
             pageId: 1
         },
         {
-            airTimeCreate: "2023-02-09T00:00:00Z",
+            airTimeCreate: "2023-03-09T00:00:00Z",
             airTimeEnd: "2023-03-10T00:00:00Z",
             bannerPosition: 2,
             bannerType: "MiddleBanner",
@@ -183,7 +183,7 @@ async function main() {
             pageId: 1
         },
         {
-            airTimeCreate: "2023-02-09T00:00:00Z",
+            airTimeCreate: "2023-03-09T00:00:00Z",
             airTimeEnd: "2023-03-10T00:00:00Z",
             bannerPosition: 3,
             bannerType: "TopPick",
@@ -274,7 +274,7 @@ async function main() {
 
     for (let banner of arrayBanner) {
         const findBannerByPosition = await findBanner(banner.bannerPosition);
-        if (findBannerByPosition) {
+        if (!findBannerByPosition) {
             await clients.prisma.banner.create({
                 data: {
                     airTimeCreate: banner.airTimeCreate,

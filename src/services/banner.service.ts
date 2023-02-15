@@ -1,23 +1,15 @@
 import { Banner, BannerType, Page, StatusBanner } from "@prisma/client";
 import { context } from "../types/context.type";
 import { deleteObject } from "../utils/S3";
+import { HttpException } from "../exception/HttpException";
+import { CreateBannerDto } from "../dto/banner.dto";
 
 export type FilterBanner = {
     page?: number;
     limit?: number;
     pageId?: number;
-    bannerType?:BannerType;
+    bannerType?: BannerType;
     status?: StatusBanner;
-}
-
-export type BannerDataCreate = {
-    image: string;
-    landingPageUrl: string;
-    airTimeCreate: Date;
-    airTimeEnd: Date;
-    pageId: number;
-    bannerPosition: number,
-    bannerType: BannerType,
 }
 
 class BannerService {
@@ -50,38 +42,57 @@ class BannerService {
             condition.status = filter.status as StatusBanner;
         }
 
-        const banners = await this.clients.prisma.banner.findMany({skip: page == 1 ? page - 1 : (page - 1) * limit, take: limit, where: condition as any})
-        
+        const banners = await this.clients.prisma.banner.findMany({ skip: page == 1 ? page - 1 : (page - 1) * limit, take: limit, where: condition as any })
+
         return banners;
     }
 
-    public async checkBannerCamping(page: number, type: BannerType, position: number, airTimeCreate: Date) {
-        return await this.clients.prisma.banner.findFirst({where: {pageId: page, AND: {bannerPosition: position, bannerType: type}, OR: {airTimeCreate: airTimeCreate}}})
+    public async checkBannerCamping(page: number, type: BannerType, position: number, airTimeCreate: Date, airTimeEnd: Date, id?: number) {
+        console.log(page, type, position, airTimeCreate, airTimeEnd)
+        return await this.clients.prisma.banner.findMany({
+            where: {
+                airTimeCreate: {
+                    lte: airTimeEnd,
+                    gte: airTimeCreate,
+                },
+                AND: [
+                    {
+                        bannerType: type,
+                        bannerPosition: position,
+                        pageId: page
+                    }
+                ],
+                NOT: {
+                    id: id
+                }
+            }
+        })
+
     }
 
     public async getBannerById(id: number) {
-        const bannerById = await this.clients.prisma.banner.findFirst({where: {id}})
+        const bannerById = await this.clients.prisma.banner.findFirst({ where: { id } })
         return bannerById;
     }
 
-    public async createBanner(bannerData: BannerDataCreate) {
-        const newBanner = await this.clients.prisma.banner.create({data: bannerData})
+    public async createBanner(bannerData: CreateBannerDto) {
+        const newBanner = await this.clients.prisma.banner.create({ data: bannerData })
         return newBanner
     }
 
     public async updateBanner(bannerData: Banner, id: number) {
-        const newBanner = await this.clients.prisma.banner.update({where: { id }, data: bannerData})
+        const newBanner = await this.clients.prisma.banner.update({ where: { id }, data: bannerData })
         return newBanner
     }
 
     public async deleteBanner(id: number, keyImage: string) {
-        const bannerDelete = await this.clients.prisma.$transaction(async(tx) => {
+        const bannerDelete = await this.clients.prisma.$transaction(async (tx) => {
             await deleteObject(keyImage!)
-            await this.clients.prisma.banner.delete({where: {id}})
+            await this.clients.prisma.banner.delete({ where: { id } })
         })
         return bannerDelete
     }
-    
+
 }
 
 export default BannerService
