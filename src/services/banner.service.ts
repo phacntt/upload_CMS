@@ -22,7 +22,7 @@ export type BannerDataCreate = {
 
 class BannerService {
     public clients = context
-    public DEFAULT_PAGE = 0;
+    public DEFAULT_PAGE = 1;
     public DEFAULT_LIMIT = 10;
 
     public async getAllBanners(filter?: FilterBanner) {
@@ -50,7 +50,7 @@ class BannerService {
             condition.status = filter.status as StatusBanner;
         }
 
-        const banners = await this.clients.prisma.banner.findMany({take: limit, skip: page, where: condition as any})
+        const banners = await this.clients.prisma.banner.findMany({skip: page == 1 ? page - 1 : (page - 1) * limit, take: limit, where: condition as any})
         
         return banners;
     }

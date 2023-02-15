@@ -21,18 +21,17 @@ class ProductService {
     public DEFAULT_LIMIT = 20;
 
     public async getProducts(filter?: ListProductsFilter) {
-        const condition: ListProductsFilter = {};
         const sortBy: SortBy = {}
 
         let page = this.DEFAULT_PAGE;
         let limit = this.DEFAULT_LIMIT;
 
         if (filter?.page) {
-            page = filter.page;
+            page = Number(filter.page);
         }
 
         if (filter?.limit) {
-            limit = filter.limit;
+            limit = Number(filter.limit);
         }
 
         if (filter?.sortBy?.discount) {
@@ -50,8 +49,7 @@ class ProductService {
         if (filter?.sortBy?.price) {
             sortBy.price = filter.sortBy?.price
         }
-
-        const products = await this.clients.prisma.product.findMany({skip: condition.page, take: condition.limit, orderBy: sortBy})
+        const products = await this.clients.prisma.product.findMany({skip: page == 1 ? page - 1 : (page - 1) * limit, take: limit, orderBy: sortBy})
         return products;
     }
 

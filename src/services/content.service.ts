@@ -12,7 +12,7 @@ export type FilterContent = {
 
 class ContentService {
     public clients = context
-    public DEFAULT_PAGE = 0;
+    public DEFAULT_PAGE = 1;
     public DEFAULT_LIMIT = 10;
 
     public async getContents(filter?: FilterContent) {
@@ -36,9 +36,8 @@ class ContentService {
             condition.categoryId = Number(filter.categoryId)
         }
 
-        console.log(condition)
 
-        const contents = await this.clients.prisma.content.findMany({take: Number(limit), skip: Number(page), where: condition as any, include: {category: true, page: true} })
+        const contents = await this.clients.prisma.content.findMany({skip: page == 1 ? page - 1 : (page - 1) * limit, take: limit, where: condition as any, include: {category: true, page: true} })
 
         return contents;
     }
