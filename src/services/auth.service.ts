@@ -60,7 +60,7 @@ class AuthService {
 
         const dataStoredInToken: DataStoredInToken = decodeToken
         const secretKey: string = SECRET_KEY!;
-        const expiresIn: number = 30;
+        const expiresIn: number = 60 * 60 * 24 * 30;
 
         const _accessToken = "Bearer " + sign(dataStoredInToken, secretKey, { expiresIn });
 
@@ -77,7 +77,7 @@ class AuthService {
     public async createToken(user: any): Promise<TokenData> {
         const dataStoredInToken: DataStoredInToken = { id: user.id, name: user.name, role: user.role };
         const secretKey: string = SECRET_KEY!;
-        const expiresIn: number = 60 * 60;
+        const expiresIn: number =60 * 60 * 24 * 30;
         return {expiresIn, accessToken: 'Bearer ' + sign(dataStoredInToken, secretKey, { expiresIn }), user: dataStoredInToken };
     }
     
