@@ -1,11 +1,5 @@
-import { Category, Product, User } from "@prisma/client";
-import AuthService from "../services/auth.service";
 import { Request, Response, NextFunction } from "express";
-import CategoryService from "../services/category.service";
-import ProductService from "../services/product.service";
-import FeedDataService from "../services/affiliateAccessTrade.service";
 import AffiliateAccessTradeService from "../services/affiliateAccessTrade.service";
-import { HttpException } from "../exception/HttpException";
 
 class AffiliateAccessTradeController {
     public affiliateAccessTradeService = new AffiliateAccessTradeService();

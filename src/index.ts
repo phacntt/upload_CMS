@@ -9,6 +9,7 @@ import BannerRoute from './routes/banner.route';
 import ShopRoute from './routes/shop.route';
 import ContentRoute from './routes/content.route';
 import PageRoute from './routes/page.route';
+import AiLeyBotDocument from './routes/aiLeyBotDocument.route';
 
 const app = new App([
     new UserRoute(),
@@ -19,7 +20,8 @@ const app = new App([
     new BannerRoute(),
     new ShopRoute(),
     new ContentRoute(),
-    new PageRoute,
+    new PageRoute(),
+    new AiLeyBotDocument(),
 ]);
 
 app.listen();
