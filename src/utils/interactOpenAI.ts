@@ -1,7 +1,7 @@
 import fetch from "node-fetch"
 import { API_KEY_OPENAI } from "../config"
-import { BodySendToOpenAI } from "../services/aiLeyBotDocument.service";
 import { HttpException } from "../exception/HttpException";
+import { BodySendToOpenAI } from "../controllers/aiLeyBotDocument.controller";
 
 export const interactOpenAI = async(body: BodySendToOpenAI) => {
     try {

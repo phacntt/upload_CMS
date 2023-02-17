@@ -1,26 +1,18 @@
 import { Request, Response, NextFunction } from "express";
-import AiLeyBotDocumentService, { BodySendToOpenAI } from "../services/aiLeyBotDocument.service";
 import { interactOpenAI } from "../utils/interactOpenAI";
 
-class AiLeyBotDocumentController {
-    public aiLeyBotDocumentService = new AiLeyBotDocumentService();
+export type BodySendToOpenAI = {
+    model: string,
+    prompt: string,
+    max_tokens: number
+}
 
+class AiLeyBotDocumentController {
     public aiLeyBotResponse = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const payload = req.body
             let maxTokenByTime = 500;
-            // if (payload.time < 1) {
-            //     maxTokenByTime = 150
-            // }
 
-            // if (payload.time > 2 && payload.time < 3) {
-            //     maxTokenByTime = 200
-            // }
-
-            const modelAI = ['text-davinci-003', 'text-davinci-002']
-
-            // const promptCustom = `I want to increase my extra income in my free time daily. I have ${payload.time} free time daily, I am living in ${payload.location}. My favorite categories are ${payload.categories}. My skill is ${payload.skills}.${payload.interestedGame ? "I am also interested in playing games. ": ""}. Let's become a CEO of Facebook to advise me.`
-            // const promptCustom = `I want to increase my extra income, but I have no idea to do anything matching with me. Let's give me more advice. My skill is Graphic & design`
             const promptCustom = `${payload.act}. ${payload.skills}`;
             const promptTopic = payload.topic ? `I want to ask about ${payload.topic} but I don't know what should I ask you to get adivces from this field.` : ``;
 
@@ -35,7 +27,6 @@ class AiLeyBotDocumentController {
 
                 textResponse = await interactOpenAI(dataSendToOpenAI);
             }
-            // console.log(textResponse)    
 
             if (payload.topic) {
                 const dataSendToOpenAI: BodySendToOpenAI = {
@@ -158,12 +149,10 @@ class AiLeyBotDocumentController {
             let count = 0;
             let z = 0;
             if (payload.location == "Vietnam" || payload.location == "Việt Nam") {
-                console.log("VÔ VIỆT NAM")
                 for (let i = 0; i < arrayText.length; i++) {
                     for (let j = 0; j < listArrayKeywordVN.length; j++) {
                         if (arrayText[i].toLowerCase().includes(listArrayKeywordVN[j].key.toLowerCase())) {
-                            // arrayText[i] = arrayText[i].toLowerCase().replace(listArrayKeywordVN[j].key.toLowerCase(), addLinkTag(listArrayKeywordVN[j].link, listArrayKeywordVN[j].key.concat("VN")))
-                            arrayText[i] = arrayText[i].toLowerCase().replace(listArrayKeywordVN[j].key.toLowerCase(), addLinkTag(listArrayKeywordVN[j].link, listArrayKeywordVN[j].key))
+                            arrayText[i] = arrayText[i].toLowerCase().replace(listArrayKeywordVN[j].key.toLowerCase(), addLinkTag(listArrayKeywordVN[j].link, listArrayKeywordVN[j].key.concat("VN")))
                         }
                     }
                     for (let key = 0; key < keyWord.length; key++) {
@@ -222,8 +211,6 @@ class AiLeyBotDocumentController {
             } else {
                 newRecord = arrayText.join("")
             }
-
-            console.log(newRecord)
 
             res.status(200).json({ data: newRecord, message: 'Hope it helps you' });
         } catch (error) {
