@@ -34,5 +34,4 @@ jobs:
                 -e ORIGIN=${{ secrets.ORIGIN }} \
                 -e CREDENTIALS=${{ secrets.CREDENTIALS }} \
                 -e REFRESHTOKENSIZE=${{ secrets.REFRESHTOKENSIZE }} \
-                -e API_KEY_OPENAI=${{ secrets.API_KEY_OPENAI }} \
                 upload_cms:$GITHUB_RUN_NUMBER
