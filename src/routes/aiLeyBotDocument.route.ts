@@ -18,7 +18,8 @@ class AiLeyBotDocument implements Routes {
     }
     
     private initializeRoutes() {
-        this.router.post(`/`, this.aiLeyBotController.aiLeyBotResponse);
+        // this.router.get(`/1`, this.aiLeyBotController.aiLeyBotResponseS)
+        this.router.get(`/`, this.aiLeyBotController.aiLeyBotResponse);
     }
 }
 
