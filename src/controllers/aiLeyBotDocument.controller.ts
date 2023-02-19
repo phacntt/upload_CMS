@@ -22,7 +22,7 @@ class AiLeyBotDocumentController {
             const payload = req.query;
             let maxTokenByTime = 500;
 
-            const promptCustom = `${payload.act}. My skill is ${payload.skill}`;
+            const promptCustom = `${payload.act}. ${payload.skill ? ` My skill is ${payload.skill}`: ``}`;
             const promptTopic = payload.topic ? `I want to ask about ${(payload.topic as string).replace("-", " ") as string} but I don't know what should I ask you to get adivces from this field.` : ``;
             const promptQuestion = payload.promptQuestion;
             const promptArrayTopicLv2 = payload.topicLv2 ?
