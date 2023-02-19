@@ -46,32 +46,40 @@ class AiLeyBotDocumentController {
                 ] : [];
 
             if (payload.act) {
+                console.log("ACT_1")
                 const data = await callOpenAIHelper(maxTokenByTime, promptCustom);
                 const newScript = await convertScriptOpenAi(payload, data);
                 const newScriptRemoveTag = newScript.split(`\n`).filter(script => script != "");
+                console.log("ACT_2")
                 res.write(`data: ${JSON.stringify(newScriptRemoveTag)}\n\n`);
                 return;
             }
 
             if (payload.promptQuestion) {
+                console.log("QUESTION_1")
+
                 const data = await callOpenAIHelper(maxTokenByTime, promptQuestion as string);
                 const newScript = await convertScriptOpenAi(payload, data);
                 const newScriptRemoveTag = newScript.split(`\n`).filter(script => script != "");
                 newScriptRemoveTag.shift();
+                console.log("QUESTION_2")
                 res.write(`data: ${JSON.stringify(newScriptRemoveTag)}\n\n`);
                 return;
             }
 
             if (payload.topic) {
+                console.log("TOPIC_1")
                 const data = await callOpenAIHelper(maxTokenByTime, promptTopic);
                 const newScript = await convertScriptOpenAi(payload, data);
                 const newScriptRemoveTag = newScript.split(`\n`).filter(text => text != "");
                 newScriptRemoveTag.shift();
+                console.log("TOPIC_2");
                 res.write(`data: ${JSON.stringify(newScriptRemoveTag)}\n\n`);
                 return;
             }
 
             if (payload.topicLv2) {
+                console.log("TOPICLV2_1")
                 const callOpenAI = async () => {
                     for (let index = 0; index < promptArrayTopicLv2.length; index++) {
                         const response = await callOpenAIHelper(maxTokenByTime, promptArrayTopicLv2[index].prompt)
@@ -81,6 +89,7 @@ class AiLeyBotDocumentController {
                         res.write(`data: ${JSON.stringify(data)}\n\n`);
                     }
                 };
+                console.log("TOPICLV2_2")
                 callOpenAI();
                 return;
             }
