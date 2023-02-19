@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import { interactOpenAI } from "../utils/interactOpenAI";
 import { callOpenAIHelper, convertScriptOpenAi } from "../utils/helper";
 
 export type BodySendToOpenAI = {
@@ -23,7 +22,7 @@ class AiLeyBotDocumentController {
             const payload = req.query;
             let maxTokenByTime = 500;
 
-            const promptCustom = `${payload.act}`;
+            const promptCustom = `${payload.act}. My skill is ${payload.skill}`;
             const promptTopic = payload.topic ? `I want to ask about ${(payload.topic as string).replace("-", " ") as string} but I don't know what should I ask you to get adivces from this field.` : ``;
             const promptQuestion = payload.promptQuestion;
             const promptArrayTopicLv2 = payload.topicLv2 ?
@@ -46,41 +45,33 @@ class AiLeyBotDocumentController {
                     }
                 ] : [];
 
-            if (payload.act) {
-                console.log("ACT_1")
+            if (payload.act && payload.skill) {
                 const data = await callOpenAIHelper(maxTokenByTime, promptCustom);
                 const newScript = await convertScriptOpenAi(payload, data);
                 const newScriptRemoveTag = newScript.split(`\n`).filter(script => script != "");
-                console.log("ACT_2")
                 res.write(`data: ${JSON.stringify(newScriptRemoveTag)}\n\n`);
                 return;
             }
 
             if (payload.promptQuestion) {
-                console.log("QUESTION_1")
-
                 const data = await callOpenAIHelper(maxTokenByTime, promptQuestion as string);
                 const newScript = await convertScriptOpenAi(payload, data);
                 const newScriptRemoveTag = newScript.split(`\n`).filter(script => script != "");
                 newScriptRemoveTag.shift();
-                console.log("QUESTION_2")
                 res.write(`data: ${JSON.stringify(newScriptRemoveTag)}\n\n`);
                 return;
             }
 
             if (payload.topic) {
-                console.log("TOPIC_1")
                 const data = await callOpenAIHelper(maxTokenByTime, promptTopic);
                 const newScript = await convertScriptOpenAi(payload, data);
                 const newScriptRemoveTag = newScript.split(`\n`).filter(text => text != "");
                 newScriptRemoveTag.shift();
-                console.log("TOPIC_2");
                 res.write(`data: ${JSON.stringify(newScriptRemoveTag)}\n\n`);
                 return;
             }
 
             if (payload.topicLv2) {
-                console.log("TOPICLV2_1")
                 const callOpenAI = async () => {
                     for (let index = 0; index < promptArrayTopicLv2.length; index++) {
                         const response = await callOpenAIHelper(maxTokenByTime, promptArrayTopicLv2[index].prompt)
@@ -90,7 +81,6 @@ class AiLeyBotDocumentController {
                         res.write(`data: ${JSON.stringify(data)}\n\n`);
                     }
                 };
-                console.log("TOPICLV2_2")
                 callOpenAI();
                 return;
             }
