@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 import { callOpenAIHelper, convertScriptOpenAi } from "../utils/helper";
-import { initalizeWebSocket } from "../utils/ws";
 
 export type BodySendToOpenAI = {
     model: string,
@@ -21,7 +20,6 @@ class AiLeyBotDocumentController {
 
             res.writeHead(200, headers);
 
-            initalizeWebSocket();
             const payload = req.query;
             let maxTokenByTime = 500;
 
@@ -48,11 +46,12 @@ class AiLeyBotDocumentController {
                     }
                 ] : [];
 
-            if (payload.act && payload.skill) {
+            if (payload.act) {
+                console.log("ACT")
                 const data = await callOpenAIHelper(maxTokenByTime, promptCustom);
                 const newScript = await convertScriptOpenAi(payload, data);
                 const newScriptRemoveTag = newScript.split(`\n`).filter(script => script != "");
-                res.write(`data: ${JSON.stringify(newScriptRemoveTag)}\n\n`);
+                res.json({data: newScriptRemoveTag.join("</br>"), message: 'OK'});
                 return;
             }
 
@@ -61,7 +60,8 @@ class AiLeyBotDocumentController {
                 const newScript = await convertScriptOpenAi(payload, data);
                 const newScriptRemoveTag = newScript.split(`\n`).filter(script => script != "");
                 newScriptRemoveTag.shift();
-                res.write(`data: ${JSON.stringify(newScriptRemoveTag)}\n\n`);
+                res.json({data: newScriptRemoveTag.join("</br>"), message: 'OK'});
+
                 return;
             }
 
@@ -69,7 +69,8 @@ class AiLeyBotDocumentController {
                 const data = await callOpenAIHelper(maxTokenByTime, promptTopic);
                 const newScriptRemoveTag = data.split(`\n`).filter((text: any) => text != "");
                 newScriptRemoveTag.shift();
-                res.write(`data: ${JSON.stringify(newScriptRemoveTag)}\n\n`);
+                res.json({data: newScriptRemoveTag.join("</br>"), message: 'OK'});
+
                 return;
             }
 

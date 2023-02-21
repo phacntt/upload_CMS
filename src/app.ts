@@ -1,18 +1,12 @@
 import express from 'express';
 import cookieParser from 'cookie-parser'
-import path from 'path';
 import { Routes } from './interfaces/routes.interface';
 import { CREDENTIALS, NODE_ENV, ORIGIN, PORT } from './config';
 import fileUpload from 'express-fileupload'
 import { task } from './utils/task-cron';
-import { Banner } from '@prisma/client';
-import { context } from './types/context.type';
-import cron from 'node-cron'
 import cors from 'cors'
 import errorMiddleware from './middlewares/error.middleware';
 import helmet from 'helmet';
-import { WebSocketServer } from 'ws';
-import { initalizeWebSocket } from './utils/ws';
 
 class App {
   public app: express.Application;
@@ -28,8 +22,6 @@ class App {
     this.initializeRoutes(routes);
     this.initializeCron();
     this.initializeErrorHandling()
-    this.initalizeWS()
-    // this.initializeStaticFile();
   }
 
   public listen() {
@@ -65,11 +57,6 @@ class App {
   private initializeCron() {
     task()
   }
-
-  private initalizeWS() {
-    initalizeWebSocket()
-  }
-
 }
 
 export default App;
