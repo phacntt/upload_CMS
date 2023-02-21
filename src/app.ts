@@ -11,6 +11,8 @@ import cron from 'node-cron'
 import cors from 'cors'
 import errorMiddleware from './middlewares/error.middleware';
 import helmet from 'helmet';
+import { WebSocketServer } from 'ws';
+import { initalizeWebSocket } from './utils/ws';
 
 class App {
   public app: express.Application;
@@ -26,6 +28,7 @@ class App {
     this.initializeRoutes(routes);
     this.initializeCron();
     this.initializeErrorHandling()
+    this.initalizeWS()
     // this.initializeStaticFile();
   }
 
@@ -61,6 +64,10 @@ class App {
 
   private initializeCron() {
     task()
+  }
+
+  private initalizeWS() {
+    initalizeWebSocket()
   }
 
 }

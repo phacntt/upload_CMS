@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { callOpenAIHelper, convertScriptOpenAi } from "../utils/helper";
+import { initalizeWebSocket } from "../utils/ws";
 
 export type BodySendToOpenAI = {
     model: string,
@@ -20,6 +21,7 @@ class AiLeyBotDocumentController {
 
             res.writeHead(200, headers);
 
+            initalizeWebSocket();
             const payload = req.query;
             let maxTokenByTime = 500;
 
