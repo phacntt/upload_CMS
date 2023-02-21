@@ -125,7 +125,7 @@ const keyWordReplace = [
     },
 ]
 
-export const convertScriptOpenAi = async (payload: any, textResponse: string) => {
+export const convertScriptOpenAi = (payload: any, textResponse: string) => {
     const addLinkTag = (link: string, keyWord: string) => `<a href="${link}">${keyWord}</a>`;
 
     const x = keyWordReplace.map(key => addLinkTag(key.link, key.key)).join(", ")
@@ -135,16 +135,20 @@ export const convertScriptOpenAi = async (payload: any, textResponse: string) =>
     let z = 0;
     if (payload.location == "Vietnam" || payload.location == "Việt Nam") {
         for (let i = 0; i < arrayText.length; i++) {
-            for (let j = 0; j < listArrayKeywordVN.length; j++) {
-                if (arrayText[i].toLowerCase().includes(listArrayKeywordVN[j].key.toLowerCase())) {
-                    arrayText[i] = arrayText[i].toLowerCase().replace(listArrayKeywordVN[j].key.toLowerCase(), addLinkTag(listArrayKeywordVN[j].link, listArrayKeywordVN[j].key.concat("VN")))
+            if (payload.topic || payload.promptQuestion || payload.topicLv2) {
+                for (let j = 0; j < listArrayKeywordVN.length; j++) {
+                    if (arrayText[i].toLowerCase().includes(listArrayKeywordVN[j].key.toLowerCase())) {
+                        arrayText[i] = arrayText[i].toLowerCase().replace(listArrayKeywordVN[j].key.toLowerCase(), addLinkTag(listArrayKeywordVN[j].link, listArrayKeywordVN[j].key.concat("VN")))
+                    }
                 }
             }
-            for (let key = 0; key < keyWord.length; key++) {
-                if (arrayText[i].toLowerCase().includes(keyWord[key])) {
-                    if (count < 1) {
-                        arrayText[i] += " " + documnetHavekeyWord
-                        count++
+            if (payload.act) {
+                for (let key = 0; key < keyWord.length; key++) {
+                    if (arrayText[i].toLowerCase().includes(keyWord[key])) {
+                        if (count < 1) {
+                            arrayText[i] += " " + documnetHavekeyWord
+                            count++
+                        }
                     }
                 }
             }
@@ -191,10 +195,12 @@ export const convertScriptOpenAi = async (payload: any, textResponse: string) =>
     }
 
 
-    if (count == 0) {
+    if (count == 0 && payload.act) {
         newRecord = arrayText.join("").concat(`\n\n`, `More: ${documnetNoHavekeyWord}`)
     } else {
         newRecord = arrayText.join("")
     }
     return newRecord
 }
+
+

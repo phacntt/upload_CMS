@@ -19,8 +19,14 @@ export const interactOpenAI = async(body: BodySendToOpenAI) => {
             })
         });
         const data = await fetchData.json();
-        return data.choices[0].text;
-    } catch (error) {
-        throw new HttpException(400, "Something went wrongs. Please do it again!!!")
+
+        if (data.error) {
+            throw new HttpException(400, data.error.message)
+        }
+        if (data) {
+            return data.choices[0].text
+        }
+    } catch (error: any) {
+        throw new HttpException(400, "Something went wrong please do it again.....")
     }
 }

@@ -11,14 +11,7 @@ class AiLeyBotDocumentController {
 
     public aiLeyBotResponse = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const headers = {
-                'Content-Type': 'text/event-stream',
-                'Connection': 'keep-alive',
-                'Cache-Control': 'no-cache',
-                'Access-Control-Allow-Origin': '*'
-            };
 
-            res.writeHead(200, headers);
 
             const payload = req.query;
             let maxTokenByTime = 500;
@@ -47,38 +40,48 @@ class AiLeyBotDocumentController {
                 ] : [];
 
             if (payload.act) {
-                console.log("ACT")
                 const data = await callOpenAIHelper(maxTokenByTime, promptCustom);
-                const newScript = await convertScriptOpenAi(payload, data);
+                const newScript = convertScriptOpenAi(payload, data);
                 const newScriptRemoveTag = newScript.split(`\n`).filter(script => script != "");
-                res.json({data: newScriptRemoveTag.join("</br>"), message: 'OK'});
+                res.status(200).json({ data: newScriptRemoveTag.join("</br>"), message: 'OK' });
                 return;
             }
 
             if (payload.promptQuestion) {
                 const data = await callOpenAIHelper(maxTokenByTime, promptQuestion as string);
-                const newScript = await convertScriptOpenAi(payload, data);
+                const newScript = convertScriptOpenAi(payload, data);
                 const newScriptRemoveTag = newScript.split(`\n`).filter(script => script != "");
                 newScriptRemoveTag.shift();
-                res.json({data: newScriptRemoveTag.join("</br>"), message: 'OK'});
+                res.json({ data: newScriptRemoveTag.join("</br>"), message: 'OK' });
 
                 return;
             }
 
             if (payload.topic) {
                 const data = await callOpenAIHelper(maxTokenByTime, promptTopic);
-                const newScriptRemoveTag = data.split(`\n`).filter((text: any) => text != "");
+                const newScript = convertScriptOpenAi(payload, data);
+                const newScriptRemoveTag = newScript.split(`\n`).filter((text: any) => text != "");
+                console.log(newScriptRemoveTag)
                 newScriptRemoveTag.shift();
-                res.json({data: newScriptRemoveTag.join("</br>"), message: 'OK'});
-
+                res.status(200).json({ data: newScriptRemoveTag, message: 'OK' });
+                
                 return;
             }
 
             if (payload.topicLv2) {
+                const headers = {
+                    'Content-Type': 'text/event-stream',
+                    'Connection': 'keep-alive',
+                    'Cache-Control': 'no-cache',
+                    'Access-Control-Allow-Origin': '*'
+                };
+
+                res.writeHead(200, headers);
+
                 const callOpenAI = async () => {
                     for (let index = 0; index < promptArrayTopicLv2.length; index++) {
                         const response = await callOpenAIHelper(maxTokenByTime, promptArrayTopicLv2[index].prompt)
-                        const newScript = await convertScriptOpenAi(payload, response);
+                        const newScript = convertScriptOpenAi(payload, response)
                         const data = newScript.split(`\n`).filter(text => text != "")
                         data.shift();
                         res.write(`data: ${JSON.stringify(data)}\n\n`);
