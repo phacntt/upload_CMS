@@ -32,48 +32,48 @@ model Category {
   name     String
   createAt DateTime  @default(now())
   updateAt DateTime  @updatedAt
-  nameVN   String
+  keywords String[]
   pageId   Int
   page     Page      @relation(fields: [pageId], references: [id])
   contents Content[]
   shops    Shop[]
+  products Product[]
 }
 
 model Product {
-  id             Int      @id @default(autoincrement())
-  image          String
-  linkAffilitate String
-  discountRate   Float
-  name           String
-  description    String
-  price          Float
-  createAt       DateTime @default(now())
-  updateAt       DateTime @updatedAt
-  linkProduct    String
-  merchant       String
-  discountAmount Float
-  discount       Float
-  productId      String   @unique
+  id              Int @id @default(autoincrement())
+  itemId          Int @unique
+  commissionRate  String
+  appExistRate    String
+  appNewRate      String
+  webExistRate    String
+  webNewRate      String
+  commission      String
+  price           String
+  sales           Int
+  imageUrl        String
+  productName     String
+  shopName        String
+  productLink     String
+  offerLink       String
+  periodEndTime   String
+  periodStartTime String
+  categoryId      Int
+  category        Category @relation(fields: [categoryId], references: [id])
 }
 
 model Shop {
-  id                      Int      @id @default(autoincrement())
-  logo                    String
-  name                    String
-  max_com                 String
-  categoryId              Int
-  createAt                DateTime @default(now())
-  updateAt                DateTime @updatedAt
-  action_point            String
-  commission_policy       String
-  cookie_policy           String
-  introduction            String
-  other_notice            String
-  rejected_reason         String
-  traffic_building_policy String
-  url                     String
-  campaignId              String   @unique
-  category                Category @relation(fields: [categoryId], references: [id])
+  id              Int      @id @default(autoincrement())
+  commissionRate  String
+  imageUrl        String
+  offerLink       String
+  originalLink    String
+  shopId          Int @unique
+  shopName        String
+  periodStartTime String
+  periodEndTime   String
+  categoryId      Int
+  category        Category @relation(fields: [categoryId], references: [id])
 }
 
 model Banner {
@@ -110,11 +110,11 @@ model Content {
 }
 
 model AiLeyBotDocumnet {
-  id Int @id @default(autoincrement())
-  option String
-  time Int
+  id       Int    @id @default(autoincrement())
+  option   String
+  time     Int
   location String
-  script String
+  script   String
 }
 
 enum Role {

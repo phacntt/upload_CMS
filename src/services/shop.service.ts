@@ -1,5 +1,6 @@
 import { Prisma, Product, Shop } from "@prisma/client";
 import { context } from "../types/context.type";
+import { CreateShopDto } from "../dto/shop.dto";
 
 type FilterShops = {
     page?: number,
@@ -28,25 +29,23 @@ class ShopService {
             condition.categoryId = Number(filter.categoryId)
         }
 
-        const shops = await this.clients.prisma.shop.findMany({skip: page == 1 ? page - 1 : (page - 1) * limit, take: limit, where: condition})
+        const shops = await this.clients.prisma.shop.findMany({ skip: page == 1 ? page - 1 : (page - 1) * limit, take: limit, where: condition })
         return shops;
     }
 
     public async getShopById(id: number) {
-        const shopById = await this.clients.prisma.shop.findFirst({where: {id}, include: {category: true}})
+        const shopById = await this.clients.prisma.shop.findFirst({ where: { id }, include: { category: true } })
         return shopById;
     }
 
-    public async createShops(shopData: Shop) {
-        const newShop = await this.clients.prisma.shop.upsert({
-            where: {campaignId: shopData.campaignId},
+    public async createShops(shopData: CreateShopDto) {
+        return await this.clients.prisma.shop.upsert({
             create: shopData,
-            update: shopData
+            update: shopData,
+            where: { shopId: shopData.shopId }
         })
-        
-        return newShop
     }
-    
+
 }
 
 export default ShopService

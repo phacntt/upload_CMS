@@ -1,6 +1,7 @@
 import { Prisma, Product } from "@prisma/client";
 import { context } from "../types/context.type";
 import { HttpException } from "../exception/HttpException";
+import { CreateProductDto } from "../dto/product.dto";
 
 type ListProductsFilter = {
     page?: number;
@@ -49,34 +50,32 @@ class ProductService {
         if (filter?.sortBy?.price) {
             sortBy.price = filter.sortBy?.price
         }
-        const products = await this.clients.prisma.product.findMany({skip: page == 1 ? page - 1 : (page - 1) * limit, take: limit, orderBy: sortBy})
+        const products = await this.clients.prisma.product.findMany({ skip: page == 1 ? page - 1 : (page - 1) * limit, take: limit, orderBy: sortBy })
         return products;
     }
 
     public async getProductById(id: number) {
-        const productById = await this.clients.prisma.product.findFirst({where: {id}})
+        const productById = await this.clients.prisma.product.findFirst({ where: { id } })
         return productById;
     }
 
     public async getProductByName(name: string) {
-        const productByName = await this.clients.prisma.product.findFirst({where: {name}})
+        const productByName = await this.clients.prisma.product.findFirst({ where: { productName: name } })
         return productByName;
     }
 
-    public async createProducts(productData: Product) {
-        const newProducts = await this.clients.prisma.product.upsert({
-            where: {productId: productData.productId},
+    public async createProducts(productData: CreateProductDto) {
+        return await this.clients.prisma.product.upsert({
+            where: { itemId: productData.itemId },
             create: productData,
             update: productData
         })
-
-        return newProducts
     }
 
     public async deleteProduct(id: number) {
-        await this.clients.prisma.product.delete({where: { id }})
+        await this.clients.prisma.product.delete({ where: { id } })
     }
-    
+
 }
 
 export default ProductService

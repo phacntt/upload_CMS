@@ -27,7 +27,7 @@ class ShopController {
 
             const shopById: Shop = await this.shopService.getShopById(Number(id)) as Shop;
 
-            res.status(200).json({ data: shopById, message: `Get product have id = ${shopById.name} successfully` });
+            res.status(200).json({ data: shopById, message: `Get product have id = ${shopById.shopName} successfully` });
         } catch (error) {
             next(error);
         }

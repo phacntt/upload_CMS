@@ -76,89 +76,100 @@ async function main() {
         // Shop to earn
         {
             name: 'Fashion',
-            nameVN: 'Thời trang',
-            pageId: 3
+            keywords: ["Fashion", "Shoes", "Fashion Accessories", "Sport & Outdoor", "Watch"],
+            pageId: 3,
+
         },
         {
             name: 'Home & Living',
-            nameVN: 'Nhà cửa đời sống',
+            keywords: ["Home & Living", "Home appliances", "Automotive", "Tools & Home", "Home Care", "Toys"],
             pageId: 3
         },
         {
             name: 'Health & Beauty',
-            nameVN: 'Sức khỏe - Làm đẹp',
+            keywords: ["Health & Beauty", "Health", "Beauty"],
             pageId: 3
         },
         {
-            name: 'Education',
-            nameVN: 'Ngoại ngữ',
+            name: 'Books & Stationary',
+            keywords: ["Books", "Dụng cụ văn phòng phẩm", "Sách"],
             pageId: 3
         },
         {
-            name: 'Travel & Entertaiment',
-            nameVN: 'Tour du lịch',
+            name: 'Pets',
+            keywords: ["Pets", "Thú cưng"],
             pageId: 3
         },
         {
             name: 'Voucher & Service',
-            nameVN: 'Vourcher & Dịch vụ',
+            keywords: [],
             pageId: 3
         },
         {
-            name: 'Groceries, Mom & Babies',
-            nameVN: 'Bách hóa, Mẹ và bé',
+            name: 'Groceries',
+            keywords: ["Bách hóa", "Groceries"],
+            pageId: 3
+        },
+        {
+            name: 'Mom, kids & babies',
+            keywords: ["Mẹ và bé", "Mom & babies"],
+            pageId: 3
+        },
+        {
+            name: 'Electronics',
+            keywords: ["Mobile & Gadgets", "Consumer Electronics", "Computer & Accessories"],
             pageId: 3
         },
         // Mission to earn
         {
             name: 'NFT',
-            nameVN: '',
+            keywords: [],
             pageId: 5
         },
         {
             name: 'DeFi',
-            nameVN: '',
+            keywords: [],
             pageId: 5
         },
         {
             name: 'GameFi',
-            nameVN: '',
+            keywords: [],
             pageId: 5
         },
         {
             name: 'SocialFi',
-            nameVN: '',
+            keywords: [],
             pageId: 5
         },
         {
             name: 'Web3',
-            nameVN: '',
+            keywords: [],
             pageId: 5
         },
         //  Play to earn
         {
             name: 'First Person Shooters',
-            nameVN: '',
+            keywords: [],
             pageId: 7
         },
         {
             name: 'Casino Game',
-            nameVN: '',
+            keywords: [],
             pageId: 7
         },
         {
             name: 'Massive Multiplayer Online Games',
-            nameVN: '',
+            keywords: [],
             pageId: 7
         },
         {
             name: 'Sports Game',
-            nameVN: '',
+            keywords: [],
             pageId: 7
         },
         {
             name: 'Arcade Games',
-            nameVN: '',
+            keywords: [],
             pageId: 7
         },
     ]

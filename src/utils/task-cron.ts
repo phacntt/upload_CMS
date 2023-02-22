@@ -1,6 +1,6 @@
 import cron from 'node-cron'
 import { context } from '../types/context.type'
-import { Banner, Shop } from '@prisma/client'
+import { Banner, Product, Shop } from '@prisma/client'
 import moment from 'moment'
 import { deleteArrObjects, listObjects } from './S3'
 import { getDifference } from './helper'
@@ -8,6 +8,9 @@ import AffiliateAccessTradeService from '../services/affiliateAccessTrade.servic
 import fetch from 'node-fetch'
 import ShopService from '../services/shop.service'
 import ProductService from '../services/product.service'
+import { HttpException } from '../exception/HttpException'
+import { CreateShopDto } from '../dto/shop.dto'
+import { CreateProductDto } from '../dto/product.dto'
 
 export const task = () => {
     const client = context
@@ -63,34 +66,36 @@ export const task = () => {
     })
 
     const createShop = cron.schedule('0 0 * * *', async () => {
-        const param = ''
-        const listShopAT = await shopsAT.getShops(param);
-        for (let index = 0; index < listShopAT!.length; index++) {
-            await shopsService.createShops(listShopAT![index])
+        try {
+            const shops: CreateShopDto[] = await shopsAT.getShops()
+            for (let item = 0; item < shops.length; item++) {
+                await shopsService.createShops(shops[item])
+            }
+            
+            console.log("SHOP WAS CREATED...............")
+        } catch (error: any) {
+            throw new HttpException(400, error);
+            
         }
-        console.log("SHOP...............")
     })
 
-    const createProduct = cron.schedule('0 0 * * *', async () => {
-        let pageNumber = 1;
-        while (pageNumber <= 20) {
-            const param = {
-                merchant: 'shopee',
-                page: pageNumber
+    const createProduct = cron.schedule('0 1 * * *', async () => {
+        try {
+            const products: CreateProductDto[] = await shopsAT.getProducts()
+            for (let item = 0; item < products.length; item++) {
+                await productsService.createProducts(products[item])
             }
-            shopsAT.getProducts(param).then(result => {
-                for (let index = 0; index < result.length; index++) {
-                    productsService.createProducts(result[index])
-                }
-            }).catch(error => console.log(error));
-            pageNumber++;
+            
+            console.log("PRODUCT WAS CREATED ...............")
+        } catch (error: any) {
+            throw new HttpException(400, error);
+            
         }
-        console.log("PRODUCT...............")
     })
 
     taskUpdateStatusBanner.start();
-    createShop.start();
     createProduct.start();
+    createShop.start();
     // clearImageTrashS3.start();
 
 }
