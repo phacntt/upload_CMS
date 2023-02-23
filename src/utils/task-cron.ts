@@ -65,20 +65,15 @@ export const task = () => {
 
     })
 
-    // Lay time theo UTC :))))
-    const createShop = cron.schedule('12 6 * * *', async () => {
-        try {
-            console.log("Vo roi ne")
-            const shops: CreateShopDto[] = await shopsAT.getShops()
-            for (let item = 0; item < shops.length; item++) {
-                await shopsService.createShops(shops[item])
-            }
-            
-            console.log("SHOP WAS CREATED...............")
-        } catch (error: any) {
-            throw new HttpException(400, error);
-            
+    // Lay time theo UTC (Lay time hien tai - 7)
+    const createShop = cron.schedule('30 13 * * *', async () => {
+        console.log("Vo roi ne")
+        const shops: CreateShopDto[] = await shopsAT.getShops()
+        for (let item = 0; item < shops.length; item++) {
+            await shopsService.createShops(shops[item])
         }
+
+        console.log("SHOP WAS CREATED...............")
     })
 
     const createProduct = cron.schedule('20 11 * * *', async () => {
@@ -87,11 +82,11 @@ export const task = () => {
             for (let item = 0; item < products.length; item++) {
                 await productsService.createProducts(products[item])
             }
-            
+
             console.log("PRODUCT WAS CREATED ...............")
         } catch (error: any) {
             throw new HttpException(400, error);
-            
+
         }
     })
 
