@@ -7,7 +7,7 @@ import { CreateProductDto } from "../dto/product.dto";
 import { CreateShopDto } from "../dto/shop.dto";
 
 type ProductShopee = {
-    itemId: number,
+    itemId: string,
     commissionRate: string,
     appExistRate: string,
     appNewRate: string,
@@ -72,53 +72,58 @@ class AffiliateAccessTradeService {
 
 
     public async getProducts() {
-        const listCategory: Category[] = await this.client.prisma.category.findMany({ where: { page: { name: 'Shop to earn' } } })
-        let hasNextPage = true;
+        try {
+            const listCategory: Category[] = await this.client.prisma.category.findMany({ where: { page: { name: 'Shop to earn' } } })
+            let hasNextPage = true;
 
-        let arrProduct: any[] = [];
-        for (let i = 0; i < listCategory.length; i++) {
-            for (let j = 0; j < listCategory[i].keywords.length; j++) {
-                let page = 1;
-                do {
-                    await new Promise(resolve => setTimeout(resolve, 2000));
+            let arrProduct: any[] = [];
+            for (let i = 0; i < listCategory.length; i++) {
+                for (let j = 0; j < listCategory[i].keywords.length; j++) {
+                    let page = 1;
+                    do {
+                        await new Promise(resolve => setTimeout(resolve, 2000));
 
-                    const cURL = { "query": "query ($keyword: String!, $page: Int!) {\r\n  productOfferV2(keyword: $keyword, page: $page) {\r\n    nodes {\r\n      commissionRate\r\n      periodStartTime\r\n      periodEndTime\r\n      commission\r\n      price\r\n      sales\r\n      productName\r\n      shopName\r\n      imageUrl\r\n      productLink\r\n      offerLink\r\n      itemId\r\n      appNewRate\r\n      appNewRate\r\n      webExistRate\r\n      webNewRate\r\n      itemId\r\n    }\r\n    pageInfo {\r\n      page\r\n      scrollId\r\n      hasNextPage\r\n    }\r\n  }\r\n}", "variables": { "keyword": `"${listCategory[i].keywords[j]}"`, "page": page } }
+                        const cURL = { "query": "query ($keyword: String!, $page: Int!) {\r\n  productOfferV2(keyword: $keyword, page: $page) {\r\n    nodes {\r\n      commissionRate\r\n      periodStartTime\r\n      periodEndTime\r\n      commission\r\n      price\r\n      sales\r\n      productName\r\n      shopName\r\n      imageUrl\r\n      productLink\r\n      offerLink\r\n      itemId\r\n      appExistRate\r\n      appNewRate\r\n      webExistRate\r\n      webNewRate\r\n      itemId\r\n    }\r\n    pageInfo {\r\n      page\r\n      scrollId\r\n      hasNextPage\r\n    }\r\n  }\r\n}", "variables": { "keyword": `"${listCategory[i].keywords[j]}"`, "page": page } }
 
-                    const callAPIShopee = await fetchAPIShopee(cURL)
-                    const productsByCategory: ProductShopee[] = callAPIShopee.data.productOfferV2.nodes
-                    productsByCategory.forEach(product => product.categoryId = listCategory[i].id)
-                    hasNextPage = callAPIShopee.data.productOfferV2.pageInfo.hasNextPage
-                    let arrItems: CreateProductDto[] = [];
-                    for (let item of productsByCategory) {
-                        let product: CreateProductDto = {
-                            appExistRate: item.appExistRate,
-                            appNewRate: item.appExistRate,
-                            commission: item.commission,
-                            commissionRate: item.commissionRate,
-                            imageUrl: item.imageUrl,
-                            itemId: item.itemId,
-                            offerLink: item.offerLink,
-                            periodEndTime: item.periodEndTime.toString(),
-                            periodStartTime: item.periodStartTime.toString(),
-                            price: item.price,
-                            productLink: item.productLink,
-                            productName: item.productName,
-                            sales: item.sales,
-                            shopName: item.shopName,
-                            webExistRate: item.webExistRate,
-                            webNewRate: item.webExistRate,
-                            categoryId: listCategory[i].id,
+                        const callAPIShopee = await fetchAPIShopee(cURL)
+                        const productsByCategory: ProductShopee[] = callAPIShopee.data.productOfferV2.nodes
+                        productsByCategory.forEach(product => product.categoryId = listCategory[i].id)
+                        hasNextPage = callAPIShopee.data.productOfferV2.pageInfo.hasNextPage
+                        let arrItems: CreateProductDto[] = [];
+                        for (let item of productsByCategory) {
+                            let product: CreateProductDto = {
+                                appExistRate: item.appExistRate,
+                                appNewRate: item.appExistRate,
+                                commission: item.commission,
+                                commissionRate: item.commissionRate,
+                                imageUrl: item.imageUrl,
+                                itemId: item.itemId.toString(),
+                                offerLink: item.offerLink,
+                                periodEndTime: item.periodEndTime.toString(),
+                                periodStartTime: item.periodStartTime.toString(),
+                                price: item.price.toString(),
+                                productLink: item.productLink,
+                                productName: item.productName,
+                                sales: item.sales,
+                                shopName: item.shopName,
+                                webExistRate: item.webExistRate,
+                                webNewRate: item.webExistRate,
+                                categoryId: item.categoryId,
+                            }
+
+                            arrItems.push(product)
                         }
 
-                        arrItems.push(product)
-                    }
-
-                    arrProduct.push(arrItems)
-                    page++;
-                } while (hasNextPage);
+                        arrProduct.push(arrItems)
+                        page++;
+                    } while (hasNextPage);
+                }
             }
+            return arrProduct.flat()
+           
+        } catch (error: any) {
+            throw new HttpException(404, error as any)
         }
-        return arrProduct.flat()
     }
 
     // Get Shops

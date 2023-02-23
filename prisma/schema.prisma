@@ -42,7 +42,7 @@ model Category {
 
 model Product {
   id              Int @id @default(autoincrement())
-  itemId          Int @unique
+  itemId          String @unique
   commissionRate  String
   appExistRate    String
   appNewRate      String

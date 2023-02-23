@@ -1,8 +1,8 @@
 import { IsNumber, IsString } from "class-validator";
 
 export class CreateProductDto {
-    @IsNumber()
-    itemId: number
+    @IsString()
+    itemId: string
     
     @IsString()
     commissionRate: string

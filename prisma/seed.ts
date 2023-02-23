@@ -76,7 +76,7 @@ async function main() {
         // Shop to earn
         {
             name: 'Fashion',
-            keywords: ["Fashion", "Shoes", "Fashion Accessories", "Sport & Outdoor", "Watch"],
+            keywords: ["Fashion", "Shoes", "Fashion Accessories", "Sport & Outdoor", "Watch", "Áo form rộng", "Len Milk"],
             pageId: 3,
 
         },

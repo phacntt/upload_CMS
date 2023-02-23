@@ -33,24 +33,17 @@ class ProductController {
         }
     };
 
-    // public createProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    //     try {
-    //         const dataCreateProducts = req.body
+    public createProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const dataCreateProducts = req.body
 
-    //         const result = await Promise.all(dataCreateProducts).then(resolve => resolve)
-    //         // console.log(result)
-    //         // result.map( async(ele: any) => {
-    //         //     const existsName = await this.productService.getProductByName(ele.name)
-    //         //     if (existsName) throw new HttpException(400, `Product ${existsName.name} has already exists please check again`)
-    //         //     return;
-    //         // })
-    //         const newProduct = await this.productService.createProducts(result);
+            const newProduct = await this.productService.createProducts(dataCreateProducts);
 
-    //         res.status(200).json({ data: newProduct, message: 'Create products successfully' });
-    //     } catch (error) {
-    //         next(error);
-    //     }
-    // };
+            res.status(200).json({ data: newProduct, message: 'Create products successfully' });
+        } catch (error) {
+            next(error);
+        }
+    };
 
     public deleteProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
