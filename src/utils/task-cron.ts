@@ -65,8 +65,9 @@ export const task = () => {
 
     })
 
+    console.log(new Date().toISOString())
     // Lay time theo UTC (Lay time hien tai - 7)
-    const createShop = cron.schedule('30 13 * * *', async () => {
+    const createShop = cron.schedule('37 06 * * *', async () => {
         console.log("Vo roi ne")
         const shops: CreateShopDto[] = await shopsAT.getShops()
         for (let item = 0; item < shops.length; item++) {
