@@ -65,7 +65,8 @@ export const task = () => {
 
     })
 
-    const createShop = cron.schedule('5 13 * * *', async () => {
+    // Lay time theo UTC :))))
+    const createShop = cron.schedule('12 6 * * *', async () => {
         try {
             console.log("Vo roi ne")
             const shops: CreateShopDto[] = await shopsAT.getShops()
