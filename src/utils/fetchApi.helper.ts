@@ -29,6 +29,9 @@ export const fetchAPIShopee = async (cURL: any) => {
 
         const signature = CryptoJS.SHA256(factor).toString(CryptoJS.enc.Hex);
 
+        console.log(API_KEY_SHOPEE_APP_ID?.length, API_KEY_SHOPEE_APP_ID)
+        console.log(API_KEY_SHOPEE_SECRET?.length, API_KEY_SHOPEE_SECRET)
+
         const authorizationHeader = `SHA256 Credential=${API_KEY_SHOPEE_APP_ID}, Timestamp=${timeStamp}, Signature=${signature}`
 
 
