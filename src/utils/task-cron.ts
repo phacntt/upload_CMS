@@ -65,7 +65,7 @@ export const task = () => {
 
     })
 
-    const createShop = cron.schedule('15 10 * * *', async () => {
+    const createShop = cron.schedule('0 11 * * *', async () => {
         try {
             const shops: CreateShopDto[] = await shopsAT.getShops()
             for (let item = 0; item < shops.length; item++) {
@@ -79,7 +79,7 @@ export const task = () => {
         }
     })
 
-    const createProduct = cron.schedule('0 1 * * *', async () => {
+    const createProduct = cron.schedule('20 11 * * *', async () => {
         try {
             const products: CreateProductDto[] = await shopsAT.getProducts()
             for (let item = 0; item < products.length; item++) {
