@@ -80,7 +80,7 @@ class AffiliateAccessTradeService {
             for (let j = 0; j < listCategory[i].keywords.length; j++) {
                 let page = 1;
                 do {
-                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    await new Promise(resolve => setTimeout(resolve, 3000));
 
                     const cURL = { "query": "query ($keyword: String!, $page: Int!) {\r\n  productOfferV2(keyword: $keyword, page: $page) {\r\n    nodes {\r\n      commissionRate\r\n      periodStartTime\r\n      periodEndTime\r\n      commission\r\n      price\r\n      sales\r\n      productName\r\n      shopName\r\n      imageUrl\r\n      productLink\r\n      offerLink\r\n      itemId\r\n      appNewRate\r\n      appNewRate\r\n      webExistRate\r\n      webNewRate\r\n      itemId\r\n    }\r\n    pageInfo {\r\n      page\r\n      scrollId\r\n      hasNextPage\r\n    }\r\n  }\r\n}", "variables": { "keyword": `"${listCategory[i].keywords[j]}"`, "page": page } }
 

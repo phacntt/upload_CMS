@@ -77,6 +77,7 @@ export const task = () => {
             }
 
             console.log("SHOP WAS CREATED...............")
+            console.log("Kết thúc: ", new Date().toISOString())
             console.timeEnd("start");
         } catch (error: any) {
             throw new HttpException(400, error);
@@ -85,7 +86,7 @@ export const task = () => {
 
     })
 
-    const createProduct = cron.schedule('0 1 * * *', async () => {
+    const createProduct = cron.schedule('10 * * * *', async () => {
         try {
             console.time("start");
             console.log("Bắt đầu: ", new Date().toISOString())
@@ -97,6 +98,7 @@ export const task = () => {
             }
 
             console.log("PRODUCT WAS CREATED ...............")
+            console.log("Kết thúc: ", new Date().toISOString())
             console.timeEnd("start");
 
         } catch (error: any) {

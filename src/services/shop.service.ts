@@ -11,7 +11,7 @@ type FilterShops = {
 class ShopService {
     public clients = context
     public DEFAULT_PAGE = 1;
-    public DEFAULT_LIMIT = 5;
+    public DEFAULT_LIMIT = 10;
 
     public async getShops(filter?: FilterShops) {
         const condition: FilterShops = {}
@@ -19,11 +19,11 @@ class ShopService {
         let limit = this.DEFAULT_LIMIT;
 
         if (filter?.page) {
-            page = filter.page;
+            page = Number(filter.page);
         }
 
         if (filter?.limit) {
-            limit = filter.limit;
+            limit = Number(filter.limit);
         }
         if (filter?.categoryId) {
             condition.categoryId = Number(filter.categoryId)
