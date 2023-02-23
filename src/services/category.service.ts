@@ -28,7 +28,6 @@ class CategoryService {
         if (params?.contents) {
             condition.contents = params.contents;
         }
-        console.log(condition)
 
         if (Object.keys(condition).length != 0) {
             return condition;

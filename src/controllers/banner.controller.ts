@@ -65,7 +65,6 @@ class BannerController {
             const auth = req.user
             if (auth.role !== 'Admin') throw new HttpException(400, "You're not permission to do it!!!")
             const checkPositionExistsWithAirCreate = await this.bannerService.checkBannerCamping(bannerData.pageId, bannerData.bannerType, bannerData.bannerPosition, bannerData.airTimeCreate, bannerData.airTimeEnd)
-            console.log(checkPositionExistsWithAirCreate)
             if (checkPositionExistsWithAirCreate.length != 0) throw new HttpException(400, "Banner at this location and the display time already exists, please change the position or change the display timeframe!!");
 
             // Create banner
@@ -90,7 +89,6 @@ class BannerController {
 
 
             const currentTime = moment().add(this.GMT_VN, "hours").toDate();
-            console.log(bannerData)
             if (bannerData.airTimeCreate) {
                 bannerData.airTimeCreate = new Date(moment(bannerData.airTimeCreate).format("YYYY-MM-DD"))
             }
@@ -111,7 +109,6 @@ class BannerController {
             const bannerAirTimeEnd = bannerData.airTimeEnd ? bannerData.airTimeEnd : existsBanner.airTimeEnd;
 
             const checkPositionExistsWithAirCreate = await this.bannerService.checkBannerCamping(bannerPage, bannerType, bannerPosition, bannerAirTimeCreate, bannerAirTimeEnd, Number(id)) as Banner[]
-            console.log(checkPositionExistsWithAirCreate)
 
             if (checkPositionExistsWithAirCreate.length != 0) throw new HttpException(400, "Banner at this location and the display time already exists, please change the position or change the display timeframe!!");
             // Check role

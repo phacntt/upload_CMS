@@ -73,7 +73,6 @@ class AffiliateAccessTradeService {
 
     public async getProducts() {
         const listCategory: Category[] = await this.client.prisma.category.findMany({ where: { page: { name: 'Shop to earn' } } })
-        console.log(listCategory)
         let hasNextPage = true;
 
         let arrProduct: any[] = [];

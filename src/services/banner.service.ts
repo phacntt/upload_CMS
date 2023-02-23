@@ -48,7 +48,6 @@ class BannerService {
     }
 
     public async checkBannerCamping(page: number, type: BannerType, position: number, airTimeCreate: Date, airTimeEnd: Date, id?: number) {
-        console.log(page, type, position, airTimeCreate, airTimeEnd)
         return await this.clients.prisma.banner.findMany({
             where: {
                 airTimeCreate: {

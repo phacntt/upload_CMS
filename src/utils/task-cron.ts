@@ -65,26 +65,40 @@ export const task = () => {
 
     })
 
-    console.log(new Date().toISOString())
     // Lay time theo UTC (Lay time hien tai - 7)
-    const createShop = cron.schedule('37 06 * * *', async () => {
-        console.log("Vo roi ne")
-        const shops: CreateShopDto[] = await shopsAT.getShops()
-        for (let item = 0; item < shops.length; item++) {
-            await shopsService.createShops(shops[item])
+    const createShop = cron.schedule('0 0 * * *', async () => {
+        try {
+            console.time("start");
+            console.log("Bắt đầu: ", new Date().toISOString())
+
+            const shops: CreateShopDto[] = await shopsAT.getShops()
+            for (let item = 0; item < shops.length; item++) {
+                await shopsService.createShops(shops[item])
+            }
+
+            console.log("SHOP WAS CREATED...............")
+            console.timeEnd("start");
+        } catch (error: any) {
+            throw new HttpException(400, error);
+
         }
 
-        console.log("SHOP WAS CREATED...............")
     })
 
-    const createProduct = cron.schedule('20 11 * * *', async () => {
+    const createProduct = cron.schedule('0 1 * * *', async () => {
         try {
+            console.time("start");
+            console.log("Bắt đầu: ", new Date().toISOString())
+            console.log(new Date().toISOString())
+
             const products: CreateProductDto[] = await shopsAT.getProducts()
             for (let item = 0; item < products.length; item++) {
                 await productsService.createProducts(products[item])
             }
 
             console.log("PRODUCT WAS CREATED ...............")
+            console.timeEnd("start");
+
         } catch (error: any) {
             throw new HttpException(400, error);
 
