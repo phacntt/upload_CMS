@@ -66,7 +66,7 @@ export const task = () => {
     })
 
     // Lay time theo UTC (Lay time hien tai - 7)
-    const createShop = cron.schedule('0 0 * * *', async () => {
+    const createShop = cron.schedule('0 * * * *', async () => {
         try {
             console.time("start");
             console.log("Bắt đầu: ", new Date().toISOString())
