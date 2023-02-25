@@ -37,9 +37,10 @@ export const deleteArrObjects = async(array: any[]) => {
 }
 
 export const deleteObject = async(object: string) => {
+  const objectDelete = object.substring(object.lastIndexOf("/") + 1)
   const params = {
     Bucket: AWS_BUCKET_NAME as string,
-    Key: object
+    Key: objectDelete
   }
 
   const existsObject = await s3.getObject(params).promise()
