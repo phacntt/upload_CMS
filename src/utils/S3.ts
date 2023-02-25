@@ -13,7 +13,7 @@ const s3 = new AWS.S3({
 export const uploadFile = async(file: any) => {
   const uploadParams = {
     Bucket: AWS_BUCKET_NAME as string,
-    Key: Date.now() + "-" + file.image.name,
+    Key: Date.now().toString(),
     Body: Buffer.from(file.image.data),
     ACL:'public-read'
   }
