@@ -10,6 +10,9 @@ import ShopRoute from './routes/shop.route';
 import ContentRoute from './routes/content.route';
 import PageRoute from './routes/page.route';
 import AiLeyBotDocument from './routes/aiLeyBotDocument.route';
+import TransactionShopeeRoute from './routes/transactionShopee.route';
+import Constant from './routes/constant.route';
+import ConstantRoute from './routes/constant.route';
 
 const app = new App([
     new UserRoute(),
@@ -22,6 +25,8 @@ const app = new App([
     new ContentRoute(),
     new PageRoute(),
     new AiLeyBotDocument(),
+    new TransactionShopeeRoute(),
+    new ConstantRoute()
 ]);
 
 app.listen();

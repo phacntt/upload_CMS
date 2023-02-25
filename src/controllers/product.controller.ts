@@ -4,6 +4,7 @@ import { Request, Response, NextFunction } from "express";
 import CategoryService from "../services/category.service";
 import ProductService from "../services/product.service";
 import { HttpException } from "../exception/HttpException";
+import { API_KEY_SHOPEE_APP_ID } from "../config";
 
 class ProductController {
     public productService = new ProductService();
@@ -33,6 +34,23 @@ class ProductController {
         }
     };
 
+    public redirectProductURL = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const { originUrl } = req.query;
+            const user = req.user;
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            if (!user) {
+                const linkRedirect = originUrl as string;
+                res.redirect(linkRedirect)
+            } else {
+                const linkRedirect = `https://shope.ee/an_redir?origin_link=${originUrl}&affiliate_id=${API_KEY_SHOPEE_APP_ID}&sub_id=${user.id}`
+                res.redirect(linkRedirect)
+            }
+        } catch (error) {
+            next(error);
+        }
+    };
+
     public createProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const dataCreateProducts = req.body
@@ -51,7 +69,7 @@ class ProductController {
             const existsProduct = this.productService.getProductById(Number(id))
             if (!existsProduct) throw new HttpException(400, "Not found product!!!!!")
             await this.productService.deleteProduct(Number(id));
-            res.status(200).json({message: "Delete product successfull"})
+            res.status(200).json({ message: "Delete product successfull" })
         } catch (error) {
             next(error)
         }

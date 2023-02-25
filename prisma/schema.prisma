@@ -91,6 +91,37 @@ model Banner {
   page           Page         @relation(fields: [pageId], references: [id])
 }
 
+model TransactionShopee {
+  id             Int          @id @default(autoincrement())
+  transactionId  String       
+  purchaseTime   String
+  orderStatus    String
+  myEarning      String
+  earningStatus  String
+  myCommission   String
+  productName    String
+  price          String
+  orderValue     String
+  utmContent     String
+  commission     String?
+  itemCommission String
+  itemId         String       @unique
+  quantity       Int
+  imageUrl       String
+  completeTime   String
+  createAt       DateTime     @default(now())
+  updateAt       DateTime     @updatedAt
+}
+
+model Constant {
+  id             Int          @id @default(autoincrement())
+  name           String       @unique
+  value          Float
+  createAt       DateTime     @default(now())
+  updateAt       DateTime     @updatedAt
+}
+
+
 model Content {
   id              Int                 @id @default(autoincrement())
   commissionModel CommissionModelType

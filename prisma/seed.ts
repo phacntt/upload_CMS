@@ -24,6 +24,10 @@ async function main() {
         return await clients.prisma.content.findFirst({ where: { title: name } })
     }
 
+    const findConstant = async (name: string) => {
+        return await clients.prisma.constant.findFirst({ where: { name } })
+    }
+
     const arrayUser = [
         {
             email: "Admin@gmail.com",
@@ -255,6 +259,13 @@ async function main() {
         },
     ]
 
+    const arrayConstant = [
+        {
+            name: "CONSTANT_COMMISSION_RATE",
+            value: 50
+        },
+    ]
+
     for (let user of arrayUser) {
         const findUserByEmail = await findUser(user.email);
         if (!findUserByEmail) {
@@ -318,7 +329,17 @@ async function main() {
         }
     }
 
-
+    for (let constant of arrayConstant) {
+        const findConstantByName = await findConstant(constant.name);
+        if (!findConstantByName) {
+            await clients.prisma.constant.create({
+                data: {
+                    name: constant.name,
+                    value: constant.value
+                }
+            })
+        }
+    }
 }
 main()
     .then(async () => {

@@ -1,10 +1,11 @@
 import { fetchAPI, fetchAPIShopee } from "../utils/fetchApi.helper";
 import { HttpException } from "../exception/HttpException";
-import { Category, Product } from "@prisma/client";
+import { Category, Constant, Product } from "@prisma/client";
 import { context } from "../types/context.type";
 import fs from 'fs'
 import { CreateProductDto } from "../dto/product.dto";
 import { CreateShopDto } from "../dto/shop.dto";
+import { CreateTransactionShopeeDto } from "../dto/transactionShopee.dto";
 
 type ProductShopee = {
     itemId: string,
@@ -74,6 +75,7 @@ class AffiliateAccessTradeService {
     public async getProducts() {
         try {
             const listCategory: Category[] = await this.client.prisma.category.findMany({ where: { page: { name: 'Shop to earn' } } })
+            const CONSTANT_COMISSION_RATE = await this.client.prisma.constant.findFirst({ where: { name: "CONSTANT_COMMISSION_RATE" } }) as Constant
             let hasNextPage = true;
 
             let arrProduct: any[] = [];
@@ -92,10 +94,12 @@ class AffiliateAccessTradeService {
                         let arrItems: CreateProductDto[] = [];
                         for (let item of productsByCategory) {
                             let product: CreateProductDto = {
-                                appExistRate: item.appExistRate,
-                                appNewRate: item.appExistRate,
-                                commission: item.commission,
-                                commissionRate: item.commissionRate,
+                                appExistRate: (Number(item.appExistRate) * (CONSTANT_COMISSION_RATE.value) / 100).toString(),
+                                appNewRate: (Number(item.appNewRate) * (CONSTANT_COMISSION_RATE.value) / 100).toString(),
+                                webExistRate: (Number(item.webExistRate) * (CONSTANT_COMISSION_RATE.value) / 100).toString(),
+                                webNewRate: (Number(item.webNewRate) * (CONSTANT_COMISSION_RATE.value) / 100).toString(),
+                                commission: (Number(item.commission) * (CONSTANT_COMISSION_RATE.value) / 100).toString(),
+                                commissionRate: (Number(item.commissionRate) * (CONSTANT_COMISSION_RATE.value) / 100).toString(),
                                 imageUrl: item.imageUrl,
                                 itemId: item.itemId.toString(),
                                 offerLink: item.offerLink,
@@ -106,8 +110,6 @@ class AffiliateAccessTradeService {
                                 productName: item.productName,
                                 sales: item.sales,
                                 shopName: item.shopName,
-                                webExistRate: item.webExistRate,
-                                webNewRate: item.webExistRate,
                                 categoryId: item.categoryId,
                             }
 
@@ -120,7 +122,7 @@ class AffiliateAccessTradeService {
                 }
             }
             return arrProduct.flat()
-           
+
         } catch (error: any) {
             throw new HttpException(404, error as any)
         }
@@ -130,8 +132,9 @@ class AffiliateAccessTradeService {
     public async getShops() {
         try {
             const listCategory: Category[] = await this.client.prisma.category.findMany({ where: { page: { name: 'Shop to earn' } } })
-            let hasNextPage = true;
+            const CONSTANT_COMISSION_RATE = await this.client.prisma.constant.findFirst({ where: { name: "CONSTANT_COMMISSION_RATE" } }) as Constant
 
+            let hasNextPage = true;
             let arrShops: any = [];
 
             for (let i = 0; i < listCategory.length; i++) {
@@ -149,7 +152,7 @@ class AffiliateAccessTradeService {
                         let arrItems: CreateShopDto[] = []
                         for (let item of shopsByCategory) {
                             let shop: CreateShopDto = {
-                                commissionRate: item.commissionRate,
+                                commissionRate: (Number(item.commissionRate) * (CONSTANT_COMISSION_RATE.value / 100)).toString(),
                                 imageUrl: item.imageUrl,
                                 offerLink: item.offerLink,
                                 periodEndTime: item.periodEndTime.toString(),
@@ -175,20 +178,52 @@ class AffiliateAccessTradeService {
 
     }
 
-    public async listTransaction(queryParam: any) {
+    public async listTransaction() {
         try {
-            const listTransactionData = await fetchAPI(this.linkTransaction, queryParam)
+            const CONSTANT_COMISSION_RATE = await this.client.prisma.constant.findFirst({ where: { name: "CONSTANT_COMMISSION_RATE" } }) as Constant
+            let hasNextPage = true;
 
-            const dataSave = {
-                transactionId: listTransactionData.transaction_id,
-                orderStatus: listTransactionData.status,
-                earningStatus: listTransactionData.is_confirmed,
-                cancelReason: listTransactionData.reason_rejected,
-                productName: listTransactionData.product_name,
-                price: listTransactionData.product_price,
-                orderValue: listTransactionData.transaction_value,
-                commission: listTransactionData.commission
+            let arrTransaction: any[] = [];
+
+            const cURL = { "query": "query ($scrollId: String!) {\r\n  conversionReport(scrollId: $scrollId) {\r\n    nodes {\r\n      purchaseTime\r\n      conversionId\r\n      conversionStatus\r\n      totalCommission\r\n      utmContent\r\n      orders {\r\n        items {\r\n          itemId\r\n          completeTime\r\n          itemName\r\n          itemPrice\r\n          displayItemStatus\r\n          actualAmount\r\n          qty\r\n          imageUrl\r\n          itemTotalCommission\r\n        },\r\n      }\r\n    }\r\n    pageInfo {\r\n      page\r\n      scrollId\r\n      hasNextPage\r\n    }\r\n  }\r\n}", "variables": { "scrollId": "" } }
+
+            // await new Promise(resolve => setTimeout(resolve, 60000));
+            const callAPIShopee = await fetchAPIShopee(cURL);
+            const listTransactions = callAPIShopee.data.conversionReport.nodes;
+            console.log((CONSTANT_COMISSION_RATE.value / 100))
+            for (let transaction of listTransactions) {
+
+                for (let order of transaction.orders) {
+                    for (let item of order.items) {
+                        const dataSave: CreateTransactionShopeeDto = {
+                            commission: (Number(transaction.totalCommission) * (CONSTANT_COMISSION_RATE.value / 100)).toString(),
+                            earningStatus: transaction.conversionStatus,
+                            myEarning: '',
+                            purchaseTime: transaction.purchaseTime.toString(),
+                            transactionId: transaction.conversionId.toString(),
+                            utmContent: transaction.utmContent,
+                        }
+                        dataSave.completeTime = item.completeTime.toString();
+                        dataSave.itemCommission = (Number(item.itemTotalCommission) * (CONSTANT_COMISSION_RATE!.value / 100)).toString();
+                        dataSave.orderStatus = item.displayItemStatus;
+                        dataSave.orderValue = item.actualAmount;
+                        dataSave.price = item.itemPrice;
+                        dataSave.productName = item.itemName;
+                        dataSave.quantity = item.qty;
+                        dataSave.imageUrl = item.imageUrl;
+                        dataSave.myCommission = '';
+                        dataSave.itemId = item.itemId.toString();
+                        arrTransaction.push(dataSave)
+                    }
+                }
+
             }
+
+
+            console.log(listTransactions)
+
+            console.log(arrTransaction)
+            return arrTransaction
 
         } catch (error) {
 
@@ -215,6 +250,19 @@ class AffiliateAccessTradeService {
 
             return dataObj
         })
+    }
+
+    public async convertLinkShortShopee(originUrl: string, subIds: string[]) {
+        try {
+            console.log(originUrl)
+            const cURL = { "query": "mutation ($originUrl: String!, $subIds: [String!]) {\r\n  generateShortLink(input:{originUrl: $originUrl, subIds: $subIds}) {\r\n    shortLink\r\n  }\r\n}", "variables": { "originUrl": originUrl, "subIds": subIds } }
+
+            const shortLink = await fetchAPIShopee(cURL);
+
+            return shortLink;
+        } catch (error: any) {
+            throw new HttpException(400, error)
+        }
     }
 
 

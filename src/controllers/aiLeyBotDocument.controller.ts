@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { callOpenAIHelper, convertScriptOpenAi } from "../utils/helper";
+import { callOpenAIHelper, convertScriptOpenAi, promptAddByTopicLv2 } from "../utils/helper";
 
 export type BodySendToOpenAI = {
     model: string,
@@ -11,8 +11,6 @@ class AiLeyBotDocumentController {
 
     public aiLeyBotResponse = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-
-
             const payload = req.query;
             let maxTokenByTime = 500;
 
@@ -39,6 +37,10 @@ class AiLeyBotDocumentController {
                     }
                 ] : [];
 
+            const promptAddTopicLv2 = promptAddByTopicLv2(payload.topicLv2) as any;
+            promptArrayTopicLv2.push(promptAddTopicLv2)
+
+        
             if (payload.act) {
                 const data = await callOpenAIHelper(maxTokenByTime, promptCustom);
                 const newScript = convertScriptOpenAi(payload, data);

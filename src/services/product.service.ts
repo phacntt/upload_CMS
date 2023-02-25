@@ -7,13 +7,12 @@ type ListProductsFilter = {
     page?: number;
     limit?: number;
     sortBy?: SortBy;
+    categoryId?: number;
 }
 
 type SortBy = {
-    discount?: 'desc' | 'asc',
-    discountRate?: 'desc' | 'asc',
     price?: 'desc' | 'asc',
-    discountAmount?: 'desc' | 'asc'
+    sales?: 'desc' | 'asc',
 }
 
 class ProductService {
@@ -23,6 +22,7 @@ class ProductService {
 
     public async getProducts(filter?: ListProductsFilter) {
         const sortBy: SortBy = {}
+        let categoryId;
 
         let page = this.DEFAULT_PAGE;
         let limit = this.DEFAULT_LIMIT;
@@ -35,28 +35,29 @@ class ProductService {
             limit = Number(filter.limit);
         }
 
-        if (filter?.sortBy?.discount) {
-            sortBy.discount = filter.sortBy?.discount
-        }
-
-        if (filter?.sortBy?.discountAmount) {
-            sortBy.discountAmount = filter.sortBy?.discountAmount
-        }
-
-        if (filter?.sortBy?.discountRate) {
-            sortBy.discountRate = filter.sortBy?.discountRate
+        if (filter?.sortBy?.sales) {
+            sortBy.sales = filter.sortBy?.sales
         }
 
         if (filter?.sortBy?.price) {
             sortBy.price = filter.sortBy?.price
         }
-        const products = await this.clients.prisma.product.findMany({ skip: page == 1 ? page - 1 : (page - 1) * limit, take: limit, orderBy: sortBy })
+
+        if (filter?.categoryId) {
+            categoryId = Number(filter.categoryId)
+        }
+        const products = await this.clients.prisma.product.findMany({ skip: page == 1 ? page - 1 : (page - 1) * limit, take: limit, orderBy: {sales: sortBy.sales, price: sortBy.price}, where: { categoryId } })
         return products;
     }
 
     public async getProductById(id: number) {
         const productById = await this.clients.prisma.product.findFirst({ where: { id } })
         return productById;
+    }
+
+    public async getProductByCategoryId(id: number) {
+        const productByNameCategoryId = await this.clients.prisma.product.findFirst({ where: { categoryId: id } })
+        return productByNameCategoryId;
     }
 
     public async getProductByName(name: string) {

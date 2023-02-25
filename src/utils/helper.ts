@@ -203,4 +203,62 @@ export const convertScriptOpenAi = (payload: any, textResponse: string) => {
     return newRecord
 }
 
+export const promptAddByTopicLv2 = (topicLv2: any) => {
+    if (topicLv2.toString().toLowerCase() === "affiliate marketing") {
+        let promptAddTopicLv2 = {
+            title: "Prompt Add",
+            prompt: "I want you design a journey that help me increase my extra income in terms of Affiliate Marketing. Suggest for me supporting tools such as Afifliate network, Marketing tools, Research tools, Content , banner and videos creation tools, management tools, analystics tools"
+        }
+        return promptAddTopicLv2
+    } else if (topicLv2.toString().toLowerCase() === "freelancing") {
+        let promptAddTopicLv2 = {
+            title: "Prompt Add",
+            prompt: "I want you design a journey that help me increase my extra income in terms of Freelancing. Suggest for me supporting tools such as portfolio ideas and creation tools, Marketing tools, Research tools, Management tools"
+        }
+        return promptAddTopicLv2
+    } else if (topicLv2.toString().toLowerCase() === "sell products online") {
+        let promptAddTopicLv2 = {
+            title: "Prompt Add",
+            prompt: "I want you design a journey that help me increase my extra income in terms of Sell products online. Suggest for me supporting tools such as Afifliate network, Marketing tools, Research tools, Content , banner and videos creation tools, management tools, analystics tools, e-commerce platform, sourcing tools"
+        }
+        return promptAddTopicLv2
+    } else if (topicLv2.toString().toLowerCase() === "games") {
+        let promptAddTopicLv2 = {
+            title: "Prompt Add",
+            prompt: "I want you design a journey that help me increase my extra income in terms of Games. Suggest for me supporting tools such as Games network, Research tools, management tools, upgrade gaming skills tools, streaming creation tools, content creation tools"
+        }
+        return promptAddTopicLv2
+    } else if (topicLv2.toString().toLowerCase() === "start a business") {
+        let promptAddTopicLv2 = {
+            title: "Prompt Add",
+            prompt: "I want you design a journey that help me increase my extra income in terms of Start a business. Suggest for me supporting tools such as Research tools, management tools, marketing & sale tools, outsourcing tools, content creation tools, production tools, tracking performance tools, operation tools, financial tools"
+        }
+        return promptAddTopicLv2
+    } else if (topicLv2.toString().toLowerCase() === "negotiate salary") {
+        let promptAddTopicLv2 = {
+            title: "Prompt Add",
+            prompt: "I want you design a journey that help me increase my extra income in terms of  Negotiate salary. Suggest for me supporting tools such as upgrade skill tools, salary comparison tools"
+        }
+        return promptAddTopicLv2
+    } else if (topicLv2.toString().toLowerCase() === "career advancement") {
+        let promptAddTopicLv2 = {
+            title: "Prompt Add",
+            prompt: "I want you design a journey that help me increase my extra income in terms of  Career Advancement. Suggest for me supporting tools such as upgrade skill tools, career tools"
+        }
+        return promptAddTopicLv2
+    } else if (topicLv2.toString().toLowerCase() === "improve education and skills") {
+        let promptAddTopicLv2 = {
+            title: "Prompt Add",
+            prompt: "I want you design a journey that help me increase my extra income in terms of  Improve Education and Skills. Suggest for me supporting tools such as upgrade skill tools, education tools"
+        }
+        return promptAddTopicLv2
+    } else if (topicLv2.toString().toLowerCase() === "financial control") {
+        let promptAddTopicLv2 = {
+            title: "Prompt Add",
+            prompt: "I want you design a journey that help me increase my extra income in terms of  Financial control. Suggest for me supporting tools"
+        }
+        return promptAddTopicLv2
+    }
+}
+
 
