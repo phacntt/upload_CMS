@@ -190,7 +190,6 @@ class AffiliateAccessTradeService {
             // await new Promise(resolve => setTimeout(resolve, 60000));
             const callAPIShopee = await fetchAPIShopee(cURL);
             const listTransactions = callAPIShopee.data.conversionReport.nodes;
-            console.log((CONSTANT_COMISSION_RATE.value / 100))
             for (let transaction of listTransactions) {
 
                 for (let order of transaction.orders) {
@@ -218,11 +217,6 @@ class AffiliateAccessTradeService {
                 }
 
             }
-
-
-            console.log(listTransactions)
-
-            console.log(arrTransaction)
             return arrTransaction
 
         } catch (error) {
@@ -254,7 +248,6 @@ class AffiliateAccessTradeService {
 
     public async convertLinkShortShopee(originUrl: string, subIds: string[]) {
         try {
-            console.log(originUrl)
             const cURL = { "query": "mutation ($originUrl: String!, $subIds: [String!]) {\r\n  generateShortLink(input:{originUrl: $originUrl, subIds: $subIds}) {\r\n    shortLink\r\n  }\r\n}", "variables": { "originUrl": originUrl, "subIds": subIds } }
 
             const shortLink = await fetchAPIShopee(cURL);

@@ -85,7 +85,6 @@ class BannerService {
     }
 
     public async deleteBanner(id: number, keyImage: string) {
-        console.log(keyImage)
         const bannerDelete = await this.clients.prisma.$transaction(async (tx) => {
             await deleteObject(keyImage!)
             await this.clients.prisma.banner.delete({ where: { id } })
