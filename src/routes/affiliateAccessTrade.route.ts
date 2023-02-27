@@ -6,7 +6,7 @@ import AffiliateAccessTradeController from "../controllers/affiliateAccessTrade.
 
 class AffiliateAccessTradeRoute implements Routes {
 
-    public path = '/feedData';
+    public path = '/extentsion';
     public router = Router();
     public affiliateAccessTradeController = new AffiliateAccessTradeController();
 
@@ -17,6 +17,7 @@ class AffiliateAccessTradeRoute implements Routes {
     private initializeRoutes() {
         this.router.get(`/products`, this.affiliateAccessTradeController.getProducts);
         this.router.get(`/shops`, this.affiliateAccessTradeController.getShops);
+        this.router.post(`/redirect`, this.affiliateAccessTradeController.redirectProductURL);
         this.router.post(`/shops`, this.affiliateAccessTradeController.createShop)
         this.router.post(`/shortLink`, this.affiliateAccessTradeController.convertLinkShortShopee)
     }

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import AffiliateAccessTradeService from "../services/affiliateAccessTrade.service";
 import { context } from "../types/context.type";
+import { API_KEY_SHOPEE_APP_ID } from "../config";
 
 class AffiliateAccessTradeController {
     public affiliateAccessTradeService = new AffiliateAccessTradeService();
@@ -32,6 +33,16 @@ class AffiliateAccessTradeController {
             const productsData = await context.prisma.shop.create({ data: body });
 
             res.status(200).json({ data: productsData, message: 'Get all shops' });
+        } catch (error) {
+            next(error);
+        }
+    };
+
+    public redirectProductURL = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            const { originUrl, utmContent } = req.query;
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            res.redirect((utmContent && originUrl) ? `https://shope.ee/an_redir?origin_link=${originUrl}&affiliate_id=${API_KEY_SHOPEE_APP_ID}&sub_id=${utmContent}` : originUrl as string)
         } catch (error) {
             next(error);
         }

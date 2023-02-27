@@ -34,22 +34,7 @@ class ProductController {
         }
     };
 
-    public redirectProductURL = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-        try {
-            const { originUrl } = req.query;
-            const user = req.user;
-            await new Promise(resolve => setTimeout(resolve, 3000));
-            if (!user) {
-                const linkRedirect = originUrl as string;
-                res.redirect(linkRedirect)
-            } else {
-                const linkRedirect = `https://shope.ee/an_redir?origin_link=${originUrl}&affiliate_id=${API_KEY_SHOPEE_APP_ID}&sub_id=${user.id}`
-                res.redirect(linkRedirect)
-            }
-        } catch (error) {
-            next(error);
-        }
-    };
+    
 
     public createProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
