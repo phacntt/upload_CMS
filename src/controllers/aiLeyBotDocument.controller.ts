@@ -37,22 +37,20 @@ class AiLeyBotDocumentController {
                     }
                 ] : [];
 
-            const promptAddTopicLv2 = promptAddByTopicLv2(payload.topicLv2) as any;
-            promptArrayTopicLv2.push(promptAddTopicLv2)
+            payload.topicLv2 ? promptArrayTopicLv2.push(promptAddByTopicLv2(payload.topicLv2) as any): []
 
         
             if (payload.act) {
-                const data = await callOpenAIHelper(maxTokenByTime, promptCustom);
-                const newScript = convertScriptOpenAi(payload, data);
+                const response = await callOpenAIHelper(maxTokenByTime, promptCustom);
+                const newScript = convertScriptOpenAi(payload, response);
                 const newScriptRemoveTag = newScript.split(`\n`).filter(script => script != "");
                 res.status(200).json({ data: newScriptRemoveTag.join("</br>"), message: 'OK' });
                 return;
             }
 
             if (payload.promptQuestion) {
-                const data = await callOpenAIHelper(maxTokenByTime, promptQuestion as string);
-                const newScript = convertScriptOpenAi(payload, data);
-                const newScriptRemoveTag = newScript.split(`\n`).filter(script => script != "");
+                const response = await callOpenAIHelper(maxTokenByTime, promptQuestion as string);
+                const newScriptRemoveTag = response.split(`\n`).filter(script => script != "");
                 newScriptRemoveTag.shift();
                 res.json({ data: newScriptRemoveTag.join("</br>"), message: 'OK' });
 
@@ -60,12 +58,11 @@ class AiLeyBotDocumentController {
             }
 
             if (payload.topic) {
-                const data = await callOpenAIHelper(maxTokenByTime, promptTopic);
-                const newScript = convertScriptOpenAi(payload, data);
-                const newScriptRemoveTag = newScript.split(`\n`).filter((text: any) => text != "");
+                const response = await callOpenAIHelper(maxTokenByTime, promptTopic);
+                const newScriptRemoveTag = response.split(`\n`).filter((text: any) => text != "");
                 newScriptRemoveTag.shift();
                 res.status(200).json({ data: newScriptRemoveTag, message: 'OK' });
-                
+
                 return;
             }
 
@@ -82,8 +79,7 @@ class AiLeyBotDocumentController {
                 const callOpenAI = async () => {
                     for (let index = 0; index < promptArrayTopicLv2.length; index++) {
                         const response = await callOpenAIHelper(maxTokenByTime, promptArrayTopicLv2[index].prompt)
-                        const newScript = convertScriptOpenAi(payload, response)
-                        const data = newScript.split(`\n`).filter(text => text != "")
+                        const data = response.split(`\n`).filter(text => text != "")
                         data.shift();
                         res.write(`data: ${JSON.stringify(data)}\n\n`);
                     }
