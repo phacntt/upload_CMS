@@ -41,6 +41,12 @@ class AffiliateAccessTradeController {
     public redirectProductURL = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const { originUrl, utmContent } = req.query;
+            if (!originUrl) {
+                res.status(400).json({code: 400, message: "originUrl required"})
+            }
+            if (!utmContent) {
+                res.status(400).json({code: 400, message: "utmContent required"})
+            }
             await new Promise(resolve => setTimeout(resolve, 3000));
             res.redirect((utmContent && originUrl) ? `https://shope.ee/an_redir?origin_link=${originUrl}&affiliate_id=${API_KEY_SHOPEE_APP_ID}&sub_id=${utmContent}` : originUrl as string)
         } catch (error) {
@@ -50,11 +56,23 @@ class AffiliateAccessTradeController {
 
     public convertLinkShortShopee = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const { originUrl, subIds } = req.body
+            const { originUrl, subIds } = req.body;
 
-            const shortLink = await this.affiliateAccessTradeService.convertLinkShortShopee(originUrl, subIds)
+            if (!originUrl) {
+                res.status(400).json({code: 400, message: "originUrl required"});
+            }
+
+            if (!subIds) {
+                res.status(400).json({code: 400, message: "subIds required"});
+            }
+
+            const shortLink = await this.affiliateAccessTradeService.convertLinkShortShopee(originUrl, subIds);
+            if (!shortLink) {
+                res.status(400).json({code: 400, message: "Server shopee something went wrong"})
+            }
 
             res.status(200).json({ data: shortLink, message: 'Convert short link successfully' });
+            
         } catch (error) {
             next(error);
         }

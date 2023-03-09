@@ -6,7 +6,7 @@ import AffiliateAccessTradeController from "../controllers/affiliateAccessTrade.
 
 class AffiliateAccessTradeRoute implements Routes {
 
-    public path = '/extentsion';
+    public path = '/extensions';
     public router = Router();
     public affiliateAccessTradeController = new AffiliateAccessTradeController();
 

@@ -14,6 +14,7 @@ class AiLeyBotDocumentController {
             const payload = req.query;
             let maxTokenByTime = 500;
 
+            // const promptCustom = `${payload.act}. ${payload.skill ? decodeURIComponent(payload.skill) : ``}`;
             const promptCustom = `${payload.act}. ${payload.skill ? `` : ``}`;
             const promptTopic = payload.topic ? `I want to ask about ${payload.topic} but I don't know what should I ask you to get adivces from this field.` : ``;
             const promptQuestion = payload.promptQuestion;

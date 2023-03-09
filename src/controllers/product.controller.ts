@@ -1,14 +1,10 @@
-import { Category, Prisma, Product, User } from "@prisma/client";
-import AuthService from "../services/auth.service";
+import { Product } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
-import CategoryService from "../services/category.service";
 import ProductService from "../services/product.service";
 import { HttpException } from "../exception/HttpException";
-import { API_KEY_SHOPEE_APP_ID } from "../config";
 
 class ProductController {
     public productService = new ProductService();
-    public categorySerivce = new CategoryService();
 
     public getProducts = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
