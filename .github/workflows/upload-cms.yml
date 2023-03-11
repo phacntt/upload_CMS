@@ -38,4 +38,5 @@ jobs:
                 -e API_KEY_SHOPEE_APP_ID=${{ secrets.API_KEY_SHOPEE_APP_ID }} \
                 -e API_KEY_SHOPEE_SECRET=${{ secrets.API_KEY_SHOPEE_SECRET }} \
                 -e REDIS_URL=${{ secrets.REDIS_URL }} \
+                -e API_USER_EARNING=${{ secrets.API_USER_EARNING }} \
                 upload_cms:$GITHUB_RUN_NUMBER

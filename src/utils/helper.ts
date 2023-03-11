@@ -280,7 +280,9 @@ export const callAPIUserEearning = async (cUrl: any) => {
     try {
         const payload = JSON.stringify(cUrl)
         
-        const fetchAPI = await fetch("http://localhost:3003/gql/v1", {
+        const apiUser = process.env.NODE_ENV === "development" ? "http://localapiUser:3003/gql/v1" : process.env.API_USER_EARNING as string
+
+        const fetchAPI = await fetch(apiUser, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
