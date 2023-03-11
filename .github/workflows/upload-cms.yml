@@ -37,4 +37,5 @@ jobs:
                 -e API_KEY_OPENAI=${{ secrets.API_KEY_OPENAI }} \
                 -e API_KEY_SHOPEE_APP_ID=${{ secrets.API_KEY_SHOPEE_APP_ID }} \
                 -e API_KEY_SHOPEE_SECRET=${{ secrets.API_KEY_SHOPEE_SECRET }} \
+                -e REDIS_URL=${{ secrets.REDIS_URL }} \
                 upload_cms:$GITHUB_RUN_NUMBER
