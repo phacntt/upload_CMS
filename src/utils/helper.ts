@@ -1,5 +1,7 @@
+import fetch from "node-fetch";
 import { BodySendToOpenAI } from "../controllers/aiLeyBotDocument.controller";
 import { interactOpenAI } from "./interactOpenAI";
+import { HttpException } from "../exception/HttpException";
 
 export const getDifference = (array1: any[], array2: any[]) => {
     return array1.filter(
@@ -15,117 +17,116 @@ export const callOpenAIHelper = async (maxTokenByTime: number, promptCustom: str
         model: `text-davinci-003`,
         prompt: promptCustom
     }
-    
+
     const textResponse = await interactOpenAI(dataSendToOpenAI);
     return textResponse as string
 }
 
-const documnetHavekeyWord = `You also easily earn money via referrals of various products to your friends or your community on DCash. Additionally, you will receive cashback per order if you buy these products via DCash. By joining DCash Affiliate Program, your earning will be increased quickly based on the active activities of your referral-ers`
-
-const documnetNoHavekeyWord = `Participate in affiliate marketing: This is earning commission on sales by promoting products. To join an affiliate easily, you can share products on DCash with your friends or your community, the commission will be paid on successful orders. Additionally, you will receive cashback per order if you buy these products via DCash. By joining DCash Affiliate Program, your earning will be increased quickly based on the active activities of your referral-ers.`
-
-const listArrayKeyWordOtherVietNam = [
-    {
-        key: `Freelance`,
-        link: `https://www.freelancer.com/`
-    },
-    {
-        key: `Upwork`,
-        link: `https://www.upwork.com/`
-    },
-    {
-        key: `Fiverr`,
-        link: `http://www.fiverr.com/s2/c82bd6a12d`
-    },
-    {
-        key: `Lazada`,
-        link: `https://shorten.asia/EYNx5dx2`
-    },
-    {
-        key: `Shopee`,
-        link: `https://shorten.asia/M4zs6z7j`
-    },
-    {
-        key: `Skillshare`,
-        link: `https://skillshare.eqcm.net/c/3860957/1265193/4650`
-    },
-    {
-        key: `Tiki`,
-        link: `https://shorten.asia/75fT3Gkg`
-    },
-    {
-        key: `Tiktok`,
-        link: `https://seller.tiktok.com/`
-
-    },
-    {
-        key: `Shopify`,
-        link: `https://open.spotify.com/artist/4HI6sWozpcPUjdkn2nbAQx`
-    }
-]
-
-const listArrayKeywordVN = [
-    {
-        key: `Freelancer`,
-        link: `https://www.vn.freelancer.com/`
-    },
-    {
-        key: `Upwork`,
-        link: `https://www.upwork.com/`
-    },
-    {
-        key: `VLance`,
-        link: `https://www.vlance.vn/`
-    },
-    {
-        key: `Fiverr`,
-        link: `https://fiverrvietnam.com/`
-    },
-    {
-        key: `Lazada`,
-        link: `https://shorten.asia/EYNx5dx2`
-    },
-    {
-        key: `Shopee`,
-        link: `https://shorten.asia/M4zs6z7j`
-    },
-    {
-        key: `Skillshare`,
-        link: `https://skillshare.eqcm.net/c/3860957/1265193/4650`
-    },
-    {
-        key: `Tiki`,
-        link: `https://shorten.asia/75fT3Gkg`
-    },
-]
-
-const keyWord = ['affiliate', 'affiliates', 'e-commerce']
-const keyWordNeedReplace = ["Amazon", "Ebay", "Shopify", "WooCommerce"]
-
-const keyWordReplace = [
-    {
-        key: `Lazada`,
-        link: `https://sellercenter.lazada.vn/apps/register/index`
-    },
-    {
-        key: `Shopee`,
-        link: `https://banhang.shopee.vn/`
-    },
-    {
-        key: `Tiki`,
-        link: `https://sellercenter.tiki.vn/`
-    },
-    {
-        key: `Tiktok`,
-        link: `https://seller.tiktok.com/`
-    },
-    {
-        key: `Shopify`,
-        link: `https://open.spotify.com/artist/4HI6sWozpcPUjdkn2nbAQx`
-    },
-]
-
 export const convertScriptOpenAi = (payload: any, textResponse: string) => {
+    const documnetHavekeyWord = `You also easily earn money via referrals of various products to your friends or your community on DCash. Additionally, you will receive cashback per order if you buy these products via DCash. By joining DCash Affiliate Program, your earning will be increased quickly based on the active activities of your referral-ers`
+
+    const documnetNoHavekeyWord = `Participate in affiliate marketing: This is earning commission on sales by promoting products. To join an affiliate easily, you can share products on DCash with your friends or your community, the commission will be paid on successful orders. Additionally, you will receive cashback per order if you buy these products via DCash. By joining DCash Affiliate Program, your earning will be increased quickly based on the active activities of your referral-ers.`
+
+    const listArrayKeyWordOtherVietNam = [
+        {
+            key: `Freelance`,
+            link: `https://www.freelancer.com/`
+        },
+        {
+            key: `Upwork`,
+            link: `https://www.upwork.com/`
+        },
+        {
+            key: `Fiverr`,
+            link: `http://www.fiverr.com/s2/c82bd6a12d`
+        },
+        {
+            key: `Lazada`,
+            link: `https://shorten.asia/EYNx5dx2`
+        },
+        {
+            key: `Shopee`,
+            link: `https://shorten.asia/M4zs6z7j`
+        },
+        {
+            key: `Skillshare`,
+            link: `https://skillshare.eqcm.net/c/3860957/1265193/4650`
+        },
+        {
+            key: `Tiki`,
+            link: `https://shorten.asia/75fT3Gkg`
+        },
+        {
+            key: `Tiktok`,
+            link: `https://seller.tiktok.com/`
+
+        },
+        {
+            key: `Shopify`,
+            link: `https://open.spotify.com/artist/4HI6sWozpcPUjdkn2nbAQx`
+        }
+    ]
+
+    const listArrayKeywordVN = [
+        {
+            key: `Freelancer`,
+            link: `https://www.vn.freelancer.com/`
+        },
+        {
+            key: `Upwork`,
+            link: `https://www.upwork.com/`
+        },
+        {
+            key: `VLance`,
+            link: `https://www.vlance.vn/`
+        },
+        {
+            key: `Fiverr`,
+            link: `https://fiverrvietnam.com/`
+        },
+        {
+            key: `Lazada`,
+            link: `https://shorten.asia/EYNx5dx2`
+        },
+        {
+            key: `Shopee`,
+            link: `https://shorten.asia/M4zs6z7j`
+        },
+        {
+            key: `Skillshare`,
+            link: `https://skillshare.eqcm.net/c/3860957/1265193/4650`
+        },
+        {
+            key: `Tiki`,
+            link: `https://shorten.asia/75fT3Gkg`
+        },
+    ]
+
+    const keyWord = ['affiliate', 'affiliates', 'e-commerce']
+    const keyWordNeedReplace = ["Amazon", "Ebay", "Shopify", "WooCommerce"]
+
+    const keyWordReplace = [
+        {
+            key: `Lazada`,
+            link: `https://sellercenter.lazada.vn/apps/register/index`
+        },
+        {
+            key: `Shopee`,
+            link: `https://banhang.shopee.vn/`
+        },
+        {
+            key: `Tiki`,
+            link: `https://sellercenter.tiki.vn/`
+        },
+        {
+            key: `Tiktok`,
+            link: `https://seller.tiktok.com/`
+        },
+        {
+            key: `Shopify`,
+            link: `https://open.spotify.com/artist/4HI6sWozpcPUjdkn2nbAQx`
+        },
+    ]
     const addLinkTag = (link: string, keyWord: string) => `<a href="${link}">${keyWord}</a>`;
 
     const x = keyWordReplace.map(key => addLinkTag(key.link, key.key)).join(", ")
@@ -205,7 +206,7 @@ export const convertScriptOpenAi = (payload: any, textResponse: string) => {
 
 export const promptAddByTopicLv2 = (topicLv2: any) => {
     let promptAddTopicLv2 = {}
-    
+
     switch (topicLv2.toString().toLowerCase()) {
         case "affiliate marketing":
             promptAddTopicLv2 = {
@@ -270,9 +271,30 @@ export const promptAddByTopicLv2 = (topicLv2: any) => {
         default:
             break;
     }
-    
+
     return promptAddTopicLv2
 
+}
+
+export const callAPIUserEearning = async (cUrl: any) => {
+    try {
+        const payload = JSON.stringify(cUrl)
+        
+        const fetchAPI = await fetch("http://localhost:3003/gql/v1", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: payload,
+        });
+
+        
+        const data = await fetchAPI.json()
+
+        return data;
+    } catch (error: any) {
+        throw new HttpException(400, error)
+    }
 }
 
 

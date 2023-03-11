@@ -113,6 +113,17 @@ model TransactionShopee {
   updateAt       DateTime     @updatedAt
 }
 
+model Notification {
+  id             Int          @id @default(autoincrement())
+  action         ActionNotification
+  title          String
+  message        String
+  image          String?
+  reward         String?
+  createAt       DateTime     @default(now())
+  updateAt       DateTime     @updatedAt
+}
+
 model Constant {
   id             Int          @id @default(autoincrement())
   name           String       @unique
@@ -174,6 +185,11 @@ enum CommissionModelType {
 enum CommissionType {
   Cash
   Percent
+}
+
+enum ActionNotification {
+  Reward
+  Notice
 }
 
 enum Location {

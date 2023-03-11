@@ -13,6 +13,7 @@ import AiLeyBotDocument from './routes/aiLeyBotDocument.route';
 import TransactionShopeeRoute from './routes/transactionShopee.route';
 import Constant from './routes/constant.route';
 import ConstantRoute from './routes/constant.route';
+import NotificationRoute from './routes/notification.route';
 
 const app = new App([
     new UserRoute(),
@@ -26,7 +27,8 @@ const app = new App([
     new PageRoute(),
     new AiLeyBotDocument(),
     new TransactionShopeeRoute(),
-    new ConstantRoute()
+    new ConstantRoute(),
+    new NotificationRoute()
 ]);
 
 app.listen();

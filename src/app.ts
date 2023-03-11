@@ -7,6 +7,9 @@ import { task } from './utils/task-cron';
 import cors from 'cors'
 import errorMiddleware from './middlewares/error.middleware';
 import helmet from 'helmet';
+import initRedis from './utils/initRedis';
+import { handleSubcribeChannel } from './message-channel/subcrible';
+import defaultPushEventManager from "./utils/pushEventManager"
 
 class App {
   public app: express.Application;
@@ -21,7 +24,9 @@ class App {
     this.initializeMiddlewares();
     this.initializeRoutes(routes);
     this.initializeCron();
-    this.initializeErrorHandling()
+    this.initializeErrorHandling();
+    this.initializeRedis();
+    this.initializeBridge();
   }
 
   public listen() {
@@ -43,8 +48,7 @@ class App {
   }
 
   private initializeRoutes(routes: Routes[]) {
-    this.app.use(fileUpload())
-
+    // this.app.use(fileUpload())
     routes.forEach(route => {
       this.app.use('/api' + route.path, route.router);
     });
@@ -56,6 +60,14 @@ class App {
 
   private initializeCron() {
     task()
+  }
+
+  private initializeRedis() {
+    initRedis()
+  }
+
+  private async initializeBridge() {
+      await handleSubcribeChannel(defaultPushEventManager)
   }
 }
 
