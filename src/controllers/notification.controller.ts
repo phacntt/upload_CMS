@@ -78,7 +78,7 @@ class NotificationController {
             const dataResponse = await callAPIUserEearning(cUrl);
             
             const listIds = dataResponse.data.getAllIdUser as number[];
-            
+
             if (listIds.length != 0) {
                 for (let i = 0; i < listIds.length; i++) {
                     payload.id = listIds[i];
@@ -86,7 +86,7 @@ class NotificationController {
                 }
             }
 
-            res.status(200).json({ message: "Create notification and send all user is successfully" });
+            res.status(200).json({ message: "Create notification is successfully" });
         } catch (error: any) {
             throw new HttpException(400, error);
         }
