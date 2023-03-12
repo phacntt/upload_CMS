@@ -91,38 +91,32 @@ export const task = () => {
         }
     })
 
-    // const getTransactionShopee = cron.schedule('* * * * *', async () => {
-    //     try {
-    //         console.log("YABAI")
-    //         const transactions = await shopsAT.listTransaction()
-    //         console.log("LIST: ", transactions)
-    //         for (let item = 0; item < transactions!.length; item++) {
-    //             console.log("1")
-    //             if (transactions![item].conversionStatus === "COMPLETED") {
-    //                 await client.prisma.$transaction(async () => {
-    //                     console.log("YE")
-    //                     await transactionShopee.createTransaction(transactions![item]);
-    //                     await transactionShopee.updateCalculatedOrder(transactions![item].conversionId as string)
-    //                 });
+    const getTransactionShopee = cron.schedule('* * * * *', async () => {
+        try {
+            const transactions = await shopsAT.listTransaction()
+            console.log(transactions)
+            for (let item = 0; item < transactions!.length; item++) {
+                if (transactions![item].earningStatus === "COMPLETED") {
+                    await client.prisma.$transaction(async () => {
+                        await transactionShopee.createTransaction(transactions![item]);
+                        await transactionShopee.updateCalculatedOrder(transactions![item].itemId as string)
+                    });
+                } else {
+                    await client.prisma.$transaction(async () => {
+                        await transactionShopee.createTransaction(transactions![item])
+                    });
+                }
+            }
+        } catch (error: any) {
+            throw new HttpException(400, error);
 
-    //             } else {
-    //                 console.log("2")
-    //                 await client.prisma.$transaction(async () => {
-    //                     console.log("BAI")
-    //                     await transactionShopee.createTransaction(transactions![item])
-    //                 });
-    //             }
-    //         }
-    //     } catch (error: any) {
-    //         throw new HttpException(400, error);
-
-    //     }
-    // })
+        }
+    })
 
     taskUpdateStatusBanner.start();
     createProduct.start();
     createShop.start();
-    // getTransactionShopee.start();
+    getTransactionShopee.start();
     // clearImageTrashS3.start();
 
 }
