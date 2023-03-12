@@ -12,8 +12,8 @@ class TransactionShopeeService {
         return this.clients.prisma.transactionShopee.findMany()
     }
 
-    public getConstantById(id: number) {
-        return this.clients.prisma.constant.findFirst({ where: { id } })
+    public getTransactionById(id: number) {
+        return this.clients.prisma.transactionShopee.findFirst({ where: { id } })
     }
 
 
@@ -24,6 +24,11 @@ class TransactionShopeeService {
             update: transactionData
         })
     }
+
+    public updateCalculatedOrder(idItem: string) {
+        return this.clients.prisma.transactionShopee.update({ where: { itemId: idItem }, data: { calculated: true } })
+    }
+
 }
 
 export default TransactionShopeeService

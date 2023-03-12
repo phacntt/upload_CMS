@@ -109,6 +109,7 @@ model TransactionShopee {
   quantity       Int
   imageUrl       String
   completeTime   String
+  calculated     Boolean      @default(false)
   createAt       DateTime     @default(now())
   updateAt       DateTime     @updatedAt
 }
