@@ -94,7 +94,6 @@ export const task = () => {
     const getTransactionShopee = cron.schedule('* * * * *', async () => {
         try {
             const transactions = await shopsAT.listTransaction()
-            console.log(transactions)
             for (let item = 0; item < transactions!.length; item++) {
                 if (transactions![item].earningStatus === "COMPLETED") {
                     await client.prisma.$transaction(async () => {

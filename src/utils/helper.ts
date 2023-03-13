@@ -12,6 +12,7 @@ export const getDifference = (array1: any[], array2: any[]) => {
 }
 
 export const callOpenAIHelper = async (maxTokenByTime: number, promptCustom: string) => {
+
     const dataSendToOpenAI: BodySendToOpenAI = {
         max_tokens: maxTokenByTime,
         model: `text-davinci-003`,
@@ -19,6 +20,7 @@ export const callOpenAIHelper = async (maxTokenByTime: number, promptCustom: str
     }
 
     const textResponse = await interactOpenAI(dataSendToOpenAI);
+    console.log("TEXT: ", textResponse)
     return textResponse as string
 }
 
@@ -211,31 +213,31 @@ export const promptAddByTopicLv2 = (topicLv2: any) => {
         case "affiliate marketing":
             promptAddTopicLv2 = {
                 title: "Prompt Add",
-                prompt: "I want you design a journey that help me increase my extra income in terms of Affiliate Marketing. Suggest for me supporting tools such as Afifliate network, Marketing tools, Research tools, Content , banner and videos creation tools, management tools, analystics tools"
+                prompt: "I want you design a journey that help me increase my extra income in terms of Affiliate Marketing. Suggest for me supporting tools such as Afifliate network, Marketing tools, Research tools, Content , banner and videos creation tools, management tools, analystics tools?"
             }
             break;
         case "freelancing":
             promptAddTopicLv2 = {
                 title: "Prompt Add",
-                prompt: "I want you design a journey that help me increase my extra income in terms of Freelancing. Suggest for me supporting tools such as portfolio ideas and creation tools, Marketing tools, Research tools, Management tools"
+                prompt: "I want you design a journey that help me increase my extra income in terms of Freelancing. Suggest for me supporting tools such as portfolio ideas and creation tools, Marketing tools, Research tools, Management tools?"
             }
             break;
         case "affiliate marketing":
             promptAddTopicLv2 = {
                 title: "Prompt Add",
-                prompt: "I want you design a journey that help me increase my extra income in terms of Affiliate Marketing. Suggest for me supporting tools such as Afifliate network, Marketing tools, Research tools, Content , banner and videos creation tools, management tools, analystics tools"
+                prompt: "I want you design a journey that help me increase my extra income in terms of Affiliate Marketing. Suggest for me supporting tools such as Afifliate network, Marketing tools, Research tools, Content , banner and videos creation tools, management tools, analystics tools?"
             }
             break;
         case "sell products online":
             promptAddTopicLv2 = {
                 title: "Prompt Add",
-                prompt: "I want you design a journey that help me increase my extra income in terms of Sell products online. Suggest for me supporting tools such as Afifliate network, Marketing tools, Research tools, Content , banner and videos creation tools, management tools, analystics tools, e-commerce platform, sourcing tools"
+                prompt: "I want you design a journey that help me increase my extra income in terms of Sell products online. Suggest for me supporting tools such as Afifliate network, Marketing tools, Research tools, Content , banner and videos creation tools, management tools, analystics tools, e-commerce platform, sourcing tools?"
             }
             break;
         case "games":
             promptAddTopicLv2 = {
                 title: "Prompt Add",
-                prompt: "I want you design a journey that help me increase my extra income in terms of Games. Suggest for me supporting tools such as Games network, Research tools, management tools, upgrade gaming skills tools, streaming creation tools, content creation tools"
+                prompt: "I want you design a journey that help me increase my extra income in terms of Games. Suggest for me supporting tools such as Games network, Research tools, management tools, upgrade gaming skills tools, streaming creation tools, content creation tools?"
             }
             break;
         case "start a business":

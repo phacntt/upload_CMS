@@ -14,31 +14,30 @@ class AiLeyBotDocumentController {
             const payload = req.query;
             let maxTokenByTime = 500;
 
-            // const promptCustom = `${payload.act}. ${payload.skill ? decodeURIComponent(payload.skill) : ``}`;
             const promptCustom = `${decodeURIComponent(payload.act as string)}. ${payload.skill ? decodeURIComponent(payload.skill as string) : ``}`;
-            const promptTopic = payload.topic ? `I want to ask about ${payload.topic} but I don't know what should I ask you to get adivces from this field.` : ``;
-            const promptQuestion = payload.promptQuestion;
+            const promptTopic = decodeURIComponent(payload.topic as string) ? `I want to ask about ${decodeURIComponent(payload.topic as string)} but I don't know what should I ask you to get adivces from this field.` : ``;
+            const promptQuestion = decodeURIComponent(payload.promptQuestion as string);
             const promptArrayTopicLv2 = payload.topicLv2 ?
                 [
                     {
                         title: "Research",
-                        prompt: `I want you design a journey that help me increase my extra income in terms of ${payload.topicLv2}. How should I research`
+                        prompt: `I want you design a journey that help me increase my extra income in terms of ${decodeURIComponent(payload.topicLv2 as string)}. How should I research?`
                     },
                     {
                         title: "Plan",
-                        prompt: `I want you design a journey that help me increase my extra income in terms of ${payload.topicLv2}. How should I create a strategic plan`
+                        prompt: `I want you design a journey that help me increase my extra income in terms of ${decodeURIComponent(payload.topicLv2 as string)}. How should I create a strategic plan?`
                     },
                     {
                         title: "Execute",
-                        prompt: `I want you design a journey that help me increase my extra income in terms of ${payload.topicLv2}. How should I execute`
+                        prompt: `I want you design a journey that help me increase my extra income in terms of ${decodeURIComponent(payload.topicLv2 as string)}. How should I execute?`
                     },
                     {
                         title: "Self-evalute",
-                        prompt: `I want you design a journey that help me increase my extra income in terms of ${payload.topicLv2}. How should I track and self-evaluate`
+                        prompt: `I want you design a journey that help me increase my extra income in terms of ${decodeURIComponent(payload.topicLv2 as string)}. How should I track and self-evaluate?`
                     }
                 ] : [];
 
-            payload.topicLv2 ? promptArrayTopicLv2.push(promptAddByTopicLv2(payload.topicLv2) as any): []
+            payload.topicLv2 ? promptArrayTopicLv2.push(promptAddByTopicLv2(decodeURIComponent(payload.topicLv2 as string)) as any): []
 
         
             if (payload.act) {
@@ -81,7 +80,6 @@ class AiLeyBotDocumentController {
                     for (let index = 0; index < promptArrayTopicLv2.length; index++) {
                         const response = await callOpenAIHelper(maxTokenByTime, promptArrayTopicLv2[index].prompt)
                         const data = response.split(`\n`).filter(text => text != "")
-                        data.shift();
                         res.write(`data: ${JSON.stringify(data)}\n\n`);
                     }
                 };
