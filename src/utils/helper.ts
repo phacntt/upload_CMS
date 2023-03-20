@@ -20,7 +20,6 @@ export const callOpenAIHelper = async (maxTokenByTime: number, promptCustom: str
     }
 
     const textResponse = await interactOpenAI(dataSendToOpenAI);
-    console.log("TEXT: ", textResponse)
     return textResponse as string
 }
 

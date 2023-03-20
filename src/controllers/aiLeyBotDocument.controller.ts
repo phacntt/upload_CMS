@@ -36,7 +36,7 @@ class AiLeyBotDocumentController {
                         prompt: `I want you design a journey that help me increase my extra income in terms of ${decodeURIComponent(payload.topicLv2 as string)}. How should I track and self-evaluate?`
                     }
                 ] : [];
-
+                
             payload.topicLv2 ? promptArrayTopicLv2.push(promptAddByTopicLv2(decodeURIComponent(payload.topicLv2 as string)) as any): []
 
         
@@ -59,8 +59,9 @@ class AiLeyBotDocumentController {
 
             if (payload.topic) {
                 const response = await callOpenAIHelper(maxTokenByTime, promptTopic);
-                const newScriptRemoveTag = response.split(`\n`).filter((text: any) => text != "");
+                const newScriptRemoveTag = response.split(`\n`).filter((text: any) => text != "").map((text: any) => text.substring(text.indexOf(' ') + 1));
                 newScriptRemoveTag.shift();
+                
                 res.status(200).json({ data: newScriptRemoveTag, message: 'OK' });
 
                 return;
