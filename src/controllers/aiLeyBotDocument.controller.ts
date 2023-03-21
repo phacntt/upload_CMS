@@ -81,7 +81,7 @@ class AiLeyBotDocumentController {
                     for (let index = 0; index < promptArrayTopicLv2.length; index++) {
                         const response = await callOpenAIHelper(maxTokenByTime, promptArrayTopicLv2[index].prompt)
                         const data = response.split(`\n`).filter(text => text != "")
-                        res.write(`data: ${JSON.stringify(data)}\n\n`);
+                        res.write(`data: ${JSON.stringify(data.join("</br>"))}\n\n`);
                     }
                 };
                 callOpenAI();
