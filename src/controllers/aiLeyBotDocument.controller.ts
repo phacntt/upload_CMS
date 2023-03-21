@@ -51,7 +51,6 @@ class AiLeyBotDocumentController {
             if (payload.promptQuestion) {
                 const response = await callOpenAIHelper(maxTokenByTime, promptQuestion as string);
                 const newScriptRemoveTag = response.split(`\n`).filter(script => script != "");
-                newScriptRemoveTag.shift();
                 res.json({ data: newScriptRemoveTag.join("</br>"), message: 'OK' });
 
                 return;
