@@ -13,7 +13,7 @@ class AiLeyBotDocumentController {
         try {
             const payload = req.query;
             let maxTokenByTime = 500;
-
+            const customScript = decodeURIComponent(payload.customScript as string) ? decodeURIComponent(payload.customScript as string) : ``;
             const promptCustom = `${decodeURIComponent(payload.act as string)}. ${payload.skill ? decodeURIComponent(payload.skill as string) : ``}`;
             const promptTopic = decodeURIComponent(payload.topic as string) ? `I want to ask about ${decodeURIComponent(payload.topic as string)} but I don't know what should I ask you to get adivces from this field.` : ``;
             const promptQuestion = decodeURIComponent(payload.promptQuestion as string);
@@ -82,10 +82,17 @@ class AiLeyBotDocumentController {
                         const data = response.split(`\n`).filter(text => text != "")
                         res.write(`data: ${JSON.stringify(data.join("</br>"))}\n\n`);
                     }
+                    res.end();
                 };
                 callOpenAI();
                 return;
             }
+
+            if (payload.customScript) {
+                const response = await callOpenAIHelper(maxTokenByTime, customScript);
+                res.status(200).json({data: response, message: "OK"})
+            }
+
         } catch (error) {
             next(error);
         }
