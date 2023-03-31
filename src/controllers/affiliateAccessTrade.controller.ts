@@ -84,7 +84,8 @@ class AffiliateAccessTradeController {
             const { email } = req.body;
             
             const emailRegexp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-
+            console.log("OK");
+            
             if (!emailRegexp.test(email)) {
                 res.status(400).json({ message: 'Email invalidate', status: 400 });
             } else {
