@@ -8,7 +8,7 @@ jobs:
       - name: executing remote ssh commands using password
         uses: supnobita/ssh-action@master
         with:
-          host: 13.212.16.67
+          host: 52.77.228.179
           username: ubuntu
           key: ${{ secrets.UPLOAD_CMS_SECRET }}
           port: 22
@@ -23,7 +23,7 @@ jobs:
             docker rm upload_cms || echo "remove container - OK"
             docker run --restart unless-stopped -d --name upload_cms -p 8080:8080 \
                 -e NODE_ENV=${{ secrets.NODE_ENV }} \
-                -e HOST=172.31.15.59 \
+                -e HOST=172.31.33.255 \
                 -e SECRET_KEY=${{ secrets.SECRET_KEY }} \
                 -e API_KEY_ACCESSTRADE=${{ secrets.API_KEY_ACCESSTRADE }} \
                 -e AWS_ACCESS_KEY=${{ secrets.AWS_ACCESS_KEY }} \
