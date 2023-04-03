@@ -18,10 +18,10 @@ jobs:
             rm -rf upload_cms
             git clone https://${{ secrets.UPLOAD_CMS_TOKEN_SSH }}@github.com/phacntt/upload_cms.git
             cd upload_cms
-            sudo DOCKER_BUILDKIT=1 docker build -t upload_cms:$GITHUB_RUN_NUMBER .
-            sudo docker stop upload_cms || echo "stop container - OK"
-            sudo docker rm upload_cms || echo "remove container - OK"
-            sudo docker run --restart unless-stopped -d --name upload_cms -p 8080:8080 \
+            DOCKER_BUILDKIT=1 docker build -t upload_cms:$GITHUB_RUN_NUMBER .
+            docker stop upload_cms || echo "stop container - OK"
+            docker rm upload_cms || echo "remove container - OK"
+            docker run --restart unless-stopped -d --name upload_cms -p 8080:8080 \
                 -e NODE_ENV=${{ secrets.NODE_ENV }} \
                 -e HOST=172.31.15.59 \
                 -e SECRET_KEY=${{ secrets.SECRET_KEY }} \
