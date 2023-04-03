@@ -2,7 +2,6 @@ import express from 'express';
 import cookieParser from 'cookie-parser'
 import { Routes } from './interfaces/routes.interface';
 import { CREDENTIALS, NODE_ENV, ORIGIN, PORT } from './config';
-import fileUpload from 'express-fileupload'
 import { task } from './utils/task-cron';
 import cors from 'cors'
 import errorMiddleware from './middlewares/error.middleware';
