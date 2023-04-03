@@ -1,4 +1,4 @@
-FROM node:16-alpine3.16
+FROM node:alpine
 
 WORKDIR /usr/src/app/upload_CMS
 
