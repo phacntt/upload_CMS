@@ -24,7 +24,6 @@
     },
     "homepage": "https://github.com/phacntt/upload_CMS#readme",
     "dependencies": {
-        "@prisma/client": "^4.8.0",
         "aws-sdk": "^2.1295.0",
         "bcrypt": "^5.1.0",
         "body-parser": "^1.20.1",
@@ -42,7 +41,6 @@
         "node-cron": "^3.0.2",
         "node-fetch": "2.6.7",
         "nodemon": "^2.0.20",
-        "prisma": "^4.8.0",
         "rand-token": "^1.0.1",
         "redis": "^4.6.5",
         "reflect-metadata": "^0.1.13",
