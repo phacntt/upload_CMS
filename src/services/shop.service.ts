@@ -36,7 +36,7 @@ class ShopService {
         let totalShopCache = await getCache('total_shop')
 
         if (!totalShopCache) {
-            totalShopCache = await this.clients.prisma.product.count();
+            totalShopCache = await this.clients.prisma.shop.count();
             await setCache('total_shop', totalShopCache);
         }
 
