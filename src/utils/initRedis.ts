@@ -8,7 +8,7 @@ export const redisSub = createClient({
 })
 
 export const redisMaster = createClient({
-    url: process.env.REDIS_URL,
+    url: process.env.REDIS_URL_CURRENT,
 })
 
 const initRedis = async () => {
