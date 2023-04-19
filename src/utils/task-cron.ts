@@ -11,6 +11,7 @@ import { HttpException } from '../exception/HttpException'
 import { CreateShopDto } from '../dto/shop.dto'
 import { CreateProductDto } from '../dto/product.dto'
 import TransactionShopeeService from '../services/transactionShopee.service'
+import { setCache } from './handleRedis'
 
 export const task = () => {
     const client = context
@@ -69,6 +70,8 @@ export const task = () => {
     const createShop = cron.schedule('0 0 * * *', async () => {
         try {
             const shops: CreateShopDto[] = await shopsAT.getShops()
+            setCache("total_shop", shops.length.toString())
+
             for (let item = 0; item < shops.length; item++) {
                 await shopsService.createShops(shops[item])
             }
@@ -82,9 +85,11 @@ export const task = () => {
     const createProduct = cron.schedule('0 3 * * *', async () => {
         try {
             const products: CreateProductDto[] = await shopsAT.getProducts()
+            setCache("total_product", products.length.toString())
             for (let item = 0; item < products.length; item++) {
                 await productsService.createProducts(products[item])
             }
+
         } catch (error: any) {
             throw new HttpException(400, error);
 

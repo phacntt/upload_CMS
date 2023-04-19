@@ -7,14 +7,21 @@ export const redisSub = createClient({
     url: process.env.REDIS_URL,
 })
 
+export const redisMaster = createClient({
+    url: process.env.REDIS_URL,
+})
+
 const initRedis = async () => {
     try {
         redisPub.on("error", (err) => console.error("Redis Pub Error", err))
         redisSub.on("error", (err) => console.error("Redis Sub Error", err))
+        redisMaster.on("error", (err) => console.error("Redis Master Error", err))
         await redisPub.connect()
         await redisSub.connect()
+        await redisMaster.connect()
+
         console.log(
-            `🚀 Connect & runnding REDIS inside Docker - P ${process.env.REDIS_PORT ?? 6380} 🚀`
+            `🚀 Connect & runnding REDIS inside Docker - P ${process.env.NODE_ENV === "production" ? process.env.REDIS_PORT : 6380} 🚀`
         )
     } catch (error) {
         console.log("Redis Client Error", error)

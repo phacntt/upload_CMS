@@ -2,6 +2,7 @@ import { Product } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import ProductService from "../services/product.service";
 import { HttpException } from "../exception/HttpException";
+import { getCache } from "../utils/handleRedis";
 
 class ProductController {
     public productService = new ProductService();
@@ -9,9 +10,10 @@ class ProductController {
     public getProducts = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const queryParam = req.query
-            const productsData: Product[] = await this.productService.getProducts(queryParam);
 
-            res.status(200).json({ data: productsData, message: 'Get all products' });
+            const { products, pagination } = await this.productService.getProducts(queryParam);
+
+            res.status(200).json({ data: products, pagination, message: 'Get all products' });
         } catch (error) {
             next(error);
         }
@@ -30,7 +32,7 @@ class ProductController {
         }
     };
 
-    
+
 
     public createProduct = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {

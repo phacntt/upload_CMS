@@ -11,9 +11,9 @@ class ShopController {
     public getShops = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const queryParam = req.query
-            const shopsData: Shop[] = await this.shopService.getShops(queryParam);
+            const {shops, pagination} = await this.shopService.getShops(queryParam);
 
-            res.status(200).json({ data: shopsData, message: 'Get all shops' });
+            res.status(200).json({ data: shops, pagination, message: 'Get all shops' });
         } catch (error) {
             next(error);
         }

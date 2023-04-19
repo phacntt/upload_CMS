@@ -1,6 +1,8 @@
 import { Prisma, Product, Shop } from "@prisma/client";
 import { context } from "../types/context.type";
 import { CreateShopDto } from "../dto/shop.dto";
+import { getCache, setCache } from "../utils/handleRedis";
+import { pagination } from "../types/global.type";
 
 type FilterShops = {
     page?: number,
@@ -30,7 +32,22 @@ class ShopService {
         }
 
         const shops = await this.clients.prisma.shop.findMany({ skip: page == 1 ? page - 1 : (page - 1) * limit, take: limit, where: condition })
-        return shops;
+        
+        let totalShopCache = await getCache('total_shop')
+
+        if (!totalShopCache) {
+            totalShopCache = await this.clients.prisma.product.count();
+            await setCache('total_shop', totalShopCache);
+        }
+
+        const pagination: pagination = {
+            count: Number(totalShopCache),
+            currentPage: page,
+            perPage: limit,
+            nextPage: Math.ceil(Number(totalShopCache) / limit) === page ? page : page + 1,
+            totalPage: Math.ceil(Number(totalShopCache) / limit),
+        }
+        return { shops, pagination };
     }
 
     public async getShopById(id: number) {

@@ -2,6 +2,8 @@ import { Prisma, Product } from "@prisma/client";
 import { context } from "../types/context.type";
 import { HttpException } from "../exception/HttpException";
 import { CreateProductDto } from "../dto/product.dto";
+import { getCache, setCache } from "../utils/handleRedis";
+import { pagination } from "../types/global.type";
 
 type ListProductsFilter = {
     page?: number;
@@ -14,6 +16,7 @@ type SortBy = {
     price?: 'desc' | 'asc',
     sales?: 'desc' | 'asc',
 }
+
 
 class ProductService {
     public clients = context;
@@ -46,8 +49,23 @@ class ProductService {
         if (filter?.categoryId) {
             categoryId = Number(filter.categoryId)
         }
-        const products = await this.clients.prisma.product.findMany({ skip: page == 1 ? page - 1 : (page - 1) * limit, take: limit, orderBy: {sales: sortBy.sales, price: sortBy.price}, where: { categoryId } })
-        return products;
+        const products = await this.clients.prisma.product.findMany({ skip: page == 1 ? page - 1 : (page - 1) * limit, take: limit, orderBy: { sales: sortBy.sales, price: sortBy.price }, where: { categoryId } })
+
+        let totalProductCache = await getCache('total_product')
+
+        if (!totalProductCache) {
+            totalProductCache = await this.clients.prisma.product.count();
+            await setCache('total_product', totalProductCache);
+        }
+
+        const pagination: pagination = {
+            count: Number(totalProductCache),
+            currentPage: page,
+            perPage: limit,
+            nextPage: Math.ceil(Number(totalProductCache) / limit) === page ? page : page + 1,
+            totalPage: Math.ceil(Number(totalProductCache) / limit),
+        }
+        return { products, pagination };
     }
 
     public async getProductById(id: number) {
