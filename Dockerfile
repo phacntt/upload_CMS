@@ -5,10 +5,12 @@ WORKDIR /usr/src/app/upload_CMS
 COPY ./package*.json ./
 COPY ./prisma ./prisma
 
-RUN yarn
+RUN yarn --only=production
 RUN npx prisma generate
 COPY . .
 RUN yarn build
+
+
 
 RUN ["chmod", "+x", "start.sh"]
 
