@@ -9,6 +9,8 @@ import helmet from 'helmet';
 import initRedis from './utils/initRedis';
 import { handleSubcribeChannel } from './message-channel/subcrible';
 import defaultPushEventManager from "./utils/pushEventManager"
+import fileUpload from 'express-fileupload';
+// import { InitKafka } from './utils/initKafka';
 
 class App {
   public app: express.Application;
@@ -26,6 +28,7 @@ class App {
     this.initializeErrorHandling();
     this.initializeRedis();
     this.initializeBridge();
+    // this.consumeTopic();
   }
 
   public listen() {
@@ -43,11 +46,11 @@ class App {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }))
     this.app.use(cookieParser());
-    
+
   }
 
   private initializeRoutes(routes: Routes[]) {
-    // this.app.use(fileUpload())
+    this.app.use(fileUpload())
     routes.forEach(route => {
       this.app.use('/api' + route.path, route.router);
     });
@@ -65,8 +68,20 @@ class App {
     initRedis()
   }
 
+  // private async consumeTopic() {
+  //   const kafkaConfig = new InitKafka();
+  //   // await kafkaConfig.send('blabla', [{
+  //   //   key: '1234',
+  //   //   value: JSON.stringify({data: 3})
+  //   // }])
+
+  //   await kafkaConfig.receive('my-topic', (value: any) => {
+  //     console.log('VALUE: ', value);
+  //   })
+  // }
+
   private async initializeBridge() {
-      await handleSubcribeChannel(defaultPushEventManager)
+    await handleSubcribeChannel(defaultPushEventManager)
   }
 }
 
