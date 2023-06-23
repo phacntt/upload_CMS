@@ -9,7 +9,7 @@ import helmet from 'helmet';
 import initRedis from './utils/initRedis';
 import { handleSubcribeChannel } from './message-channel/subcrible';
 import defaultPushEventManager from "./utils/pushEventManager"
-import fileUpload from 'express-fileupload';
+// import fileUpload from 'express-fileupload';
 // import { InitKafka } from './utils/initKafka';
 
 class App {
@@ -50,7 +50,7 @@ class App {
   }
 
   private initializeRoutes(routes: Routes[]) {
-    this.app.use(fileUpload())
+    // this.app.use(fileUpload())
     routes.forEach(route => {
       this.app.use('/api' + route.path, route.router);
     });
