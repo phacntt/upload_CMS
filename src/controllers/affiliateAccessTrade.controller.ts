@@ -79,47 +79,47 @@ class AffiliateAccessTradeController {
         }
     };
 
-    public addEmailContact = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-        try {
-            const { email } = req.body;
+    // public addEmailContact = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    //     try {
+    //         const { email } = req.body;
             
-            const emailRegexp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-            console.log("OK");
+    //         const emailRegexp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+    //         console.log("OK");
             
-            if (!emailRegexp.test(email)) {
-                res.status(400).json({ message: 'Email invalidate', status: 400 });
-            } else {
-                const auth = new google.auth.GoogleAuth({
-                    keyFile: "keys.json", //the key file
-                    //url to spreadsheets API
-                    scopes: "https://www.googleapis.com/auth/spreadsheets",
-                });
+    //         if (!emailRegexp.test(email)) {
+    //             res.status(400).json({ message: 'Email invalidate', status: 400 });
+    //         } else {
+    //             const auth = new google.auth.GoogleAuth({
+    //                 keyFile: "keys.json", //the key file
+    //                 //url to spreadsheets API
+    //                 scopes: "https://www.googleapis.com/auth/spreadsheets",
+    //             });
     
-                const authClientObject = await auth.getClient();
+    //             const authClientObject = await auth.getClient();
     
-                const googleSheetsInstance = google.sheets({ version: "v4", auth: authClientObject });
+    //             const googleSheetsInstance = google.sheets({ version: "v4", auth: authClientObject });
     
-                const spreadsheetId = "1lY3ot4nbQ9yrXxhJfe0kGbAAQCOIf_dDZ7j3JDxrgIA";
+    //             const spreadsheetId = "1lY3ot4nbQ9yrXxhJfe0kGbAAQCOIf_dDZ7j3JDxrgIA";
     
-                await googleSheetsInstance.spreadsheets.values.append({
-                    auth, //auth object
-                    spreadsheetId, //spreadsheet id
-                    range: "A:A", //sheet name and range of cells
-                    valueInputOption: "USER_ENTERED", // The information will be passed according to what the usere passes in as date, number or text
-                    requestBody: {
-                        values: [
-                            [email]
-                        ]
-                    }
-                });
+    //             await googleSheetsInstance.spreadsheets.values.append({
+    //                 auth, //auth object
+    //                 spreadsheetId, //spreadsheet id
+    //                 range: "A:A", //sheet name and range of cells
+    //                 valueInputOption: "USER_ENTERED", // The information will be passed according to what the usere passes in as date, number or text
+    //                 requestBody: {
+    //                     values: [
+    //                         [email]
+    //                     ]
+    //                 }
+    //             });
     
-                res.status(200).json({ message: 'Add email contact successfully' });
-            }
+    //             res.status(200).json({ message: 'Add email contact successfully' });
+    //         }
             
-        } catch (error) {
-            next(error);
-        }
-    };
+    //     } catch (error) {
+    //         next(error);
+    //     }
+    // };
 
 }
 

@@ -20,7 +20,7 @@ class AffiliateAccessTradeRoute implements Routes {
         this.router.post(`/redirect`, this.affiliateAccessTradeController.redirectProductURL);
         this.router.post(`/shops`, this.affiliateAccessTradeController.createShop);
         this.router.post(`/shortLink`, this.affiliateAccessTradeController.convertLinkShortShopee);
-        this.router.post(`/emailContact`, this.affiliateAccessTradeController.addEmailContact);
+        // this.router.post(`/emailContact`, this.affiliateAccessTradeController.addEmailContact);
     }
 }
 
