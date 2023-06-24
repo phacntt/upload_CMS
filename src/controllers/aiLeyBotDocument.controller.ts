@@ -9,10 +9,11 @@ export type BodySendToOpenAI = {
 
 class AiLeyBotDocumentController {
 
+    public MAX_TOKEN_BY_TIME = 500;
+
     public aiLeyBotResponse = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const payload = req.query;
-            let maxTokenByTime = 500;
             const customScript = decodeURIComponent(payload.customScript as string) ? decodeURIComponent(payload.customScript as string) : ``;
             const promptCustom = `${decodeURIComponent(payload.act as string)}. ${payload.skill ? decodeURIComponent(payload.skill as string) : ``}`;
             const promptTopic = decodeURIComponent(payload.topic as string) ? `I want to ask about ${decodeURIComponent(payload.topic as string)} but I don't know what should I ask you to get adivces from this field.` : ``;
@@ -41,7 +42,7 @@ class AiLeyBotDocumentController {
 
         
             if (payload.act) {
-                const response = await callOpenAIHelper(maxTokenByTime, promptCustom);
+                const response = await callOpenAIHelper(this.MAX_TOKEN_BY_TIME, promptCustom);
                 const newScript = convertScriptOpenAi(payload, response);
                 const newScriptRemoveTag = newScript.split(`\n`).filter(script => script != "");
                 res.status(200).json({ data: newScriptRemoveTag.join("</br>"), message: 'OK' });
@@ -49,7 +50,7 @@ class AiLeyBotDocumentController {
             }
 
             if (payload.promptQuestion) {
-                const response = await callOpenAIHelper(maxTokenByTime, promptQuestion as string);
+                const response = await callOpenAIHelper(this.MAX_TOKEN_BY_TIME, promptQuestion as string);
                 const newScriptRemoveTag = response.split(`\n`).filter(script => script != "");
                 res.json({ data: newScriptRemoveTag.join("</br>"), message: 'OK' });
 
@@ -57,7 +58,7 @@ class AiLeyBotDocumentController {
             }
 
             if (payload.topic) {
-                const response = await callOpenAIHelper(maxTokenByTime, promptTopic);
+                const response = await callOpenAIHelper(this.MAX_TOKEN_BY_TIME, promptTopic);
                 const newScriptRemoveTag = response.split(`\n`).filter((text: any) => text != "").map((text: any) => text.substring(text.indexOf(' ') + 1));
                 newScriptRemoveTag.shift();
                 
@@ -78,7 +79,7 @@ class AiLeyBotDocumentController {
 
                 const callOpenAI = async () => {
                     for (let index = 0; index < promptArrayTopicLv2.length; index++) {
-                        const response = await callOpenAIHelper(maxTokenByTime, promptArrayTopicLv2[index].prompt)
+                        const response = await callOpenAIHelper(this.MAX_TOKEN_BY_TIME, promptArrayTopicLv2[index].prompt)
                         const data = response.split(`\n`).filter(text => text != "")
                         res.write(`data: ${JSON.stringify(data.join("</br>"))}\n\n`);
                     }
@@ -89,7 +90,7 @@ class AiLeyBotDocumentController {
             }
 
             if (payload.customScript) {
-                const response = await callOpenAIHelper(maxTokenByTime, customScript);
+                const response = await callOpenAIHelper(this.MAX_TOKEN_BY_TIME, customScript);
                 res.status(200).json({data: response, message: "OK"})
             }
 
