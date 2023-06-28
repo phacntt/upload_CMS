@@ -67,60 +67,60 @@ export const task = () => {
 
     })
 
-    const createShop = cron.schedule('0 0 * * *', async () => {
-        try {
-            const shops: CreateShopDto[] = await shopsAT.getShops()
-            setCache("total_shop", shops.length.toString())
+    // const createShop = cron.schedule('0 0 * * *', async () => {
+    //     try {
+    //         const shops: CreateShopDto[] = await shopsAT.getShops()
+    //         setCache("total_shop", shops.length.toString())
 
-            for (let item = 0; item < shops.length; item++) {
-                await shopsService.createShops(shops[item])
-            }
-        } catch (error: any) {
-            throw new HttpException(400, error);
+    //         for (let item = 0; item < shops.length; item++) {
+    //             await shopsService.createShops(shops[item])
+    //         }
+    //     } catch (error: any) {
+    //         throw new HttpException(400, error);
 
-        }
+    //     }
 
-    })
+    // })
 
-    const createProduct = cron.schedule('0 3 * * *', async () => {
-        try {
-            const products: CreateProductDto[] = await shopsAT.getProducts()
-            setCache("total_product", products.length.toString())
-            for (let item = 0; item < products.length; item++) {
-                await productsService.createProducts(products[item])
-            }
+    // const createProduct = cron.schedule('0 3 * * *', async () => {
+    //     try {
+    //         const products: CreateProductDto[] = await shopsAT.getProducts()
+    //         setCache("total_product", products.length.toString())
+    //         for (let item = 0; item < products.length; item++) {
+    //             await productsService.createProducts(products[item])
+    //         }
 
-        } catch (error: any) {
-            throw new HttpException(400, error);
+    //     } catch (error: any) {
+    //         throw new HttpException(400, error);
 
-        }
-    })
+    //     }
+    // })
 
-    const getTransactionShopee = cron.schedule('* * * * *', async () => {
-        try {
-            const transactions = await shopsAT.listTransaction()
-            for (let item = 0; item < transactions!.length; item++) {
-                if (transactions![item].earningStatus === "COMPLETED") {
-                    await client.prisma.$transaction(async () => {
-                        await transactionShopee.createTransaction(transactions![item]);
-                        await transactionShopee.updateCalculatedOrder(transactions![item].itemId as string)
-                    });
-                } else {
-                    await client.prisma.$transaction(async () => {
-                        await transactionShopee.createTransaction(transactions![item])
-                    });
-                }
-            }
-        } catch (error: any) {
-            throw new HttpException(400, error);
+    // const getTransactionShopee = cron.schedule('* * * * *', async () => {
+    //     try {
+    //         const transactions = await shopsAT.listTransaction()
+    //         for (let item = 0; item < transactions!.length; item++) {
+    //             if (transactions![item].earningStatus === "COMPLETED") {
+    //                 await client.prisma.$transaction(async () => {
+    //                     await transactionShopee.createTransaction(transactions![item]);
+    //                     await transactionShopee.updateCalculatedOrder(transactions![item].itemId as string)
+    //                 });
+    //             } else {
+    //                 await client.prisma.$transaction(async () => {
+    //                     await transactionShopee.createTransaction(transactions![item])
+    //                 });
+    //             }
+    //         }
+    //     } catch (error: any) {
+    //         throw new HttpException(400, error);
 
-        }
-    })
+    //     }
+    // })
 
     taskUpdateStatusBanner.start();
-    createProduct.start();
-    createShop.start();
-    getTransactionShopee.start();
+    // createProduct.start();
+    // createShop.start();
+    // getTransactionShopee.start();
     // clearImageTrashS3.start();
 
 }
