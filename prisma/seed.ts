@@ -294,40 +294,40 @@ async function main() {
         }
     }
 
-    for (let banner of arrayBanner) {
-        const findBannerByPosition = await findBanner(banner.bannerPosition);
-        if (!findBannerByPosition) {
-            await clients.prisma.banner.create({
-                data: {
-                    airTimeCreate: banner.airTimeCreate,
-                    airTimeEnd: banner.airTimeEnd,
-                    bannerPosition: banner.bannerPosition,
-                    bannerType: banner.bannerType as BannerType,
-                    image: banner.image,
-                    landingPageUrl: banner.landingPageUrl,
-                    pageId: banner.pageId
-                }
-            })
-        }
-    }
+    // for (let banner of arrayBanner) {
+    //     const findBannerByPosition = await findBanner(banner.bannerPosition);
+    //     if (!findBannerByPosition) {
+    //         await clients.prisma.banner.create({
+    //             data: {
+    //                 airTimeCreate: banner.airTimeCreate,
+    //                 airTimeEnd: banner.airTimeEnd,
+    //                 bannerPosition: banner.bannerPosition,
+    //                 bannerType: banner.bannerType as BannerType,
+    //                 image: banner.image,
+    //                 landingPageUrl: banner.landingPageUrl,
+    //                 pageId: banner.pageId
+    //             }
+    //         })
+    //     }
+    // }
 
-    for (let content of arrayContent) {
-        const findContentByTitle = await findContent(content.title);
-        if (!findContentByTitle) {
-            await clients.prisma.content.create({data: {
-                commissionModel: content.commissionModel as CommissionModelType,
-                commissionType: content.commissionType as CommissionType,
-                commissionValue: content.commissionValue,
-                description: content.description,
-                image: content.description,
-                location: content.location as Location,
-                title: content.title,
-                url: content.url,
-                categoryId: content.categoryId,
-                pageId: content.pageId
-            }})
-        }
-    }
+    // for (let content of arrayContent) {
+    //     const findContentByTitle = await findContent(content.title);
+    //     if (!findContentByTitle) {
+    //         await clients.prisma.content.create({data: {
+    //             commissionModel: content.commissionModel as CommissionModelType,
+    //             commissionType: content.commissionType as CommissionType,
+    //             commissionValue: content.commissionValue,
+    //             description: content.description,
+    //             image: content.description,
+    //             location: content.location as Location,
+    //             title: content.title,
+    //             url: content.url,
+    //             categoryId: content.categoryId,
+    //             pageId: content.pageId
+    //         }})
+    //     }
+    // }
 
     for (let constant of arrayConstant) {
         const findConstantByName = await findConstant(constant.name);

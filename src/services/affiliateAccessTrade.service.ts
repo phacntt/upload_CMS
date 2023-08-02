@@ -49,29 +49,6 @@ class AffiliateAccessTradeService {
     public linkCoupon = 'https://api.accesstrade.vn/v1/offers_informations/coupon?limit=100';
     public client = context;
 
-    // AccessTrade
-    // Get product
-    // public async getProducts(queryParam: any) {
-    //     try {
-    //         let param = ''
-    //         if (queryParam.merchant) {
-    //             param = `merchant=${queryParam.merchant}&`
-    //         }
-    //         if (queryParam.page) {
-    //             param = param + `page=${queryParam.page}&`
-    //         }
-    //         if (queryParam.status_discount) {
-    //             param = param + `status_discount=${queryParam.status_discount}&`
-    //         }
-    //         let productCreate: any[] = await this.getProductFromDataFeed(param)
-
-    //         return productCreate
-    //     } catch (error) {
-    //         throw new HttpException(404, error as any)
-    //     }
-    // }
-
-
     public async getProducts() {
         try {
             const listCategory: Category[] = await this.client.prisma.category.findMany({ where: { page: { name: 'Shop to earn' } } })
@@ -94,22 +71,22 @@ class AffiliateAccessTradeService {
                         let arrItems: CreateProductDto[] = [];
                         for (let item of productsByCategory) {
                             let product: CreateProductDto = {
-                                appExistRate: (Number(item.appExistRate) * (CONSTANT_COMISSION_RATE.value) / 100).toString(),
-                                appNewRate: (Number(item.appNewRate) * (CONSTANT_COMISSION_RATE.value) / 100).toString(),
-                                webExistRate: (Number(item.webExistRate) * (CONSTANT_COMISSION_RATE.value) / 100).toString(),
-                                webNewRate: (Number(item.webNewRate) * (CONSTANT_COMISSION_RATE.value) / 100).toString(),
+                                // appExistRate: (Number(item.appExistRate) * (CONSTANT_COMISSION_RATE.value) / 100).toString(),
+                                // appNewRate: (Number(item.appNewRate) * (CONSTANT_COMISSION_RATE.value) / 100).toString(),
+                                // webExistRate: (Number(item.webExistRate) * (CONSTANT_COMISSION_RATE.value) / 100).toString(),
+                                // webNewRate: (Number(item.webNewRate) * (CONSTANT_COMISSION_RATE.value) / 100).toString(),
                                 commission: (Number(item.commission) * (CONSTANT_COMISSION_RATE.value) / 100).toString(),
                                 commissionRate: (Number(item.commissionRate) * (CONSTANT_COMISSION_RATE.value) / 100).toString(),
                                 imageUrl: item.imageUrl,
                                 itemId: item.itemId.toString(),
                                 offerLink: item.offerLink,
-                                periodEndTime: item.periodEndTime.toString(),
-                                periodStartTime: item.periodStartTime.toString(),
+                                // periodEndTime: item.periodEndTime.toString(),
+                                // periodStartTime: item.periodStartTime.toString(),
                                 price: item.price.toString(),
-                                productLink: item.productLink,
+                                // productLink: item.productLink,
                                 productName: item.productName,
-                                sales: item.sales,
-                                shopName: item.shopName,
+                                // sales: item.sales,
+                                // shopName: item.shopName,
                                 categoryId: item.categoryId,
                             }
 

@@ -49,7 +49,7 @@ class ProductService {
         if (filter?.categoryId) {
             categoryId = Number(filter.categoryId)
         }
-        const products = await this.clients.prisma.product.findMany({ skip: page == 1 ? page - 1 : (page - 1) * limit, take: limit, orderBy: { sales: sortBy.sales, price: sortBy.price }, where: { categoryId } })
+        const products = await this.clients.prisma.product.findMany({ skip: page == 1 ? page - 1 : (page - 1) * limit, take: limit, orderBy: { price: sortBy.price }, where: { categoryId } })
 
         let totalProductCache = await getCache('total_product')
 

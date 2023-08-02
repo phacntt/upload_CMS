@@ -5,9 +5,6 @@ export class CreateCategoryDto {
     @IsString()
     name: string
 
-    @IsString()
-    nameVN: string
-
     @IsNumber()
     pageId: number
 }

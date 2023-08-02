@@ -7,17 +7,17 @@ export class CreateProductDto {
     @IsString()
     commissionRate: string
     
-    @IsString()
-    appExistRate: string
+    // @IsString()
+    // appExistRate: string
     
-    @IsString()
-    appNewRate: string
+    // @IsString()
+    // appNewRate: string
     
-    @IsString()
-    webExistRate: string
+    // @IsString()
+    // webExistRate: string
     
-    @IsString()
-    webNewRate: string
+    // @IsString()
+    // webNewRate: string
     
     @IsString()
     commission: string
@@ -25,8 +25,8 @@ export class CreateProductDto {
     @IsString()
     price: string
     
-    @IsNumber()
-    sales: number
+    // @IsNumber()
+    // sales: number
     
     @IsString()
     imageUrl: string
@@ -34,20 +34,20 @@ export class CreateProductDto {
     @IsString()
     productName: string
     
-    @IsString()
-    shopName: string
+    // @IsString()
+    // shopName: string
     
-    @IsString()
-    productLink: string
+    // @IsString()
+    // productLink: string
     
     @IsString()
     offerLink: string
     
-    @IsString()
-    periodEndTime: string
+    // @IsString()
+    // periodEndTime: string
     
-    @IsString()
-    periodStartTime: string
+    // @IsString()
+    // periodStartTime: string
     
     @IsNumber()
     categoryId: number

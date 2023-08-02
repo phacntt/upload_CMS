@@ -33,6 +33,7 @@ model Category {
   createAt DateTime  @default(now())
   updateAt DateTime  @updatedAt
   keywords String[]
+  image    String?
   pageId   Int
   page     Page      @relation(fields: [pageId], references: [id])
   contents Content[]
@@ -44,20 +45,21 @@ model Product {
   id              Int @id @default(autoincrement())
   itemId          String @unique
   commissionRate  String
-  appExistRate    String
-  appNewRate      String
-  webExistRate    String
-  webNewRate      String
+  // appExistRate    String
+  // appNewRate      String
+  // webExistRate    String
+  // webNewRate      String
   commission      String
   price           String
-  sales           Int
+  // sales           Int
   imageUrl        String
   productName     String
-  shopName        String
-  productLink     String
+  // shopName        String
+  // productLink     String
   offerLink       String
-  periodEndTime   String
-  periodStartTime String
+  country         String?
+  // periodEndTime   String
+  // periodStartTime String
   categoryId      Int
   category        Category @relation(fields: [categoryId], references: [id])
 }
@@ -67,11 +69,8 @@ model Shop {
   commissionRate  String
   imageUrl        String
   offerLink       String
-  originalLink    String
   shopId          Int @unique
   shopName        String
-  periodStartTime String
-  periodEndTime   String
   categoryId      Int
   category        Category @relation(fields: [categoryId], references: [id])
 }
